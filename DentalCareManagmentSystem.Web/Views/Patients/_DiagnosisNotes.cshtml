@@ -1,0 +1,25 @@
+﻿@model IEnumerable<DentalCareManagmentSystem.Domain.Entities.DiagnosisNote>
+
+<div class="card shadow-sm border-0 rounded-3 mt-4">
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <ul class="list-group">
+                @foreach (var note in Model)
+                {
+                    <li class="list-group-item">
+                        <div class="fw-bold">
+                            <i class="fas fa-user-md"></i> @note.Doctor?.FullName
+                            <span class="text-muted">(@note.CreatedAt.ToShortDateString())</span>
+                        </div>
+                        <div>@note.Note</div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted fst-italic">No diagnosis notes yet.</p>
+        }
+    </div>
+</div>

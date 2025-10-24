@@ -1,0 +1,115 @@
+﻿@model DentalCareManagmentSystem.Web.Controllers.AppointmentReportViewModel
+
+@{
+    ViewData["Title"] = "Appointment Report";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-calendar-check me-2"></i> Appointment Report
+        </h2>
+
+        <a asp-action="ExportAppointments" class="btn btn-success shadow-sm">
+            <i class="fas fa-file-export me-1"></i> Export Appointments
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">Total Appointments</h5>
+                    <h3 class="fw-bold">@Model.TotalAppointments</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-bold">Completed</h5>
+                    <h3 class="fw-bold">@Model.CompletedAppointments</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger fw-bold">Cancelled</h5>
+                    <h3 class="fw-bold">@Model.CancelledAppointments</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning fw-bold">This Month</h5>
+                    <h3 class="fw-bold">@Model.AppointmentsThisMonth</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-chart-pie me-2"></i> Appointments by Status
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-chart-line me-2"></i> Appointments by Month
+                </div>
+                <div class="card-body">
+                    <canvas id="monthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // --- Status Chart ---
+        const statusData = {
+            labels: @Html.Raw(Json.Serialize(Model.AppointmentsByStatus.Keys)),
+            datasets: [{
+                label: 'Appointments by Status',
+                data: @Html.Raw(Json.Serialize(Model.AppointmentsByStatus.Values)),
+                backgroundColor: ['#4CAF50', '#F44336', '#FF9800', '#2196F3', '#9C27B0']
+            }]
+        };
+
+        new Chart(document.getElementById('statusChart'), {
+            type: 'pie',
+            data: statusData
+        });
+
+        // --- Month Chart ---
+        const monthData = {
+            labels: @Html.Raw(Json.Serialize(Model.AppointmentsByMonth.Keys)),
+            datasets: [{
+                label: 'Appointments by Month',
+                data: @Html.Raw(Json.Serialize(Model.AppointmentsByMonth.Values)),
+                fill: false,
+                borderColor: '#2196F3',
+                tension: 0.3
+            }]
+        };
+
+        new Chart(document.getElementById('monthChart'), {
+            type: 'line',
+            data: monthData
+        });
+    </script>
+}

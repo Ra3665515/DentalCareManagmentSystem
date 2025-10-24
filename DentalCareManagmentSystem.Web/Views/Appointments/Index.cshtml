@@ -1,0 +1,84 @@
+﻿@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container mt-4">
+    <!-- 🔹 العنوان -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-calendar-check me-2"></i> Appointments
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Add New Appointment
+        </a>
+    </div>
+
+    <!-- 🔹 الكارد -->
+    <div class="card shadow-sm border-0 rounded">
+        <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
+            <i class="fas fa-list me-2"></i> All Appointments
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mvc-grid mb-0">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var appt in Model)
+                        {
+                            <tr>
+                                <td>@appt.PatientName</td>
+                                <td>@appt.PatientPhone</td>
+                                <td>@appt.Date.ToString("dd/MM/yyyy")</td>
+                                <td>@appt.StartTime.ToString(@"hh\:mm") - @appt.EndTime.ToString(@"hh\:mm")</td>
+                                <td>
+                                    <span class="badge @(appt.Status == "Completed" ? "bg-success"
+                                                                                  : appt.Status == "Cancelled" ? "bg-danger"
+                                                                                  : "bg-warning text-dark")">
+                                @appt.Status
+                            </span>
+                        </td>
+                        <td>@appt.Notes</td>
+                        <td>
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="Edit" asp-route-id="@appt.Id">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a class="btn btn-sm btn-info text-white"
+                               asp-action="Details" asp-route-id="@appt.Id">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                            <a class="btn btn-sm btn-danger"
+                               asp-action="Delete" asp-route-id="@appt.Id">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-calendar-times fa-lg mb-2 d-block"></i>
+                                No appointments found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

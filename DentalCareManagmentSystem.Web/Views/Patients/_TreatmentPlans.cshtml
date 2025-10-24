@@ -1,0 +1,38 @@
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>
+
+<div>
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var plan in Model)
+        {
+            <div class="card mb-3 border shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between">
+                    <span><strong>Date:</strong> @plan.CreatedAt.ToShortDateString()</span>
+                    <span><strong>Total:</strong> @plan.TotalCost.ToString("C")</span>
+                </div>
+                <div class="card-body">
+                    @if (plan.Items != null && plan.Items.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var item in plan.Items)
+                            {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>@item.Name (x@item.Quantity)</span>
+                                    <span class="badge bg-primary">@item.LineTotal.ToString("C")</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted fst-italic">No items in this plan.</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted fst-italic">No treatment plans found.</p>
+    }
+</div>

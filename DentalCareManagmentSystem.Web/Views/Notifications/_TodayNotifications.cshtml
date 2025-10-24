@@ -1,0 +1,46 @@
+
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var notification in Model)
+    {
+        <a class="dropdown-item" href="#">
+            <div>
+                <strong>@notification.PatientName</strong>
+                <span class="small text-muted">@notification.StartTime.ToString("hh:mm tt")</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-success float-end mark-done-btn" data-id="@notification.Id">Done</button>
+        </a>
+    }
+}
+else
+{
+    <a class="dropdown-item" href="#">No appointments today.</a>
+}
+
+<script>
+    $(document).ready(function () {
+        $(".mark-done-btn").on("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent dropdown from closing immediately
+            var appointmentId = $(this).data("id");
+            var button = $(this);
+
+            $.post("/Notifications/MarkDone", { id: appointmentId })
+                .done(function () {
+                    button.closest("a").remove(); // Remove the notification item
+                    // Optionally, refresh the notification count
+                    var currentCount = parseInt($("#notificationCount").text());
+                    $("#notificationCount").text(currentCount - 1);
+                    if (currentCount - 1 <= 0) {
+                        $("#notificationCount").hide();
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error("Error marking appointment as done:" + error);
+                    alert("Failed to mark appointment as done.");
+                });
+        });
+    });
+</script>

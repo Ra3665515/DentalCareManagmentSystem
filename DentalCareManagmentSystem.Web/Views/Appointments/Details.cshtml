@@ -1,0 +1,72 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary"><i class="fas fa-info-circle me-2"></i> Appointment Details</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light fw-semibold">
+            <i class="fas fa-user me-2 text-primary"></i> Patient Information
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover mvc-grid">
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td>@Model.PatientName</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>@Model.PatientPhone</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>@Model.Date.ToString("dddd, MMMM dd, yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Time</th>
+                        <td>@Model.StartTime.ToString(@"hh\:mm") - @Model.EndTime.ToString(@"hh\:mm")</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            @{
+                                var badgeClass = Model.Status switch
+                                {
+                                    "Completed" => "bg-success",
+                                    "Cancelled" => "bg-danger",
+                                    _ => "bg-warning text-dark"
+                                };
+                            }
+                            <span class="badge @badgeClass">@Model.Status</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Notes</th>
+                        <td>@(string.IsNullOrEmpty(Model.Notes) ? "-" : Model.Notes)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.Id })">
+                <i class="fas fa-edit me-1"></i> Edit
+            </a>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Index")">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        
+        document.querySelectorAll(".mvc-grid tbody tr").forEach(row => {
+            row.addEventListener("mouseenter", () => row.classList.add("table-primary"));
+            row.addEventListener("mouseleave", () => row.classList.remove("table-primary"));
+        });
+    </script>
+}

@@ -1,0 +1,186 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+
+@{
+    ViewData["Title"] = "Patient Details";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4"><i class="fas fa-user me-2"></i> @Model.FullName</h2>
+
+    <!-- Patient Info -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <p><strong>Full Name:</strong> @Model.FullName</p>
+            <p><strong>Age:</strong> @Model.Age</p>
+            <p><strong>Gender:</strong> @Model.Gender</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Phone:</strong> @Model.Phone</p>
+            <p><strong>Notes:</strong> @Model.Notes</p>
+            <p><strong>Total Due:</strong> @Model.TotalDue.ToString("C")</p>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="patientTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosisContent">Diagnosis</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatmentContent">Treatment Plans</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#imagesContent">Images</button>
+        </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content mt-3">
+        <!-- Diagnosis Tab -->
+        <div class="tab-pane fade show active" id="diagnosisContent">
+            <div class="mb-3">
+                <textarea id="diagnosisNoteInput" class="form-control" rows="3" placeholder="Add a new diagnosis note..."></textarea>
+                <button class="btn btn-primary mt-2" onclick="addDiagnosisNote()">
+                    <i class="fas fa-plus"></i> Add Note
+                </button>
+            </div>
+            <div id="diagnosisList"></div>
+        </div>
+
+        <!-- Treatment Plans Tab -->
+        <div class="tab-pane fade" id="treatmentContent">
+            <div class="mb-3 d-flex">
+                <input type="text" id="treatmentPlanInput" class="form-control me-2" placeholder="New treatment plan">
+                <button class="btn btn-success" onclick="addTreatmentPlan()">
+                    <i class="fas fa-plus"></i> Add Plan
+                </button>
+            </div>
+            <div id="treatmentList"></div>
+        </div>
+
+        <!-- Images Tab -->
+        <div class="tab-pane fade" id="imagesContent">
+            <div class="mb-3 d-flex">
+                <input type="file" id="patientImageInput" class="form-control me-2" accept="image/*">
+                <button class="btn btn-primary" onclick="uploadPatientImage()">
+                    <i class="fas fa-upload"></i> Upload Image
+                </button>
+            </div>
+            <div id="imagesList"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const patientId = '@Model.Id';
+
+        // ===== Load Partial Views Dynamically =====
+        function loadTabContent(tabName, url) {
+            const container = document.getElementById(tabName + "List");
+            if (!container) return;
+
+            container.innerHTML = "<p class='text-muted fst-italic'>Loading...</p>";
+
+            fetch(url + "?patientId=" + patientId)
+                .then(r => r.text())
+                .then(html => container.innerHTML = html)
+                .catch(() => container.innerHTML = "<p class='text-danger'>Failed to load data.</p>");
+        }
+
+        // ===== Add Diagnosis Note =====
+        function addDiagnosisNote() {
+            const input = document.getElementById("diagnosisNoteInput");
+            if (!input.value.trim()) return alert("Enter a note first.");
+
+            fetch(`/Patients/AddDiagnosisNote?patientId=${patientId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ note: input.value.trim() })
+            })
+            .then(r => {
+                if (r.ok) {
+                    input.value = "";
+                    loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
+                } else alert("Failed to add note.");
+            })
+            .catch(() => alert("Error adding note."));
+        }
+
+        // ===== Add Treatment Plan =====
+        function addTreatmentPlan() {
+            const input = document.getElementById("treatmentPlanInput");
+            if (!input.value.trim()) return alert("Enter a plan first.");
+
+            fetch("/TreatmentPlans/AddPlan", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `patientId=${patientId}&plan=${encodeURIComponent(input.value.trim())}`
+            })
+            .then(r => {
+                if (r.ok) {
+                    input.value = "";
+                    loadTabContent("treatment", "/Patients/GetTreatmentPlans");
+                } else alert("Failed to add treatment plan.");
+            })
+            .catch(() => alert("Error sending request."));
+        }
+
+        // ===== Upload Image =====
+        function uploadPatientImage() {
+            const input = document.getElementById("patientImageInput");
+            if (!input.files.length) return alert("Select a file first.");
+
+            const formData = new FormData();
+            formData.append("patientId", patientId);
+            formData.append("imageFile", input.files[0]);
+
+            fetch("/Patients/UploadPatientImage", { method: "POST", body: formData })
+                .then(r => {
+                    if (r.ok) {
+                        input.value = "";
+                        loadTabContent("images", "/Patients/GetPatientImages");
+                    } else alert("Failed to upload image.");
+                })
+                .catch(() => alert("Error uploading image."));
+        }
+
+        function deletePatientImage(imageId) {
+            if (!confirm("Delete this image?")) return;
+
+            fetch("/Patients/DeletePatientImage", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ imageId: imageId })
+            })
+            .then(r => {
+                if (r.ok) {
+                    loadTabContent("images", "/Patients/GetPatientImages");
+                } else alert("Failed to delete image.");
+            })
+            .catch(() => alert("Error deleting image."));
+        }
+
+        // ===== Initialize Tabs on Page Load =====
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
+            loadTabContent("treatment", "/Patients/GetTreatmentPlans");
+            loadTabContent("images", "/Patients/GetPatientImages");
+
+            document.querySelectorAll('#patientTabs button').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', e => {
+                    const target = e.target.dataset.bsTarget;
+                    if (target === "#diagnosisContent") loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
+                    else if (target === "#treatmentContent") loadTabContent("treatment", "/Patients/GetTreatmentPlans");
+                    else if (target === "#imagesContent") loadTabContent("images", "/Patients/GetPatientImages");
+                });
+            });
+        });
+    </script>
+}

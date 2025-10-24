@@ -1,0 +1,8 @@
+<root>
+  <data name="Welcome" xml:space="preserve">
+    <value>مرحباً بكم في نظام إدارة عيادة الأسنان</value>
+  </data>
+  <data name="Slogan" xml:space="preserve">
+    <value>الحل الشامل لإدارة عمليات عيادة الأسنان الخاصة بك.</value>
+  </data>
+</root>

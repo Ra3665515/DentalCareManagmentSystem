@@ -1,0 +1,43 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+@{
+    ViewData["Title"] = Model.Id == Guid.Empty ? "New Appointment" : "Edit Appointment";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="fas fa-calendar-plus"></i> @ViewData["Title"]</h2>
+
+    <form asp-action="@ViewData["Title"] == " New Appointment" ? "Create" : "Edit" " method="post">
+        <div class="mb-3">
+            <label class="form-label">Patient</label>
+            <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients"></select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input asp-for="Date" type="date" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Start Time</label>
+            <input asp-for="StartTime" type="time" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">End Time</label>
+            <input asp-for="EndTime" type="time" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select asp-for="Status" class="form-select" asp-items="ViewBag.StatusOptions"></select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Save</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index")"><i class="fas fa-times"></i> Cancel</a>
+    </form>
+</div>

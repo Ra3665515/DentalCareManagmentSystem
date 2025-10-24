@@ -1,0 +1,43 @@
+@using NonFactors.Mvc.Grid
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.PriceListItemDto>
+
+@(Html
+    .Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.Name)
+            .Titled("Name")
+            .Sortable(true)
+            .Filterable(true);
+
+        columns.Add(model => model.Category)
+            .Titled("Category")
+            .Sortable(true)
+            .Filterable(true);
+
+        columns.Add(model => model.DefaultPrice)
+            .Titled("Default Price")
+            .Sortable(true)
+            .Filterable(true)
+            .Formatted("{0:C}");
+
+        columns.Add(model => model.IsActive)
+            .Titled("Is Active")
+            .Sortable(true)
+            .Filterable(true);
+
+        columns.Add(model => model.Id)
+            .Titled("Actions")
+            .Encoded(false)
+            .RenderedAs(model => Html.Raw($@"
+                <a href=""/Admin/PriceList/Edit/{model.Id}"" class=""btn btn-sm btn-warning me-1"">
+                    <i class='fas fa-edit'></i> Edit
+                </a>
+                <a href=""/Admin/PriceList/Delete/{model.Id}"" class=""btn btn-sm btn-danger"">
+                    <i class='fas fa-trash'></i> Delete
+                </a>"));
+    })
+    .Filterable()
+    .Sortable()
+    .Pageable()
+)

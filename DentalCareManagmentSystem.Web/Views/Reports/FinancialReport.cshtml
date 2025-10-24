@@ -1,0 +1,119 @@
+﻿@model DentalCareManagmentSystem.Web.Controllers.FinancialReportViewModel
+
+@{
+    ViewData["Title"] = "Financial Report";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary"> Financial Report</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Total Revenue</h5>
+                    <h3>@Model.TotalRevenue.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Revenue This Month</h5>
+                    <h3>@Model.RevenueThisMonth.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">Outstanding Payments</h5>
+                    <h3>@Model.OutstandingPayments.ToString("C")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue by Treatment Type -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Revenue by Treatment Type</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.RevenueByTreatment.Any())
+            {
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Treatment Type</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RevenueByTreatment)
+                        {
+                            <tr>
+                                <td>@item.Key</td>
+                                <td>@item.Value.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No data available.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Monthly Revenue Chart -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Monthly Revenue</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.MonthlyRevenue.Any())
+            {
+                <canvas id="monthlyRevenueChart"></canvas>
+            }
+            else
+            {
+                <p class="text-muted">No monthly data available.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('monthlyRevenueChart');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Keys)),
+                datasets: [{
+                    label: 'Revenue',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Values)),
+                    borderColor: '#007bff',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

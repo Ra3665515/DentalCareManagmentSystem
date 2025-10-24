@@ -1,0 +1,35 @@
+﻿@model DentalCareManagmentSystem.Domain.Entities.DiagnosisNote
+
+@{
+    ViewData["Title"] = "Add Diagnosis Note";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-plus-circle me-2"></i>Add Diagnosis Note
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label for="patientId" class="form-label"><i class="fas fa-user-injured"></i> Patient</label>
+                    <select id="patientId" name="patientId" class="form-select" asp-items="ViewBag.Patients"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="note" class="form-label"><i class="fas fa-sticky-note"></i> Note</label>
+                    <textarea id="note" name="note" rows="4" class="form-control" placeholder="Enter diagnosis details...">@ViewBag.Note</textarea>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

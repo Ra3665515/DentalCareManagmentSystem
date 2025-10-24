@@ -1,0 +1,117 @@
+﻿@model DentalCareManagmentSystem.Web.Controllers.PatientReportViewModel
+@{
+    ViewData["Title"] = "Patient Report";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="fas fa-users me-2"></i>Patient Report</h2>
+        <a asp-action="ExportPatients" class="btn btn-success shadow-sm">
+            <i class="fas fa-file-export me-1"></i> Export Patients
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-start border-primary border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Patients</h5>
+                    <h3 class="fw-bold text-primary">@Model.TotalPatients</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-start border-success border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Active Patients</h5>
+                    <h3 class="fw-bold text-success">@Model.ActivePatients</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-start border-info border-4">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">New This Month</h5>
+                    <h3 class="fw-bold text-info">@Model.NewPatientsThisMonth</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="fas fa-venus-mars me-2"></i>Patients by Gender
+                </div>
+                <div class="card-body">
+                    <canvas id="genderChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white fw-bold">
+                    <i class="fas fa-chart-bar me-2"></i>Patients by Age Group
+                </div>
+                <div class="card-body">
+                    <canvas id="ageGroupChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // === Gender Chart ===
+        var genderData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PatientsByGender));
+        var genderLabels = Object.keys(genderData);
+        var genderValues = Object.values(genderData);
+
+        new Chart(document.getElementById("genderChart"), {
+            type: 'doughnut',
+            data: {
+                labels: genderLabels,
+                datasets: [{
+                    data: genderValues,
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // === Age Group Chart ===
+        var ageData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PatientsByAgeGroup));
+        var ageLabels = Object.keys(ageData);
+        var ageValues = Object.values(ageData);
+
+        new Chart(document.getElementById("ageGroupChart"), {
+            type: 'bar',
+            data: {
+                labels: ageLabels,
+                datasets: [{
+                    label: 'Number of Patients',
+                    data: ageValues,
+                    backgroundColor: '#36b9cc'
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+}

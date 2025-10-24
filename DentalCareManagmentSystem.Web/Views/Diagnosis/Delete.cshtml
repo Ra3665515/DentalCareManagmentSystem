@@ -1,0 +1,32 @@
+﻿@model DentalCareManagmentSystem.Domain.Entities.DiagnosisNote
+
+@{
+    ViewData["Title"] = "Delete Diagnosis Note";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <i class="fas fa-exclamation-triangle me-2"></i>Delete Diagnosis Note
+        </div>
+        <div class="card-body text-center">
+            <p class="mb-4 fs-5">Are you sure you want to delete this note?</p>
+
+            <div class="mb-3">
+                <strong>Patient:</strong> @Model.Patient?.FullName <br />
+                <strong>Note:</strong> @Model.Note <br />
+                <strong>Date:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+            </div>
+
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger me-2">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

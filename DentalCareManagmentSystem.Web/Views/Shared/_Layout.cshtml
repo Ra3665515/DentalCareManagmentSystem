@@ -1,0 +1,129 @@
+﻿
+
+@using Microsoft.AspNetCore.Identity
+@using DentalCareManagmentSystem.Domain.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="~/images/tooth.png" />
+    <link rel="stylesheet" href="~/css/mvc-grid.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+
+    <title>@ViewData["Title"] - DentalCareManagmentSystem</title>
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   
+    <link rel="stylesheet" href="~/DentalCareManagmentSystem.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom bg-light d-flex align-items-center justify-content-center fw-bold">
+                <i class="fas fa-tooth text-primary me-2"></i> DentalCare Clinic
+            </div>
+
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Patients" asp-action="Index">Patients</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
+
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("SystemAdmin"))
+                {
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="PriceList" asp-action="Index">Price List</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
+                }
+            </div>
+        </div>
+
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+            <!-- Top navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-outline-primary" id="sidebarToggle" title="Toggle Menu">
+                        <i class="fas fa-tooth"></i>
+                    </button>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
+                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge bg-danger" id="notificationCount">0</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="notificationDropdown">
+                                    <h6 class="dropdown-header">Today's Appointments</h6>
+                                    <div id="notificationList">
+                                        <!-- Notifications loaded via AJAX -->
+                                    </div>
+                                </div>
+                            </li>
+                            <partial name="_LoginPartial" />
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Page content-->
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="/js/mvc-grid.js"></script>
+
+    <script>
+        document.getElementById("sidebarToggle").addEventListener("click", event => {
+            event.preventDefault();
+            document.body.classList.toggle("sb-sidenav-toggled");
+            localStorage.setItem("sb-sidenav-toggle", document.body.classList.contains("sb-sidenav-toggled"));
+        });
+
+        $(document).ready(function () {
+            function loadNotifications() {
+                $.get("/Notifications/Today", function (data) {
+                    $("#notificationList").html(data);
+                    var count = $("#notificationList .dropdown-item").length;
+                    $("#notificationCount").text(count);
+                    if (count > 0) {
+                        $("#notificationCount").show();
+                    } else {
+                        $("#notificationCount").hide();
+                    }
+                });
+            }
+
+            loadNotifications();
+            setInterval(loadNotifications, 60000);
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

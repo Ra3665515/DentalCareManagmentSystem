@@ -1,0 +1,38 @@
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+@{
+    ViewData["Title"] = "Appointments Calendar";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="fas fa-calendar-alt"></i> Calendar</h2>
+
+    <div id="calendar" class="shadow-sm rounded p-3 bg-white">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appt in Model)
+                {
+                    <tr>
+                        <td>@appt.Date.ToShortDateString()</td>
+                        <td>@appt.StartTime.ToString(@"hh\:mm")</td>
+                        <td>@appt.EndTime.ToString(@"hh\:mm")</td>
+                        <td>@appt.PatientName</td>
+                        <td>
+                            <span class="badge @(appt.Status == "Pending" ? "bg-warning" : appt.Status == "Completed" ? "bg-success" : "bg-secondary")">
+                                @appt.Status
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

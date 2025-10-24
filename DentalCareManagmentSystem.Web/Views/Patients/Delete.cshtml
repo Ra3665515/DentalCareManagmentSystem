@@ -1,0 +1,18 @@
+@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+@{
+    ViewData["Title"] = "Delete Patient";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-danger mb-4"><i class="fas fa-trash-alt me-2"></i> Delete Patient</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5>Are you sure you want to delete <strong>@Model.FullName</strong>?</h5>
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt me-1"></i> Delete</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
