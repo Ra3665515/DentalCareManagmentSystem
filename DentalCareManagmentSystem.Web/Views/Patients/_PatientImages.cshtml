@@ -1,24 +1,8 @@
-@model IEnumerable<DentalCareManagmentSystem.Domain.Entities.PatientImage>
+@model List<DentalCareManagmentSystem.Domain.Entities.PatientImage>
 
-<div class="row">
-    @if (Model != null && Model.Any())
+<div class="images-grid">
+    @foreach (var img in Model)
     {
-        @foreach (var image in Model)
-        {
-            <div class="col-md-3 mb-3">
-                <div class="card border-0 shadow-sm">
-                    <img src="@image.ThumbnailPath" class="card-img-top rounded-3" alt="@image.FileName" />
-                    <div class="card-body text-center">
-                        <button type="button" class="btn btn-sm btn-danger delete-image-btn" data-id="@image.Id">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <p class="text-muted fst-italic">No images uploaded yet.</p>
+        <img src="@img.ThumbnailPath" alt="Patient Image" style="width:150px;height:auto;margin:5px;" />
     }
 </div>

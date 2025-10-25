@@ -1,8 +1,10 @@
-using DentalCareManagmentSystem.Application.DTOs;
+﻿using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
+using DentalCareManagmentSystem.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalCareManagmentSystem.Web.Controllers;
 
@@ -12,15 +14,19 @@ public class TreatmentPlansController : Controller
     private readonly ITreatmentPlanService _treatmentPlanService;
     private readonly IPriceListService _priceListService;
     private readonly IPatientService _patientService;
+    private readonly ClinicDbContext _context;
 
     public TreatmentPlansController(
         ITreatmentPlanService treatmentPlanService, 
         IPriceListService priceListService,
-        IPatientService patientService)
+        IPatientService patientService,
+ClinicDbContext clinicDbContext
+        )
     {
         _treatmentPlanService = treatmentPlanService;
         _priceListService = priceListService;
         _patientService = patientService;
+        _context = clinicDbContext;
     }
 
     public IActionResult Index()
@@ -33,8 +39,8 @@ public class TreatmentPlansController : Controller
     {
         var treatmentPlan = _treatmentPlanService.GetById(id);
         if (treatmentPlan == null) return NotFound();
-        
-        ViewBag.PriceListItems = _priceListService.GetAll().ToList();
+
+        ViewBag.PriceListItems = _priceListService.GetAll()?.ToList() ?? new List<PriceListItemDto>();
         return View(treatmentPlan);
     }
 
@@ -60,28 +66,46 @@ public class TreatmentPlansController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult CreatePlan(Guid patientId)
     {
         if (User.Identity?.IsAuthenticated == true)
         {
-            var planId = _treatmentPlanService.CreatePlan(patientId, User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-            return Ok(new { planId = planId });
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+            _treatmentPlanService.CreatePlan(patientId, userId);
         }
-        return Unauthorized();
+
+        return RedirectToAction("Details", "Patients", new { id = patientId });
     }
 
+
+
+
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult AddItem(Guid planId, Guid priceListItemId, int quantity)
     {
         _treatmentPlanService.AddItemToPlan(planId, priceListItemId, quantity);
-        return Ok();
+        return RedirectToAction("Details", new { id = planId });
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteItem(Guid itemId)
+    {
+        var planId = _context.TreatmentItems.Find(itemId)?.TreatmentPlanId;
+        _treatmentPlanService.RemoveItemFromPlan(itemId);
+        return RedirectToAction("Details", new { id = planId });
     }
 
     [HttpPost]
-    public IActionResult DeleteItem(Guid itemId)
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateItemQuantity(Guid itemId, int quantity)
     {
-        _treatmentPlanService.RemoveItemFromPlan(itemId);
-        return Ok();
+        var planId = _context.TreatmentItems.Find(itemId)?.TreatmentPlanId;
+        _treatmentPlanService.UpdateItemQuantity(itemId, quantity);
+        return RedirectToAction("Details", new { id = planId });
     }
 
     [HttpGet]
@@ -98,12 +122,7 @@ public class TreatmentPlansController : Controller
         return Ok();
     }
 
-    [HttpPost]
-    public IActionResult UpdateItemQuantity(Guid itemId, int quantity)
-    {
-        _treatmentPlanService.UpdateItemQuantity(itemId, quantity);
-        return Ok();
-    }
+    
 
     public IActionResult Delete(Guid id)
     {
@@ -113,17 +132,18 @@ public class TreatmentPlansController : Controller
         return View(treatmentPlan);
     }
 
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(Guid id)
+  
+    public IActionResult DeletePlanConfirmed(Guid id)
     {
-        var treatmentPlan = _treatmentPlanService.GetById(id);
-        if (treatmentPlan != null)
+        var plan = _treatmentPlanService.GetById(id);
+        if (plan != null)
         {
+            var patientId = plan.PatientId;
             _treatmentPlanService.DeletePlan(id);
-            return RedirectToAction("Details", "Patients", new { id = treatmentPlan.PatientId });
+            return RedirectToAction("Details", "Patients", new { id = patientId });
         }
-        
         return NotFound();
     }
 

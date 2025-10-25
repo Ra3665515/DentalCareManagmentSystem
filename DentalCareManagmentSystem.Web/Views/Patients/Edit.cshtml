@@ -4,48 +4,71 @@
     ViewData["Title"] = "Edit Patient";
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Edit Patient</h2>
-
-    <form asp-action="Edit" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="Id" />
-
-        <div class="mb-3">
-            <label asp-for="FullName" class="form-label">Full Name</label>
-            <input asp-for="FullName" class="form-control" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded">
+        <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
+            <i class="fas fa-user-injured me-2"></i> Edit Patient
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Age" class="form-label">Age</label>
-            <input asp-for="Age" class="form-control" />
-            <span asp-validation-for="Age" class="text-danger"></span>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label fw-semibold">
+                            <i class="fas fa-user me-1"></i> Full Name
+                        </label>
+                        <input asp-for="FullName" class="form-control" required />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="Age" class="form-label fw-semibold">
+                            <i class="fas fa-hourglass-half me-1"></i> Age
+                        </label>
+                        <input asp-for="Age" type="number" class="form-control" required />
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="Gender" class="form-label fw-semibold">
+                            <i class="fas fa-venus-mars me-1"></i> Gender
+                        </label>
+                        <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders" required>
+                            <option value="">-- Select Gender --</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label fw-semibold">
+                            <i class="fas fa-phone me-1"></i> Phone
+                        </label>
+                        <input asp-for="Phone" class="form-control" required />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-money-bill-wave me-1"></i> Total Due ($)
+                        </label>
+                        <input asp-for="TotalDue" type="number" step="0.01" class="form-control" readonly />
+                    </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a asp-action="Index" class="btn btn-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="Phone" class="form-label">Phone</label>
-            <input asp-for="Phone" class="form-control" />
-            <span asp-validation-for="Phone" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Gender" class="form-label">Gender</label>
-            <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders">
-                <option value="">-- Select Gender --</option>
-            </select>
-            <span asp-validation-for="Gender" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="TotalDue">Total Due</label>
-            <input type="number" class="form-control" id="TotalDue" name="TotalDue" value="@Model.TotalDue" step="0.01" />
-        </div>
-
-
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

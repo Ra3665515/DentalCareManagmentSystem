@@ -7,7 +7,6 @@
 <div class="container mt-5">
     <h2 class="text-primary mb-4"><i class="fas fa-user me-2"></i> @Model.FullName</h2>
 
-    <!-- Patient Info -->
     <div class="row mb-4">
         <div class="col-md-6">
             <p><strong>Full Name:</strong> @Model.FullName</p>
@@ -34,153 +33,166 @@
         </li>
     </ul>
 
-    <!-- Tab Contents -->
     <div class="tab-content mt-3">
         <!-- Diagnosis Tab -->
         <div class="tab-pane fade show active" id="diagnosisContent">
-            <div class="mb-3">
-                <textarea id="diagnosisNoteInput" class="form-control" rows="3" placeholder="Add a new diagnosis note..."></textarea>
-                <button class="btn btn-primary mt-2" onclick="addDiagnosisNote()">
-                    <i class="fas fa-plus"></i> Add Note
-                </button>
+            @if (User.IsInRole("Doctor"))
+            {
+                <form asp-action="AddNote" asp-controller="Diagnosis" method="post">
+                    <input type="hidden" name="patientId" value="@Model.Id" />
+                    <textarea name="note" class="form-control mb-2" rows="3" placeholder="Add a new diagnosis note..."></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Note</button>
+                </form>
+            }
+            <hr />
+            <div>
+                @foreach (var note in ViewBag.DiagnosisNotes as List<DentalCareManagmentSystem.Domain.Entities.DiagnosisNote>)
+                {
+                    <div class="mb-2 border p-2 rounded">
+                        <small class="text-muted">@note.CreatedAt.ToString("yyyy-MM-dd")</small>
+                        <p>@note.Note</p>
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <form asp-action="Delete" asp-controller="Diagnosis" method="post" style="display:inline">
+                                <input type="hidden" name="id" value="@note.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        }
+                    </div>
+                }
             </div>
-            <div id="diagnosisList"></div>
         </div>
 
         <!-- Treatment Plans Tab -->
         <div class="tab-pane fade" id="treatmentContent">
-            <div class="mb-3 d-flex">
-                <input type="text" id="treatmentPlanInput" class="form-control me-2" placeholder="New treatment plan">
-                <button class="btn btn-success" onclick="addTreatmentPlan()">
-                    <i class="fas fa-plus"></i> Add Plan
-                </button>
-            </div>
-            <div id="treatmentList"></div>
+            <h4>Treatment Plans</h4>
+
+            @if (ViewBag.TreatmentPlans != null && (ViewBag.TreatmentPlans as List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>).Any())
+            {
+                foreach (var plan in ViewBag.TreatmentPlans as List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>)
+                {
+                    <div class="border p-3 mb-3 rounded">
+                        <h5>Plan created at @plan.CreatedAt.ToString("yyyy-MM-dd HH:mm")</h5>
+                        <p><strong>Total Cost:</strong> @plan.TotalCost.ToString("C")</p>
+                        <p><strong>Status:</strong> @(plan.IsCompleted ? "Completed" : "Pending")</p>
+
+                        <!-- Treatment Items Table -->
+                        @if (plan.Items != null && plan.Items.Any())
+                        {
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Line Total</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in plan.Items)
+                                    {
+                                        <tr>
+                                            <td>@item.PriceListItemName</td>
+                                            <td>@item.Price.ToString("C")</td>
+                                            <td>
+                                                <form method="post" asp-action="UpdateItemQuantity" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="itemId" value="@item.Id" />
+                                                    <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control d-inline w-auto" />
+                                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                                </form>
+                                            </td>
+                                            <td>@item.LineTotal.ToString("C")</td>
+                                            <td>
+                                                <form method="post" asp-action="DeleteItem" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="itemId" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No items in this plan.</p>
+                        }
+
+                        <!-- Add Item Form -->
+                        <form method="post" action="TreatmentPlans" asp-action="AddItem" class="mt-2 d-flex gap-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="planId" value="@plan.Id" />
+                            <select name="priceListItemId" class="form-select w-auto">
+                                @if (ViewBag.PriceListItems != null)
+                                {
+                                    foreach (var plItem in ViewBag.PriceListItems)
+                                    {
+                                        <option value="@plItem.Id">@plItem.Name (@plItem.DefaultPrice.ToString("C"))</option>
+                                    }
+                                }
+                            </select>
+                            <input type="number" name="quantity" value="1" min="1" class="form-control w-auto" />
+                            <button type="submit" class="btn btn-success">Add Item</button>
+                        </form>
+
+                        <!-- Complete Plan -->
+                        <form method="post" asp-action="CompletePlan" class="mt-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="planId" value="@plan.Id" />
+                            @if (!plan.IsCompleted)
+                            {
+                                <button type="submit" class="btn btn-success btn-sm">Mark as Completed</button>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Completed</span>
+                            }
+                        </form>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No treatment plans available.</p>
+            }
+
+            <!-- Create New Treatment Plan -->
+            <form method="post" asp-action="CreatePlan" class="mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="patientId" value="@Model.Id" />
+                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Treatment Plan</button>
+            </form>
         </div>
 
         <!-- Images Tab -->
         <div class="tab-pane fade" id="imagesContent">
-            <div class="mb-3 d-flex">
-                <input type="file" id="patientImageInput" class="form-control me-2" accept="image/*">
-                <button class="btn btn-primary" onclick="uploadPatientImage()">
-                    <i class="fas fa-upload"></i> Upload Image
-                </button>
+            @if (User.IsInRole("Doctor"))
+            {
+                <form asp-action="UploadPatientImage" asp-controller="Patients" method="post" enctype="multipart/form-data" class="mb-3 d-flex">
+                    <input type="hidden" name="patientId" value="@Model.Id" />
+                    <input type="file" name="imageFile" class="form-control me-2" accept="image/*" />
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Image</button>
+                </form>
+            }
+            <div class="d-flex flex-wrap">
+                @foreach (var img in ViewBag.PatientImages as List<DentalCareManagmentSystem.Domain.Entities.PatientImage>)
+                {
+                    <div class="me-3 mb-3 text-center">
+                        <img src="@img.ThumbnailPath" class="img-thumbnail" width="150" /><br />
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <form asp-action="DeletePatientImage" asp-controller="Patients" method="post">
+                                <input type="hidden" name="patientId" value="@Model.Id" />
+                                <input type="hidden" name="imageId" value="@img.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger mt-1">Delete</button>
+                            </form>
+                        }
+                    </div>
+                }
             </div>
-            <div id="imagesList"></div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        const patientId = '@Model.Id';
-
-        // ===== Load Partial Views Dynamically =====
-        function loadTabContent(tabName, url) {
-            const container = document.getElementById(tabName + "List");
-            if (!container) return;
-
-            container.innerHTML = "<p class='text-muted fst-italic'>Loading...</p>";
-
-            fetch(url + "?patientId=" + patientId)
-                .then(r => r.text())
-                .then(html => container.innerHTML = html)
-                .catch(() => container.innerHTML = "<p class='text-danger'>Failed to load data.</p>");
-        }
-
-        // ===== Add Diagnosis Note =====
-        function addDiagnosisNote() {
-            const input = document.getElementById("diagnosisNoteInput");
-            if (!input.value.trim()) return alert("Enter a note first.");
-
-            fetch(`/Patients/AddDiagnosisNote?patientId=${patientId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ note: input.value.trim() })
-            })
-            .then(r => {
-                if (r.ok) {
-                    input.value = "";
-                    loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
-                } else alert("Failed to add note.");
-            })
-            .catch(() => alert("Error adding note."));
-        }
-
-        // ===== Add Treatment Plan =====
-        function addTreatmentPlan() {
-            const input = document.getElementById("treatmentPlanInput");
-            if (!input.value.trim()) return alert("Enter a plan first.");
-
-            fetch("/TreatmentPlans/AddPlan", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `patientId=${patientId}&plan=${encodeURIComponent(input.value.trim())}`
-            })
-            .then(r => {
-                if (r.ok) {
-                    input.value = "";
-                    loadTabContent("treatment", "/Patients/GetTreatmentPlans");
-                } else alert("Failed to add treatment plan.");
-            })
-            .catch(() => alert("Error sending request."));
-        }
-
-        // ===== Upload Image =====
-        function uploadPatientImage() {
-            const input = document.getElementById("patientImageInput");
-            if (!input.files.length) return alert("Select a file first.");
-
-            const formData = new FormData();
-            formData.append("patientId", patientId);
-            formData.append("imageFile", input.files[0]);
-
-            fetch("/Patients/UploadPatientImage", { method: "POST", body: formData })
-                .then(r => {
-                    if (r.ok) {
-                        input.value = "";
-                        loadTabContent("images", "/Patients/GetPatientImages");
-                    } else alert("Failed to upload image.");
-                })
-                .catch(() => alert("Error uploading image."));
-        }
-
-        function deletePatientImage(imageId) {
-            if (!confirm("Delete this image?")) return;
-
-            fetch("/Patients/DeletePatientImage", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ imageId: imageId })
-            })
-            .then(r => {
-                if (r.ok) {
-                    loadTabContent("images", "/Patients/GetPatientImages");
-                } else alert("Failed to delete image.");
-            })
-            .catch(() => alert("Error deleting image."));
-        }
-
-        // ===== Initialize Tabs on Page Load =====
-        document.addEventListener("DOMContentLoaded", () => {
-            loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
-            loadTabContent("treatment", "/Patients/GetTreatmentPlans");
-            loadTabContent("images", "/Patients/GetPatientImages");
-
-            document.querySelectorAll('#patientTabs button').forEach(tab => {
-                tab.addEventListener('shown.bs.tab', e => {
-                    const target = e.target.dataset.bsTarget;
-                    if (target === "#diagnosisContent") loadTabContent("diagnosis", "/Patients/GetDiagnosisNotes");
-                    else if (target === "#treatmentContent") loadTabContent("treatment", "/Patients/GetTreatmentPlans");
-                    else if (target === "#imagesContent") loadTabContent("images", "/Patients/GetPatientImages");
-                });
-            });
-        });
-    </script>
-}

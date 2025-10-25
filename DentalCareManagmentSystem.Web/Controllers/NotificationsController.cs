@@ -16,6 +16,7 @@ public class NotificationsController : Controller
     }
 
     [HttpGet]
+  
     public IActionResult Today()
     {
         var notifications = _notificationService.GetTodayNotifications();

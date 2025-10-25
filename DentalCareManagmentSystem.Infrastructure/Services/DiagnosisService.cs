@@ -1,4 +1,4 @@
-using DentalCareManagmentSystem.Application.Interfaces;
+﻿using DentalCareManagmentSystem.Application.Interfaces;
 using DentalCareManagmentSystem.Domain.Entities;
 using DentalCareManagmentSystem.Infrastructure.Data;
 
@@ -28,6 +28,12 @@ public class DiagnosisService : IDiagnosisService
         if (string.IsNullOrWhiteSpace(doctorId))
             throw new ArgumentException("DoctorId cannot be null.");
 
+        // تحقق من وجود المريض
+        var patient = _context.Patients.Find(patientId);
+        if (patient == null)
+            throw new InvalidOperationException($"Cannot add note: Patient with Id {patientId} does not exist.");
+
+        // إنشاء ملاحظة جديدة
         var diagnosisNote = new DiagnosisNote
         {
             PatientId = patientId,
@@ -35,9 +41,11 @@ public class DiagnosisService : IDiagnosisService
             Note = note,
             CreatedAt = DateTime.UtcNow
         };
+
         _context.DiagnosisNotes.Add(diagnosisNote);
         _context.SaveChanges();
     }
+
 
     public void UpdateNote(Guid id, string note)
     {

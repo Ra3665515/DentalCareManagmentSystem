@@ -30,7 +30,7 @@ public class AppointmentsController : Controller
     {
         ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName");
         ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)));
-        return View();
+        return View(new AppointmentDto());
     }
 
     [HttpPost]
@@ -42,6 +42,7 @@ public class AppointmentsController : Controller
             _appointmentService.Create(appointmentDto);
             return RedirectToAction(nameof(Index));
         }
+
         ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", appointmentDto.PatientId);
         ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)), appointmentDto.Status);
         return View(appointmentDto);

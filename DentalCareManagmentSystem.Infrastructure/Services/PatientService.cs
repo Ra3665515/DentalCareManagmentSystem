@@ -156,7 +156,7 @@ public class PatientService : IPatientService
         var patients = _context.Patients
             .Where(p => p.IsActive)
             .Include(p => p.TreatmentPlans)
-                .ThenInclude(tp => tp.Items) // Include كل الـ TreatmentItems
+                .ThenInclude(tp => tp.Items) 
             .ToList(); 
 
         return patients.Select(p => new PatientDto

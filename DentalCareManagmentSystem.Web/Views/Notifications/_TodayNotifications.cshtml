@@ -1,46 +1,84 @@
+﻿@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
 
-@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
-
-@if (Model != null && Model.Any())
+@if (Model == null || !Model.Any())
 {
-    @foreach (var notification in Model)
-    {
-        <a class="dropdown-item" href="#">
-            <div>
-                <strong>@notification.PatientName</strong>
-                <span class="small text-muted">@notification.StartTime.ToString("hh:mm tt")</span>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-success float-end mark-done-btn" data-id="@notification.Id">Done</button>
-        </a>
-    }
+    <div class="text-center text-muted py-4">
+        <i class="fas fa-check-circle fa-3x mb-2 text-success"></i>
+        <p class="fs-6">No notifications for today 🎉</p>
+    </div>
 }
 else
 {
-    <a class="dropdown-item" href="#">No appointments today.</a>
+    <div class="d-flex flex-column gap-3">
+        @foreach (var appointment in Model)
+        {
+            <div class="card shadow-sm border-0 rounded-4 notification-card"
+                 style="transition: all 0.4s ease;">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-bold text-primary mb-1">
+                            <i class="fas fa-user me-1 text-secondary"></i> @appointment.PatientName
+                        </h6>
+                        <small class="text-muted d-block mb-1">
+                            <i class="far fa-calendar-alt me-1"></i>
+                            @appointment.Date.ToString("yyyy-MM-dd")
+                        </small>
+                        <small class="text-muted d-block mb-1">
+                            <i class="far fa-clock me-1"></i>
+                            @appointment.StartTime.ToString(@"hh\:mm") → @appointment.EndTime.ToString(@"hh\:mm")
+                        </small>
+                        <small class="text-muted">
+                            <i class="fas fa-phone me-1"></i> @appointment.PatientPhone
+                        </small>
+                    </div>
+
+                    <button class="btn btn-outline-success btn-sm fw-bold mark-done-btn"
+                            data-id="@appointment.Id">
+                        <i class="fas fa-check me-1"></i> Done
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
 }
 
-<script>
-    $(document).ready(function () {
-        $(".mark-done-btn").on("click", function (e) {
-            e.preventDefault();
-            e.stopPropagation(); // Prevent dropdown from closing immediately
-            var appointmentId = $(this).data("id");
-            var button = $(this);
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".mark-done-btn").click(function () {
+                const id = $(this).data("id");
+                const card = $(this).closest(".notification-card");
 
-            $.post("/Notifications/MarkDone", { id: appointmentId })
-                .done(function () {
-                    button.closest("a").remove(); // Remove the notification item
-                    // Optionally, refresh the notification count
-                    var currentCount = parseInt($("#notificationCount").text());
-                    $("#notificationCount").text(currentCount - 1);
-                    if (currentCount - 1 <= 0) {
-                        $("#notificationCount").hide();
+                $.ajax({
+                    url: '/Notifications/MarkDone',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function () {
+                        card.addClass("animate__animated animate__fadeOutRight");
+                        setTimeout(() => {
+                            card.remove();
+
+                            let count = $(".notification-card").length;
+                            $("#notificationCount").text(count);
+
+                            if (count <= 0) {
+                                $("#notificationCount").hide();
+                                $("#notificationList").html(`
+                                    <div class="text-center text-muted py-4">
+                                        <i class='fas fa-check-circle fa-3x mb-2 text-success'></i>
+                                        <p class='fs-6'>No notifications for today </p>
+                                    </div>
+                                `);
+                            }
+                        }, 500);
+                    },
+                    error: function () {
+                        alert("Failed to mark as done. Please try again.");
                     }
-                })
-                .fail(function (xhr, status, error) {
-                    console.error("Error marking appointment as done:" + error);
-                    alert("Failed to mark appointment as done.");
                 });
+            });
         });
-    });
-</script>
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+}

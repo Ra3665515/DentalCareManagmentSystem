@@ -1,43 +1,87 @@
 ﻿@model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+
 @{
-    ViewData["Title"] = Model.Id == Guid.Empty ? "New Appointment" : "Edit Appointment";
+    ViewData["Title"] = "Add Appointment";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-3"><i class="fas fa-calendar-plus"></i> @ViewData["Title"]</h2>
+<div class="container mt-5">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fas fa-calendar-plus me-2"></i> Add New Appointment
+    </h2>
 
-    <form asp-action="@ViewData["Title"] == " New Appointment" ? "Create" : "Edit" " method="post">
-        <div class="mb-3">
-            <label class="form-label">Patient</label>
-            <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients"></select>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div class="row g-3">
+                  
+                    <div class="col-md-6">
+                        <label asp-for="PatientId" class="form-label fw-semibold">
+                            <i class="fas fa-user me-1"></i> Patient
+                        </label>
+                        <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients">
+                            <option value="">-- Select Patient --</option>
+                        </select>
+                        <span asp-validation-for="PatientId" class="text-danger"></span>
+                    </div>
+
+                    
+                    <div class="col-md-6">
+                        <label asp-for="Date" class="form-label fw-semibold">
+                            <i class="fas fa-calendar-alt me-1"></i> Date
+                        </label>
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                   
+                    <div class="col-md-6">
+                        <label asp-for="StartTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-1"></i> Start Time
+                        </label>
+                        <input asp-for="StartTime" type="time" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="EndTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-1"></i> End Time
+                        </label>
+                        <input asp-for="EndTime" type="time" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-semibold">
+                            <i class="fas fa-info-circle me-1"></i> Status
+                        </label>
+                        <select asp-for="Status" class="form-select" asp-items="ViewBag.StatusOptions">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Notes" class="form-label fw-semibold">
+                            <i class="fas fa-sticky-note me-1"></i> Notes
+                        </label>
+                        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus-circle me-1"></i> Add Appointment
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">Date</label>
-            <input asp-for="Date" type="date" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Start Time</label>
-            <input asp-for="StartTime" type="time" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">End Time</label>
-            <input asp-for="EndTime" type="time" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select asp-for="Status" class="form-select" asp-items="ViewBag.StatusOptions"></select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Notes</label>
-            <textarea asp-for="Notes" class="form-control"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Save</button>
-        <a class="btn btn-secondary" href="@Url.Action("Index")"><i class="fas fa-times"></i> Cancel</a>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

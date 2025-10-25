@@ -8,7 +8,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h5>Are you sure you want to delete <strong>@Model.FullName</strong>?</h5>
-            <form asp-action="DeleteConfirmed" method="post">
+            <form asp-action="Delete" method="post">
                 <input type="hidden" asp-for="Id" />
                 <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt me-1"></i> Delete</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>

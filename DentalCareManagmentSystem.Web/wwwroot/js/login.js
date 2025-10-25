@@ -192,7 +192,6 @@ class EcoWellnessLoginForm {
         this.submitButton.classList.toggle('loading', loading);
         this.submitButton.disabled = loading;
 
-        // Disable social buttons during mindful processing
         this.socialButtons.forEach(button => {
             button.style.pointerEvents = loading ? 'none' : 'auto';
             button.style.opacity = loading ? '0.6' : '1';
@@ -200,7 +199,6 @@ class EcoWellnessLoginForm {
     }
 
     showHarmonySuccess() {
-        // Hide form with organic transition
         this.form.style.transform = 'scale(0.95)';
         this.form.style.opacity = '0';
 
@@ -223,7 +221,6 @@ class EcoWellnessLoginForm {
     }
 }
 
-// Add gentle breathing animation to CSS dynamically
 if (!document.querySelector('#wellness-keyframes')) {
     const style = document.createElement('style');
     style.id = 'wellness-keyframes';
@@ -236,7 +233,66 @@ if (!document.querySelector('#wellness-keyframes')) {
     document.head.appendChild(style);
 }
 
-// Initialize the wellness form when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new EcoWellnessLoginForm();
 });
+$("#notificationDropdown i").addClass("fa-shake");
+setTimeout(() => $("#notificationDropdown i").removeClass("fa-shake"), 1000);
+// Load tab content (Diagnosis, Images, Treatment Plans)
+function loadTabContent(tabName, url) {
+    const container = document.getElementById(tabName + "Content");
+    if (!container) return;
+
+    container.innerHTML = "<p class='text-muted fst-italic'>Loading...</p>";
+
+    fetch(url + "?patientId=" + patientId)
+        .then(r => r.text())
+        .then(html => container.innerHTML = html)
+        .catch(err => container.innerHTML = "<p class='text-danger'>Failed to load data.</p>");
+}
+
+// Upload patient image
+function uploadPatientImage() {
+    const input = document.getElementById("patientImageInput");
+    if (input.files.length === 0) return alert("Select a file first.");
+
+    const formData = new FormData();
+    formData.append("patientId", patientId);
+    formData.append("imageFile", input.files[0]);
+
+    fetch("/Patients/UploadPatientImage", {
+        method: "POST",
+        body: formData
+    })
+        .then(r => {
+            if (r.ok) {
+                input.value = "";
+                loadTabContent("images", "/Patients/GetPatientImages");
+            } else {
+                alert("Failed to upload image.");
+            }
+        })
+        .catch(() => alert("Error uploading image."));
+}
+
+// Add treatment plan
+function addTreatmentPlan() {
+    const input = document.getElementById("treatmentPlanInput");
+    if (!input.value.trim()) return alert("Enter a plan first.");
+
+    fetch("/TreatmentPlans/AddPlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `patientId=${patientId}&plan=${encodeURIComponent(input.value.trim())}`
+    })
+        .then(r => {
+            if (r.ok) {
+                input.value = "";
+                // إعادة تحميل الـ Partial مباشرة
+                fetch(`/Patients/GetTreatmentPlans?patientId=${patientId}`)
+                    .then(res => res.text())
+                    .then(html => document.getElementById("treatmentList").innerHTML = html);
+            } else alert("Failed to add treatment plan.");
+        })
+        .catch(() => alert("Error sending request."));
+}

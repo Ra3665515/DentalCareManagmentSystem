@@ -22,20 +22,7 @@ public class PatientsController : Controller
         _treatmentPlanService = treatmentPlanService;
     }
 
-    //public IActionResult Index()
-    //{
-    //    var patients = _patientService.GetAll().Select(p => new PatientDto
-    //    {
-    //        Id = p.Id,
-    //        FullName = p.FullName,
-    //        Phone = p.Phone,
-    //        Age = p.Age,
-    //        Gender = p.Gender.ToString(),
-    //        Notes = p.Notes,
-    //        TotalDue = _patientService.GetById(p.Id).TotalDue // Recalculate TotalDue for each patient
-    //    }).ToList();
-    //    return View(patients);
-    //}
+   
     public IActionResult Index()
     {
         var patients = _patientService.GetPatientsWithTotalDue();
@@ -73,6 +60,7 @@ public class PatientsController : Controller
             _patientService.Create(patientDto);
             return RedirectToAction(nameof(Index));
         }
+
         ViewBag.Genders = new SelectList(Enum.GetNames(typeof(Domain.Enums.Gender)));
         return View(patientDto);
     }
@@ -117,8 +105,15 @@ public class PatientsController : Controller
     {
         var patient = _patientService.GetById(id);
         if (patient == null) return NotFound();
+
+        ViewBag.DiagnosisNotes = _diagnosisService.GetNotesByPatientId(id);
+        ViewBag.TreatmentPlans = _treatmentPlanService.GetPlansByPatientId(id);
+        ViewBag.PatientImages = _imageService.GetImagesByPatientId(id);
+
+
         return View(patient);
     }
+
 
     // AJAX partials for patient details tabs
     public IActionResult GetDiagnosisNotes(Guid patientId)
@@ -153,21 +148,26 @@ public class PatientsController : Controller
 
     [HttpPost]
     [Authorize(Roles = "Doctor")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Doctor")]
     public async Task<IActionResult> UploadPatientImage(Guid patientId, IFormFile imageFile)
     {
         if (imageFile != null && imageFile.Length > 0)
         {
             await _imageService.UploadImageAsync(patientId, imageFile.OpenReadStream(), imageFile.FileName);
-            return Ok();
         }
-        return BadRequest("No image file provided.");
+
+        return RedirectToAction("Details", new { id = patientId });
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize(Roles = "Doctor")]
-    public IActionResult DeletePatientImage(Guid imageId)
+    public IActionResult DeletePatientImage(Guid patientId, Guid imageId)
     {
         _imageService.DeleteImage(imageId);
-        return Ok();
+        return RedirectToAction("Details", new { id = patientId });
     }
+
 }

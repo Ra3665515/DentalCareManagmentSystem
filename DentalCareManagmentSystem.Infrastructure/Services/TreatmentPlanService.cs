@@ -155,31 +155,32 @@ public class TreatmentPlanService : ITreatmentPlanService
 
     public List<TreatmentPlanDto> GetPlansByPatientId(Guid patientId)
     {
-        return GetPlansQuery()
+        return _context.TreatmentPlans
+            .Include(p => p.Items)
+            .Include(p => p.CreatedBy)
             .Where(p => p.PatientId == patientId)
-            .AsEnumerable() // ✅ تحويل النتائج إلى الذاكرة قبل استخدام LineTotal
+            .AsEnumerable() 
             .Select(p => new TreatmentPlanDto
             {
                 Id = p.Id,
                 PatientId = p.PatientId,
                 CreatedAt = p.CreatedAt,
-                CreatedBy = p.CreatedBy ?? "Unknown",
+                CreatedBy = p.CreatedBy?.FullName ?? "Unknown",
                 Items = p.Items
                     .Select(i => new TreatmentItemDto
                     {
                         Id = i.Id,
-                        Name = i.Name,       // استخدم NameSnapshot من الـ entity
-                        Price = i.Price,    
+                        Name = i.NameSnapshot,
+                        Price = i.PriceSnapshot,
                         Quantity = i.Quantity,
-                        LineTotal = i.Quantity * i.Price 
+                        LineTotal = i.Quantity * i.PriceSnapshot
                     })
                     .ToList(),
-                TotalCost = p.Items
-                    .AsEnumerable() 
-                    .Sum(i => i.Quantity * i.Price) 
+                TotalCost = p.Items.Sum(i => i.Quantity * i.PriceSnapshot)
             })
             .ToList();
     }
+
 
 
     private IQueryable<TreatmentPlanDto> GetPlansQuery()

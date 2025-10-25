@@ -21,14 +21,13 @@
                     <input asp-for="Phone" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Gender</label>
-                    <select asp-for="Gender" class="form-select">
-                        @foreach (var gender in ViewBag.Genders)
-                        {
-                            <option value="@gender">@gender</option>
-                        }
+                    <label asp-for="Gender" class="form-label">Gender</label>
+                    <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders">
+                        <option value="">-- Select Gender --</option>
                     </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
+
                 <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> Add</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </form>

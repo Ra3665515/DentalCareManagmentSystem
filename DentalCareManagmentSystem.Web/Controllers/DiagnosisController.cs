@@ -77,17 +77,18 @@ public class DiagnosisController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(Guid id)
+       public IActionResult DeleteNoteConfirmed(Guid id)
     {
-        var diagnosisNote = _diagnosisService.GetById(id);
-        if (diagnosisNote != null)
+        var note = _diagnosisService.GetById(id);
+        if (note != null)
         {
+            var patientId = note.PatientId;
             _diagnosisService.DeleteNote(id);
-            return RedirectToAction("Details", "Patients", new { id = diagnosisNote.PatientId });
+            return RedirectToAction("Details", "Patients", new { id = patientId });
         }
-        
         return NotFound();
     }
+
 
     //[HttpGet]
     //public IActionResult GetNotesByPatient(Guid patientId)
@@ -103,19 +104,32 @@ public class DiagnosisController : Controller
         ViewBag.PatientId = patientId; 
         return PartialView("~/Views/Patients/_DiagnosisNotes.cshtml", notes);
     }
+    //[HttpPost]
+    //public IActionResult AddNoteAjax(Guid patientId, [FromBody] NoteDto data)
+    //{
+    //    if (string.IsNullOrWhiteSpace(data.Note))
+    //        return BadRequest();
+
+    //    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+    //    _diagnosisService.AddNote(patientId, userId, data.Note);
+
+    //    var notes = _diagnosisService.GetNotesByPatientId(patientId);
+    //    ViewBag.PatientId = patientId;
+    //    return PartialView("~/Views/Patients/_DiagnosisNotes.cshtml", notes);
+    //}
     [HttpPost]
-    public IActionResult AddNoteAjax(Guid patientId, [FromBody] NoteDto data)
+    [ValidateAntiForgeryToken]
+    public IActionResult AddNote(Guid patientId, string note)
     {
-        if (string.IsNullOrWhiteSpace(data.Note))
-            return BadRequest();
+        if (string.IsNullOrWhiteSpace(note))
+            return RedirectToAction("Details", "Patients", new { id = patientId });
 
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
-        _diagnosisService.AddNote(patientId, userId, data.Note);
+        _diagnosisService.AddNote(patientId, userId, note);
 
-        var notes = _diagnosisService.GetNotesByPatientId(patientId);
-        ViewBag.PatientId = patientId;
-        return PartialView("~/Views/Patients/_DiagnosisNotes.cshtml", notes);
+        return RedirectToAction("Details", "Patients", new { id = patientId });
     }
+
 
     public class NoteDto
     {

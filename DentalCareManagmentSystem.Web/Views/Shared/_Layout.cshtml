@@ -38,10 +38,11 @@
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Patients" asp-action="Index">Patients</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
 
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("SystemAdmin"))
                 {
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Reports" asp-action="Index">Reports</a>
+
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="PriceList" asp-action="Index">Price List</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
                 }
@@ -73,8 +74,8 @@
                                     <span class="badge bg-danger" id="notificationCount">0</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="notificationDropdown">
-                                    <h6 class="dropdown-header">Today's Appointments</h6>
-                                    <div id="notificationList">
+@*                                     <h6 class="dropdown-header">Today's Appointments</h6>
+ *@                                    <div id="notificationList">
                                         <!-- Notifications loaded via AJAX -->
                                     </div>
                                 </div>
@@ -107,16 +108,19 @@
 
         $(document).ready(function () {
             function loadNotifications() {
-                $.get("/Notifications/Today", function (data) {
-                    $("#notificationList").html(data);
-                    var count = $("#notificationList .dropdown-item").length;
-                    $("#notificationCount").text(count);
-                    if (count > 0) {
-                        $("#notificationCount").show();
-                    } else {
-                        $("#notificationCount").hide();
-                    }
-                });
+                        $.get("/Notifications/Today", function (data) {
+            $("#notificationList").html(data);
+
+            var count = $("#notificationList .notification-card").length;
+            $("#notificationCount").text(count);
+
+            if (count > 0) {
+                $("#notificationCount").show();
+            } else {
+                $("#notificationCount").hide();
+            }
+        });
+
             }
 
             loadNotifications();
