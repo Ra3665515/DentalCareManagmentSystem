@@ -160,6 +160,17 @@ public class PatientsController : Controller
 
         return RedirectToAction("Details", new { id = patientId });
     }
+    [HttpPost]
+    [Authorize(Roles = "Doctor")]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateTreatmentPlan(Guid patientId)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+        _treatmentPlanService.CreatePlan(patientId, userId);
+
+        return RedirectToAction("Details", new { id = patientId });
+    }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]

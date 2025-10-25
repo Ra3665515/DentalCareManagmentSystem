@@ -28,7 +28,7 @@
                         <th>#</th>
                         <th>Treatment Name</th>
                         <th>Category</th>
-                        <th>Price ($)</th>
+                        <th>Price </th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -43,7 +43,8 @@
                                 <td>@i</td>
                                 <td>@item.Name</td>
                                 <td>@item.Category</td>
-                                <td>@item.DefaultPrice.ToString("0.00")</td>
+                                <td>@($"{item.DefaultPrice:N2} EGP")</td>
+
                                 <td>
                                     @if (item.IsActive)
                                     {

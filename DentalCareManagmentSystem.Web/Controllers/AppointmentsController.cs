@@ -1,4 +1,4 @@
-using DentalCareManagmentSystem.Application.DTOs;
+﻿using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +26,24 @@ public class AppointmentsController : Controller
         return View(appointments);
     }
 
-    public IActionResult Create()
+    [HttpGet]
+    public IActionResult Create(Guid? patientId)
     {
-        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName");
+        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", patientId);
+
+    
         ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)));
-        return View(new AppointmentDto());
+
+        var model = new AppointmentDto();
+
+        if (patientId.HasValue)
+        {
+            model.PatientId = patientId.Value;
+        }
+
+        return View(model);
     }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]

@@ -1,15 +1,46 @@
 @model List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>
 
-@foreach (var plan in Model)
+@if (Model != null && Model.Any())
 {
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>Plan created at:</strong> @plan.CreatedAt.ToString("yyyy-MM-dd")
-        <ul>
-            @foreach (var item in plan.Items)
+    foreach (var plan in Model)
+    {
+        <div class="border p-3 mb-3 rounded">
+            <h5>Plan created at @plan.CreatedAt</h5>
+            <p><strong>Total Cost:</strong> @plan.TotalCost.ToString("C")</p>
+            <p><strong>Status:</strong> @(plan.IsCompleted ? "Completed" : "Pending")</p>
+
+            @if (plan.Items != null && plan.Items.Any())
             {
-                <li>@item.Name - @item.Quantity x @item.Price = @item.LineTotal</li>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in plan.Items)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Price.ToString("C")</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.LineTotal.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
-        </ul>
-        <p><strong>Total:</strong> @plan.TotalCost</p>
-    </div>
+            else
+            {
+                <p>No items in this plan yet.</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <p>No treatment plans yet.</p>
 }

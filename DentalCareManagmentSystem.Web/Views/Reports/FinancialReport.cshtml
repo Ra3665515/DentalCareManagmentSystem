@@ -5,15 +5,14 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-primary"> Financial Report</h2>
+    <h2 class="mb-4 text-primary">Financial Report</h2>
 
-    <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card shadow-sm border-success">
                 <div class="card-body text-center">
                     <h5 class="card-title text-success">Total Revenue</h5>
-                    <h3>@Model.TotalRevenue.ToString("C")</h3>
+                    <h3>@($"{Model.TotalRevenue:0.00} EGP")</h3>
                 </div>
             </div>
         </div>
@@ -21,7 +20,7 @@
             <div class="card shadow-sm border-info">
                 <div class="card-body text-center">
                     <h5 class="card-title text-info">Revenue This Month</h5>
-                    <h3>@Model.RevenueThisMonth.ToString("C")</h3>
+                    <h3>@($"{Model.RevenueThisMonth:0.00} EGP")</h3>
                 </div>
             </div>
         </div>
@@ -29,7 +28,7 @@
             <div class="card shadow-sm border-warning">
                 <div class="card-body text-center">
                     <h5 class="card-title text-warning">Outstanding Payments</h5>
-                    <h3>@Model.OutstandingPayments.ToString("C")</h3>
+                    <h3>@($"{Model.OutstandingPayments:0.00} EGP")</h3>
                 </div>
             </div>
         </div>
@@ -47,7 +46,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>Treatment Type</th>
-                            <th>Revenue</th>
+                            <th>Revenue (EGP)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,7 +54,7 @@
                         {
                             <tr>
                                 <td>@item.Key</td>
-                                <td>@item.Value.ToString("C")</td>
+                                <td>@($"{item.Value:0.00} EGP")</td>
                             </tr>
                         }
                     </tbody>
@@ -95,7 +94,7 @@
             data: {
                 labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Keys)),
                 datasets: [{
-                    label: 'Revenue',
+                    label: 'Revenue (EGP)',
                     data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenue.Values)),
                     borderColor: '#007bff',
                     fill: true,
@@ -108,7 +107,7 @@
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return '$' + value.toLocaleString();
+                                return value.toLocaleString() + ' EGP';
                             }
                         }
                     }

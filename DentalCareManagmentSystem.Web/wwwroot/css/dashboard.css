@@ -109,7 +109,6 @@
 
 
 .card {
-    border: none;
     border-radius: 20px;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
     transition: all 0.4s ease;
@@ -117,9 +116,11 @@
     overflow: hidden;
 }
 
+    
     .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 25px rgba(21, 101, 192, 0.15);
+        transform: none;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08); 
+        animation: none;
     }
 
 
@@ -173,9 +174,9 @@
     }
 }
 
-.card:hover {
+/*.card:hover {
     animation: floatCard 1s ease-in-out;
-}
+}*/
 
 
 @media (max-width: 768px) {
