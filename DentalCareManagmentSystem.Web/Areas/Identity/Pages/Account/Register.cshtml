@@ -27,10 +27,9 @@
             <select asp-for="Input.Role" asp-items="Model.Roles" class="form-control">
                 <option value="">-- Select Role --</option>
             </select>
-            <span asp-validation-for="Input.Role" class="text-danger"></span>
-            <form id="register-form" method="post" action="/Account/Login">
-                <button id="register-submit" type="submit" class="btn-login mt-3">Register</button>
-            </form>
+           
+                <button asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl"  id="register-submit" type="submit" class="btn-login mt-3">Register</button>
+            
 
             <p class="mt-3">
                 Already have an account?
