@@ -1,4 +1,4 @@
-using DentalCareManagmentSystem.Application.DTOs;
+﻿using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -107,13 +107,16 @@ public class PatientsController : Controller
         if (patient == null) return NotFound();
 
         ViewBag.DiagnosisNotes = _diagnosisService.GetNotesByPatientId(id);
-        ViewBag.TreatmentPlans = _treatmentPlanService.GetPlansByPatientId(id);
         ViewBag.PatientImages = _imageService.GetImagesByPatientId(id);
 
+        ViewBag.PatientId = id;
+        ViewBag.PatientName = patient.FullName;
+
+    var treatmentPlans = _treatmentPlanService.GetPlansByPatientId(id).ToList();
+        ViewBag.TreatmentPlans = treatmentPlans;
 
         return View(patient);
     }
-
 
     // AJAX partials for patient details tabs
     public IActionResult GetDiagnosisNotes(Guid patientId)
@@ -128,9 +131,15 @@ public class PatientsController : Controller
         return PartialView("_PatientImages", images);
     }
 
+    [HttpGet]
     public IActionResult GetTreatmentPlans(Guid patientId)
     {
         var plans = _treatmentPlanService.GetPlansByPatientId(patientId);
+
+        // Pass the required ViewBag data for the partial
+        ViewBag.PatientId = patientId;
+        ViewBag.PatientName = _patientService.GetById(patientId)?.FullName;
+
         return PartialView("_TreatmentPlans", plans);
     }
 

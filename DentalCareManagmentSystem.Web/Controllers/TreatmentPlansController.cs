@@ -17,11 +17,10 @@ public class TreatmentPlansController : Controller
     private readonly ClinicDbContext _context;
 
     public TreatmentPlansController(
-        ITreatmentPlanService treatmentPlanService, 
+        ITreatmentPlanService treatmentPlanService,
         IPriceListService priceListService,
         IPatientService patientService,
-ClinicDbContext clinicDbContext
-        )
+        ClinicDbContext clinicDbContext)
     {
         _treatmentPlanService = treatmentPlanService;
         _priceListService = priceListService;
@@ -38,16 +37,35 @@ ClinicDbContext clinicDbContext
     public IActionResult Details(Guid id)
     {
         var treatmentPlan = _treatmentPlanService.GetById(id);
-        if (treatmentPlan == null) return NotFound();
+        if (treatmentPlan == null)
+        {
+            return NotFound();
+        }
 
         ViewBag.PriceListItems = _priceListService.GetAll()?.ToList() ?? new List<PriceListItemDto>();
         return View(treatmentPlan);
     }
-
-    public IActionResult Create(Guid? patientId)
+    [HttpGet]
+    public IActionResult Create(Guid patientId)
     {
-        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", patientId);
-        return View();
+        var patient = _patientService.GetById(patientId);
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        var model = new TreatmentPlanDto
+        {
+            PatientId = patientId,
+            CreatedAt = DateTime.Now,
+            TotalCost = 0,
+            IsCompleted = false
+        };
+
+        ViewBag.PatientName = patient.FullName;
+        ViewBag.PatientId = patientId;
+
+        return View(model);
     }
 
     [HttpPost]
@@ -56,31 +74,54 @@ ClinicDbContext clinicDbContext
     {
         if (ModelState.IsValid)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
-            var planId = _treatmentPlanService.CreatePlan(treatmentPlanDto.PatientId, userId);
-            return RedirectToAction(nameof(Details), new { id = planId });
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    TempData["ErrorMessage"] = "User not authenticated!";
+                    return RedirectToAction("Details", "Patients", new { id = treatmentPlanDto.PatientId });
+                }
+
+                var planId = _treatmentPlanService.CreatePlan(treatmentPlanDto.PatientId, userId);
+
+                if (planId != Guid.Empty)
+                {
+                    TempData["SuccessMessage"] = "Treatment plan created successfully!";
+                    return RedirectToAction("Details", "Patients", new { id = treatmentPlanDto.PatientId });
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to create treatment plan!";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating treatment plan: {ex.Message}";
+            }
         }
-        
-        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", treatmentPlanDto.PatientId);
+
+        if (treatmentPlanDto.PatientId != Guid.Empty)
+        {
+            var patient = _patientService.GetById(treatmentPlanDto.PatientId);
+            ViewBag.PatientName = patient?.FullName;
+            ViewBag.PatientId = treatmentPlanDto.PatientId;
+        }
+
         return View(treatmentPlanDto);
     }
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public IActionResult CreatePlan(Guid patientId)
+    //{
+    //    if (User.Identity?.IsAuthenticated == true)
+    //    {
+    //        return RedirectToAction("Create", "TreatmentPlans", new { patientId = patientId });
+    //    }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult CreatePlan(Guid patientId)
-    {
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
-            _treatmentPlanService.CreatePlan(patientId, userId);
-        }
-
-        return RedirectToAction("Details", "Patients", new { id = patientId });
-    }
-
-
-
-
+    //    return Unauthorized();
+    //}
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult AddItem(Guid planId, Guid priceListItemId, int quantity)
@@ -89,14 +130,19 @@ ClinicDbContext clinicDbContext
         return RedirectToAction("Details", new { id = planId });
     }
 
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteItem(Guid itemId)
     {
         var planId = _context.TreatmentItems.Find(itemId)?.TreatmentPlanId;
         _treatmentPlanService.RemoveItemFromPlan(itemId);
-        return RedirectToAction("Details", new { id = planId });
+
+        if (planId.HasValue)
+        {
+            return RedirectToAction("Details", new { id = planId.Value });
+        }
+
+        return RedirectToAction("Index");
     }
 
     [HttpPost]
@@ -105,7 +151,13 @@ ClinicDbContext clinicDbContext
     {
         var planId = _context.TreatmentItems.Find(itemId)?.TreatmentPlanId;
         _treatmentPlanService.UpdateItemQuantity(itemId, quantity);
-        return RedirectToAction("Details", new { id = planId });
+
+        if (planId.HasValue)
+        {
+            return RedirectToAction("Details", new { id = planId.Value });
+        }
+
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
@@ -116,25 +168,44 @@ ClinicDbContext clinicDbContext
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult CompletePlan(Guid planId)
     {
-        _treatmentPlanService.CompletePlan(planId);
-        return Ok();
+        try
+        {
+            var plan = _context.TreatmentPlans.Find(planId);
+            if (plan != null)
+            {
+                plan.IsCompleted = true;
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Treatment plan completed successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = " Treatment plan not found!";
+            }
+
+            var patientId = plan?.PatientId ?? GetPatientIdFromPlan(planId);
+            return RedirectToAction("Details", "Patients", new { id = patientId });
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $" Error: {ex.Message}";
+            var patientId = GetPatientIdFromPlan(planId);
+            return RedirectToAction("Details", "Patients", new { id = patientId });
+        }
     }
-
-    
-
     public IActionResult Delete(Guid id)
     {
         var treatmentPlan = _treatmentPlanService.GetById(id);
         if (treatmentPlan == null) return NotFound();
-        
+
         return View(treatmentPlan);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-  
     public IActionResult DeletePlanConfirmed(Guid id)
     {
         var plan = _treatmentPlanService.GetById(id);
@@ -147,16 +218,19 @@ ClinicDbContext clinicDbContext
         return NotFound();
     }
 
-    //[HttpGet]
-    //public IActionResult GetPlansByPatient(Guid patientId)
-    //{
-    //    var plans = _treatmentPlanService.GetPlansByPatientId(patientId);
-    //    return Json(plans);
-    //}
     [HttpGet]
     public IActionResult GetPlansByPatient(Guid patientId)
     {
         var plans = _treatmentPlanService.GetPlansByPatientId(patientId);
         return PartialView("~/Views/Patients/_TreatmentPlans.cshtml", plans);
+    }
+
+    private Guid? GetPatientIdFromPlan(Guid planId)
+    {
+        var plan = _context.TreatmentPlans
+            .AsNoTracking()
+            .FirstOrDefault(p => p.Id == planId);
+
+        return plan?.PatientId;
     }
 }

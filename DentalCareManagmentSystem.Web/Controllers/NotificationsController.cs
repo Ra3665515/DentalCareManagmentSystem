@@ -14,6 +14,10 @@ public class NotificationsController : Controller
     {
         _notificationService = notificationService;
     }
+    public IActionResult Index()
+    {
+        return View();
+    }
 
     [HttpGet]
   

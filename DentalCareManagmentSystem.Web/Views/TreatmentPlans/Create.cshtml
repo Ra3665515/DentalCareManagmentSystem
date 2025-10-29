@@ -1,0 +1,166 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto
+
+@{
+    ViewData["Title"] = "Create Treatment Plan";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">
+            <i class="fas fa-clipboard-list me-2"></i>Create Treatment Plan
+        </h2>
+        <a href="@Url.Action("Details", "Patients", new { id = ViewBag.PatientId })" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Patient
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Create New Treatment Plan</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Patient Info Card -->
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-user me-2"></i>Patient Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Name:</strong> @ViewBag.PatientName</p>
+                                    <p class="mb-0"><strong>Patient ID:</strong> @ViewBag.PatientId</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-0"><strong>Created By:</strong> @User.Identity.Name</p>
+                                    <p class="mb-0"><strong>Date:</strong> @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create Plan Form -->
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+
+                        <!-- Treatment Plan Details -->
+                        <div class="mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-edit me-2"></i>Treatment Plan Details
+                            </h6>
+
+                            <!-- Plan Name -->
+                            <div class="mb-3">
+                                <label for="PlanName" class="form-label fw-semibold">Plan Name *</label>
+                                <input type="text" id="PlanName" name="PlanName" class="form-control"
+                                       placeholder="Enter a descriptive name for this treatment plan"
+                                       aria-describedby="planNameHelp" required />
+                                <div id="planNameHelp" class="form-text">
+                                    Example: "Initial Treatment Plan", "Follow-up Care", "Emergency Treatment"
+                                </div>
+                            </div>
+
+                            <!-- Treatment Description -->
+                            <div class="mb-3">
+                                <label for="Description" class="form-label fw-semibold">Treatment Description *</label>
+                                <textarea id="Description" name="Description" class="form-control" rows="4"
+                                          placeholder="Describe the treatment plan, objectives, and any special instructions..."
+                                          aria-describedby="descriptionHelp" required></textarea>
+                                <div id="descriptionHelp" class="form-text">
+                                    Include treatment goals, procedures planned, and any patient-specific considerations.
+                                </div>
+                            </div>
+
+                            <!-- Treatment Duration & Priority -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="EstimatedDuration" class="form-label fw-semibold">Estimated Duration (minutes)</label>
+                                        <input type="number" id="EstimatedDuration" name="EstimatedDuration" class="form-control"
+                                               placeholder="e.g., 30, 45, 60"
+                                               min="1" max="480"
+                                               aria-describedby="durationHelp" />
+                                        <div id="durationHelp" class="form-text">
+                                            Estimated treatment duration in minutes
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="Priority" class="form-label fw-semibold">Priority Level</label>
+                                        <select id="Priority" name="Priority" class="form-select" aria-describedby="priorityHelp">
+                                            <option value="">Select Priority</option>
+                                            <option value="Low">Low</option>
+                                            <option value="Medium" selected>Medium</option>
+                                            <option value="High">High</option>
+                                            <option value="Emergency">Emergency</option>
+                                        </select>
+                                        <div id="priorityHelp" class="form-text">
+                                            How urgent is this treatment plan?
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Treatment Notes -->
+                            <div class="mb-3">
+                                <label for="Notes" class="form-label fw-semibold">Additional Notes</label>
+                                <textarea id="Notes" name="Notes" class="form-control" rows="3"
+                                          placeholder="Any additional notes, precautions, or special instructions..."
+                                          aria-describedby="notesHelp"></textarea>
+                                <div id="notesHelp" class="form-text">
+                                    Optional: Include any special considerations or patient preferences.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            You are creating a treatment plan for <strong>@ViewBag.PatientName</strong>.
+                            After creation, you'll be able to add specific treatment items and procedures.
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Create Plan</button>
+                            <a href="@Url.Action("Details", "Patients", new { id = ViewBag.PatientId })"
+                               class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+           
+            $('form').submit(function(e) {
+                const planName = $('#PlanName').val().trim();
+                const description = $('#Description').val().trim();
+
+                if (!planName) {
+                    alert('Please enter a plan name before creating the treatment plan.');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!description) {
+                    alert('Please enter a treatment description before creating the treatment plan.');
+                    e.preventDefault();
+                    return;
+                }
+
+                
+                if (!confirm('Are you sure you want to create this treatment plan?')) {
+                    e.preventDefault();
+                }
+            });
+
+            $('label[for="PlanName"], label[for="Description"]').append('<span class="text-danger ms-1">*</span>');
+        });
+    </script>
+}

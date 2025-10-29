@@ -1,46 +1,309 @@
-@model List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>
+﻿@model List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>
 
-@if (Model != null && Model.Any())
-{
-    foreach (var plan in Model)
+<div class="treatment-plans-section">
+    <!-- Notifications -->
+    @if (TempData["SuccessMessage"] != null)
     {
-        <div class="border p-3 mb-3 rounded">
-            <h5>Plan created at @plan.CreatedAt</h5>
-            <p><strong>Total Cost:</strong> @plan.TotalCost.ToString("C")</p>
-            <p><strong>Status:</strong> @(plan.IsCompleted ? "Completed" : "Pending")</p>
-
-            @if (plan.Items != null && plan.Items.Any())
-            {
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Line Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in plan.Items)
-                        {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td>@item.Price.ToString("C")</td>
-                                <td>@item.Quantity</td>
-                                <td>@item.LineTotal.ToString("C")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No items in this plan yet.</p>
-            }
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                <span class="flex-grow-1">@TempData["SuccessMessage"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         </div>
     }
-}
-else
-{
-    <p>No treatment plans yet.</p>
-}
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span class="flex-grow-1">@TempData["ErrorMessage"]</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    }
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="text-primary mb-1">
+                <i class="fas fa-file-medical-alt me-2"></i>Treatment Plans
+            </h4>
+            <p class="text-muted mb-0">Manage patient treatment plans and track progress</p>
+        </div>
+        @if (User.IsInRole("Doctor"))
+        {
+            <a href="@Url.Action("Create", "TreatmentPlans", new { patientId = ViewBag.PatientId })"
+               class="btn btn-primary btn-lg px-4"
+               title="Create new treatment plan">
+                <i class="fas fa-plus me-2"></i> New Plan
+            </a>
+        }
+    </div>
+
+    @if (Model.Any())
+    {
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="mb-0">@Model.Count</h4>
+                                <small>Total Plans</small>
+                            </div>
+                            <i class="fas fa-clipboard-list fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="mb-0">@Model.Count(p => p.IsCompleted)</h4>
+                                <small>Completed</small>
+                            </div>
+                            <i class="fas fa-check-circle fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="mb-0">@Model.Count(p => !p.IsCompleted)</h4>
+                                <small>In Progress</small>
+                            </div>
+                            <i class="fas fa-clock fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="mb-0">@Model.Sum(p => p.TotalCost).ToString("C")</h4>
+                                <small>Total Value</small>
+                            </div>
+                            <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plans Table -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0 text-dark">
+                    <i class="fas fa-list me-2"></i>Treatment Plans List
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">
+                                    <i class="fas fa-calendar me-2"></i>Created Date
+                                </th>
+                                <th>
+                                    <i class="fas fa-user me-2"></i>Created By
+                                </th>
+                                <th class="text-end">
+                                    <i class="fas fa-money-bill me-2"></i>Total Cost
+                                </th>
+                                <th class="text-center">
+                                    <i class="fas fa-tasks me-2"></i>Status
+                                </th>
+                                <th class="text-center pe-4">
+                                    <i class="fas fa-cogs me-2"></i>Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plan in Model.OrderByDescending(p => p.CreatedAt))
+                            {
+                                <tr class="@(plan.IsCompleted ? "table-success" : "")">
+                                    <td class="ps-4">
+                                        <div class="fw-semibold">@plan.CreatedAt.ToString("MMM dd, yyyy")</div>
+                                        <small class="text-muted">@plan.CreatedAt.ToString("hh:mm tt")</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                <i class="fas fa-user text-white"></i>
+                                            </div>
+                                            <span>@plan.CreatedBy</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="fw-bold text-success fs-5">@plan.TotalCost.ToString("C")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (plan.IsCompleted)
+                                        {
+                                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                                <i class="fas fa-check-circle me-1"></i>Completed
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning rounded-pill px-3 py-2">
+                                                <i class="fas fa-clock me-1"></i>In Progress
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a href="@Url.Action("Details", "TreatmentPlans", new { id = plan.Id })"
+                                               class="btn btn-outline-primary btn-sm px-3"
+                                               title="View full details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                            @if (!plan.IsCompleted && User.IsInRole("Doctor"))
+                                            {
+                                                <form method="post"
+                                                      asp-controller="TreatmentPlans"
+                                                      asp-action="CompletePlan"
+                                                      class="d-inline">
+                                                    <input type="hidden" name="planId" value="@plan.Id" />
+                                                    <button type="submit"
+                                                            class="btn btn-outline-success btn-sm px-3"
+                                                            title="Mark as completed"
+                                                            onclick="return confirm('Mark this treatment plan as completed?')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @if (User.IsInRole("Doctor"))
+                                            {
+                                                <form method="post"
+                                                      asp-controller="TreatmentPlans"
+                                                      asp-action="DeletePlanConfirmed"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('Are you sure you want to delete this treatment plan? This action cannot be undone.')">
+                                                    <input type="hidden" name="id" value="@plan.Id" />
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger btn-sm px-3"
+                                                            title="Delete plan">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment Summary Cards -->
+        <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="text-primary mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Treatment Details
+                </h5>
+                <small class="text-muted">Detailed breakdown of each treatment plan</small>
+            </div>
+
+            <div class="row">
+                @foreach (var plan in Model.Where(p => p.Items.Any()).OrderByDescending(p => p.CreatedAt))
+                {
+                    <div class="col-xl-6 col-lg-12 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title mb-1 text-dark">Plan from @plan.CreatedAt.ToString("MMM dd, yyyy")</h6>
+                                    <small class="text-muted">Created by @plan.CreatedBy</small>
+                                </div>
+                                <span class="badge @(plan.IsCompleted ? "bg-success" : "bg-warning") rounded-pill px-3 py-2">
+                                    @if (plan.IsCompleted)
+                                    {
+                                        <i class="fas fa-check-circle me-1"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-clock me-1"></i>
+                                    }
+                                    @(plan.IsCompleted ? "Completed" : "In Progress")
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <div class="treatment-items" style="max-height: 250px; overflow-y: auto;">
+                                    @foreach (var item in plan.Items)
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1 text-dark">@item.Name</h6>
+                                                @if (!string.IsNullOrEmpty(item.PriceListItemName))
+                                                {
+                                                    <small class="text-muted">@item.PriceListItemName</small>
+                                                }
+                                                <div class="mt-1">
+                                                    <span class="badge bg-light text-dark border">
+                                                        <i class="fas fa-hashtag me-1"></i>Qty: @item.Quantity
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div class="text-muted small">@item.Price.ToString("C") each</div>
+                                                <div class="fw-bold text-primary fs-6">@item.LineTotal.ToString("C")</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                    <span class="fw-bold text-dark">Total Cost:</span>
+                                    <span class="fw-bold text-success fs-5">@plan.TotalCost.ToString("C")</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0 pt-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>@plan.CreatedAt.ToString("MMM dd, yyyy")
+                                    </small>
+                                    <a href="@Url.Action("Details", "TreatmentPlans", new { id = plan.Id })"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-external-link-alt me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-file-medical-alt fa-4x text-muted mb-4"></i>
+                <h4 class="text-muted mb-3">No Treatment Plans Found</h4>
+                <p class="text-muted mb-4">Get started by creating the first treatment plan for this patient.</p>
+                @if (User.IsInRole("Doctor"))
+                {
+                    <a href="@Url.Action("Create", "TreatmentPlans", new { patientId = ViewBag.PatientId })"
+                       class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Create First Plan
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+

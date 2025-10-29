@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Patient Details";
     var treatmentPlans = ViewBag.TreatmentPlans as List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto> ?? new List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>();
-    var priceListItems = ViewBag.PriceListItems as List<DentalCareManagmentSystem.Application.DTOs.PriceListItemDto> ?? new List<DentalCareManagmentSystem.Application.DTOs.PriceListItemDto>();
-    var tempItems = ViewBag.TempItems as List<DentalCareManagmentSystem.Application.DTOs.TreatmentItemDto> ?? new List<DentalCareManagmentSystem.Application.DTOs.TreatmentItemDto>();
 }
 
 <div class="container mt-5">
@@ -26,19 +24,135 @@
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="patientTabs" role="tablist">
         <li class="nav-item">
-            <button class="nav-link active" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosisContent">Diagnosis</button>
+            <button class="nav-link active" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatmentContent" type="button" role="tab">Treatment Plans</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatmentContent">Treatment Plans</button>
+            <button class="nav-link" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosisContent" type="button" role="tab">Diagnosis</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#imagesContent">Images</button>
+            <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#imagesContent" type="button" role="tab">Images</button>
         </li>
     </ul>
 
     <div class="tab-content mt-3">
+        <!-- Treatment Plans Tab -  -->
+        <div class="tab-pane fade show active" id="treatmentContent" role="tabpanel">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-3">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-3">
+                    <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Treatment Plans</h5>
+                @if (User.IsInRole("Doctor"))
+                {
+                    <a href="@Url.Action("Create", "TreatmentPlans", new { patientId = Model.Id })"
+                       class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i> Create New Plan
+                    </a>
+                }
+            </div>
+
+            @if (treatmentPlans.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Created Date</th>
+                                <th>Created By</th>
+                                <th>Total Cost</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plan in treatmentPlans)
+                            {
+                                <tr>
+                                    <td>@plan.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                    <td>@plan.CreatedBy</td>
+                                    <td>@plan.TotalCost.ToString("N2") EGP</td>
+                                    <td>
+                                        @if (plan.IsCompleted)
+                                        {
+                                            <span class="badge bg-success"> Completed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">In Progress</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+
+                                            @if (User.IsInRole("Doctor"))
+                                            {
+                                                <a asp-controller="TreatmentPlans"
+                                                   asp-action="Details"
+                                                   asp-route-id="@plan.Id"
+                                                   class="btn btn-outline-info btn-sm"
+                                                   title="View Details">
+                                                    <i class="fas fa-eye me-1"></i>Details
+                                                </a>
+                                            }
+
+                                            @if (!plan.IsCompleted && User.IsInRole("Doctor"))
+                                            {
+                                                <form method="post"
+                                                      asp-controller="TreatmentPlans"
+                                                      asp-action="CompletePlan"
+                                                      class="d-inline">
+                                                    <input type="hidden" name="planId" value="@plan.Id" />
+                                                    <button type="submit" class="btn btn-outline-success"
+                                                            onclick="return confirm('Are you sure you want to mark this plan as completed?');">
+                                                        <i class="fas fa-check me-1"></i>Complete
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @if (User.IsInRole("Doctor"))
+                                            {
+                                                <form method="post"
+                                                      asp-controller="TreatmentPlans"
+                                                      asp-action="DeletePlanConfirmed"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('Are you sure you want to delete this treatment plan?');">
+                                                    <input type="hidden" name="id" value="@plan.Id" />
+                                                    <button type="submit" class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash me-1"></i>Delete
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i> No treatment plans found for this patient.
+                </div>
+            }
+        </div>
+
         <!-- Diagnosis Tab -->
-        <div class="tab-pane fade show active" id="diagnosisContent">
+        <div class="tab-pane fade" id="diagnosisContent" role="tabpanel">
             @if (User.IsInRole("Doctor"))
             {
                 <form asp-action="AddNote" asp-controller="Diagnosis" method="post">
@@ -66,114 +180,8 @@
             </div>
         </div>
 
-        <!-- Treatment Plans Tab -->
-        <div class="tab-pane fade" id="treatmentContent">
-            <h4>Treatment Plans</h4>
-
-            <!-- Form لإضافة Treatment Item مؤقت -->
-            @if (User.IsInRole("Doctor") && priceListItems.Any())
-            {
-                <form method="post" asp-action="AddItemTemp" asp-controller="TreatmentPlans" class="mb-3 d-flex gap-2 align-items-center">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="patientId" value="@Model.Id" />
-
-                    <select name="priceListItemId" class="form-select w-auto">
-                        @foreach (var item in priceListItems)
-                        {
-                            <option value="@item.Id">
-                                @item.Name (@($"{item.DefaultPrice:N2} EGP"))
-                            </option>
-
-                        }
-                    </select>
-
-                    <input type="number" name="quantity" value="1" min="1" class="form-control w-auto" />
-                    <button type="submit" class="btn btn-success btn-sm">Add Item</button>
-                </form>
-            }
-
-            <!-- عرض الـ Items المؤقتة -->
-            @if (tempItems.Any())
-            {
-                <h5>Items to be added to the new Plan</h5>
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Item Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Line Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in tempItems)
-                        {
-                            <tr>
-                                <td>@item.PriceListItemName</td>
-                                <td>@($"{item.Price:N2} EGP")</td>
-                                <td>@item.Quantity</td>
-                                <td>@($"{item.LineTotal:N2} EGP")</td>
-
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-
-                <!-- زر إنشاء Treatment Plan -->
-                <form method="post" asp-action="CreatePlanWithItems" asp-controller="TreatmentPlans">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="patientId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-primary">Create Treatment Plan</button>
-                </form>
-            }
-
-            <!-- عرض كل Treatment Plans الموجودة -->
-            @if (treatmentPlans.Any())
-            {
-                <h5 class="mt-4">Existing Treatment Plans</h5>
-                @foreach (var plan in treatmentPlans)
-                {
-                    <div class="border p-3 mb-3 rounded">
-                        <h6>Plan created at @plan.CreatedAt.ToString("yyyy-MM-dd HH:mm")</h6>
-                        <p><strong>Total Cost:</strong> @plan.TotalCost.ToString("C")</p>
-                        <p><strong>Status:</strong> @(plan.IsCompleted ? "Completed" : "Pending")</p>
-
-                        @if (plan.Items.Any())
-                        {
-                            <table class="table table-sm table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Item Name</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Line Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in plan.Items)
-                                    {
-                                        <tr>
-                                            <td>@item.PriceListItemName</td>
-                                            <td>@($"{item.Price:N2} EGP")</td>
-                                            <td>@item.Quantity</td>
-                                            <td>@($"{item.LineTotal:N2} EGP")</td>
-
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                    </div>
-                }
-            }
-            else
-            {
-                <p>No existing treatment plans.</p>
-            }
-        </div>
-
         <!-- Images Tab -->
-        <div class="tab-pane fade" id="imagesContent">
+        <div class="tab-pane fade" id="imagesContent" role="tabpanel">
             @if (User.IsInRole("Doctor"))
             {
                 <form asp-action="UploadPatientImage" asp-controller="Patients" method="post" enctype="multipart/form-data" class="mb-3 d-flex">
@@ -201,3 +209,40 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var patientId = '@Model.Id';
+            var tabStorageKey = 'patientTab_' + patientId;
+
+            var savedTab = localStorage.getItem(tabStorageKey);
+            if (savedTab) {
+                var tab = new bootstrap.Tab(document.querySelector(savedTab));
+                tab.show();
+            }
+
+            var tabEls = document.querySelectorAll('#patientTabs button[data-bs-toggle="tab"]');
+            tabEls.forEach(function(tabEl) {
+                tabEl.addEventListener('shown.bs.tab', function (event) {
+                    localStorage.setItem(tabStorageKey, event.target.getAttribute('data-bs-target'));
+                });
+            });
+
+            var triggerTabList = [].slice.call(document.querySelectorAll('#patientTabs button'));
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl);
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    tabTrigger.show();
+                });
+            });
+        });
+
+        function clearSavedTab() {
+            var patientId = '@Model.Id';
+            var tabStorageKey = 'patientTab_' + patientId;
+            localStorage.removeItem(tabStorageKey);
+        }
+    </script>
+}

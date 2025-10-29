@@ -62,12 +62,17 @@ public class TreatmentPlanService : ITreatmentPlanService
 
     public void CompletePlan(Guid planId)
     {
-        var plan = _context.TreatmentPlans.Find(planId);
+        var plan = _context.TreatmentPlans
+      .Include(p => p.Items)
+      .Include(p => p.CreatedBy)
+      .FirstOrDefault(p => p.Id == planId);
+
         if (plan != null)
         {
             plan.IsCompleted = true;
             _context.SaveChanges();
         }
+    
     }
 
     public void UpdateItemQuantity(Guid itemId, int quantity)
@@ -166,6 +171,7 @@ public class TreatmentPlanService : ITreatmentPlanService
                 PatientId = p.PatientId,
                 CreatedAt = p.CreatedAt,
                 CreatedBy = p.CreatedBy?.FullName ?? "Unknown",
+                IsCompleted = p.IsCompleted,
                 Items = p.Items
                     .Select(i => new TreatmentItemDto
                     {
@@ -193,17 +199,16 @@ public class TreatmentPlanService : ITreatmentPlanService
                 Id = tp.Id,
                 PatientId = tp.PatientId,
                 CreatedAt = tp.CreatedAt,
+                IsCompleted=tp.IsCompleted,
                 CreatedBy = tp.CreatedBy != null ? tp.CreatedBy.FullName : "Unknown",
-                TotalCost = tp.Items
-                    .AsEnumerable()
-                    .Sum(i => i.LineTotal),
+                TotalCost = tp.Items.Sum(i => i.PriceSnapshot * i.Quantity),
                 Items = tp.Items.Select(i => new TreatmentItemDto
                 {
                     Id = i.Id,
                     Name = i.NameSnapshot,
                     Price = i.PriceSnapshot,
                     Quantity = i.Quantity,
-                    LineTotal = i.LineTotal
+                    LineTotal = i.PriceSnapshot * i.Quantity 
                 }).ToList()
             });
     }
