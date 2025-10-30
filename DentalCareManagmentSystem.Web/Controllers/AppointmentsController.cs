@@ -135,4 +135,9 @@ public class AppointmentsController : Controller
         var appointments = _appointmentService.GetAll().ToList();
         return PartialView("_AppointmentsGrid", appointments);
     }
+    public IActionResult TodaysAppointments()
+    {
+        var todaysAppointments = _appointmentService.GetTodaysAppointments();
+        return View(todaysAppointments);
+    }
 }

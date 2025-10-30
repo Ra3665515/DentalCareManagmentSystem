@@ -64,7 +64,23 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-
+                    <div class="navbar-nav ms-3">
+                        <div class="nav-item">
+                            <div class="time-display bg-dark bg-opacity-25 rounded-3 p-2 text-center border border-light border-opacity-25">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-clock text-warning me-2"></i>
+                                    <div>
+                                        <div class="time-text text-white fw-bold fs-6" id="navbarTime">
+                                            @DateTime.Now.ToString("hh:mm tt")
+                                        </div>
+                                        <div class="date-text text-light opacity-75 small" id="navbarDate">
+                                            @DateTime.Now.ToString("ddd, MMM dd")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                             <li class="nav-item dropdown">
@@ -79,6 +95,11 @@
                                         <!-- Notifications loaded via AJAX -->
                                     </div>
                                 </div>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="@Url.Action("TodaysAppointments", "Appointments")">
+                                    <i class="fas fa-calendar-day me-1"></i>
+                                </a>
+                            </li>
                             </li>
                             <partial name="_LoginPartial" />
                         </ul>
@@ -126,6 +147,25 @@
             loadNotifications();
             setInterval(loadNotifications, 60000);
         });
+    </script>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        // اتصال SignalR عام لجميع الصفحات
+        const doctorConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/notificationHub")
+            .build();
+
+        doctorConnection.start().catch(err => console.error('SignalR Connection Error: ', err));
+
+        // دالة عامة للانضمام لغرفة الدكتور
+        function joinDoctorRoom(doctorId) {
+            if (doctorId) {
+                doctorConnection.invoke("JoinDoctorRoom", doctorId)
+                    .then(() => console.log(`Doctor ${doctorId} joined room`))
+                    .catch(err => console.error(err));
+            }
+        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

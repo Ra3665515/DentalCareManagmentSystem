@@ -1,0 +1,121 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+
+<div class="container-fluid py-4 fade-in">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="fas fa-calendar-check me-2"></i>Appointment Details
+            </h2>
+            <p class="text-muted mb-0">Detailed information about the appointment</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="/Notifications/Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Appointment Details Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Appointment Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted">Patient Name</label>
+                            <p class="fs-6">@Model.PatientName</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted">Phone Number</label>
+                            <p class="fs-6">
+                                <i class="fas fa-phone text-muted me-1"></i>
+                                @Model.PatientPhone
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted">Appointment Date</label>
+                            <p class="fs-6">
+                                <i class="far fa-calendar text-muted me-1"></i>
+                                @Model.Date.ToString("dddd, MMMM dd, yyyy")
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted">Time Slot</label>
+                            <p class="fs-6">
+                                <i class="far fa-clock text-muted me-1"></i>
+                                @Model.StartTime.ToString(@"hh\:mm") - @Model.EndTime.ToString(@"hh\:mm")
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted">Status</label>
+                            <div>
+                                @{
+                                    var statusClass = Model.Status switch
+                                    {
+                                        "Scheduled" => "bg-warning",
+                                        "Completed" => "bg-success",
+                                        "Cancelled" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @statusClass status-badge fs-6">@Model.Status</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold text-muted">Notes</label>
+                                <p class="fs-6 bg-light p-3 rounded">@Model.Notes</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/Appointments/Details/@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>Edit in Appointments
+                        </a>
+                        <a href="/Appointments" class="btn btn-outline-info">
+                            <i class="fas fa-calendar me-2"></i>All Appointments
+                        </a>
+                        <a href="/Notifications/Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>Back to Notifications
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

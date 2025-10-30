@@ -1,6 +1,8 @@
 ﻿@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
 
 @{
+    var isDoctor = User.IsInRole("Doctor");
+
     ViewData["Title"] = "Appointments";
 }
 
@@ -14,6 +16,44 @@
             <i class="fas fa-plus-circle me-1"></i> Add New Appointment
         </a>
     </div>
+    <div class="container-fluid py-4">
+        <!-- نافذة الإشعارات للدكتور فقط -->
+        @if (isDoctor)
+        {
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bell me-2"></i>Current Patient Notification
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="doctorWaitingState" class="text-center py-3">
+                                <i class="fas fa-user-clock fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">Waiting for patient notifications</p>
+                            </div>
+
+                            <div id="doctorPatientNotification" class="alert alert-success d-none">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-injured fa-2x me-3 text-success"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-success fw-bold" id="currentPatientName"></h6>
+                                        <p class="mb-1 small" id="currentAppointmentTime"></p>
+                                        <small class="text-muted" id="currentArrivalTime"></small>
+                                    </div>
+                                    <div class="ms-3">
+                                        <button class="btn btn-success btn-sm" onclick="startCurrentAppointment()">
+                                            <i class="fas fa-play me-1"></i> Start
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
 
     <div class="card shadow-sm border-0 rounded">
@@ -82,3 +122,55 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // إذا كان المستخدم دكتور، ننضم لغرفته
+            @if (isDoctor)
+            {
+                <text>
+                const doctorId = '@User.FindFirst("DoctorId")?.Value' || 'default-doctor';
+                joinDoctorRoom(doctorId);
+
+                // استقبال إشعارات المرضى
+                doctorConnection.on("ReceivePatient", (patientName, appointmentId, appointmentTime, arrivalTime) => {
+                    showPatientNotification(patientName, appointmentId, appointmentTime, arrivalTime);
+                });
+                </text>
+            }
+
+            // دالة عرض إشعار المريض
+            function showPatientNotification(patientName, appointmentId, appointmentTime, arrivalTime) {
+                $('#currentPatientName').text(patientName);
+                $('#currentAppointmentTime').text(`Appointment: ${appointmentTime}`);
+                $('#currentArrivalTime').text(`Arrived: ${arrivalTime}`);
+                
+                $('#doctorWaitingState').addClass('d-none');
+                $('#doctorPatientNotification').removeClass('d-none');
+                
+                // حفظ ID الموعد
+                $('#doctorPatientNotification').data('appointment-id', appointmentId);
+                
+                // تشغيل صوت إشعار (اختياري)
+                playNotificationSound();
+            }
+
+            // دالة بدء الموعد
+            function startCurrentAppointment() {
+                const appointmentId = $('#doctorPatientNotification').data('appointment-id');
+                if (appointmentId) {
+                    window.location.href = '@Url.Action("Details", "Appointments")/' + appointmentId;
+                }
+            }
+
+            // دالة تشغيل الصوت
+            function playNotificationSound() {
+                try {
+                    // يمكنك إضافة ملف صوتي لاحقاً
+                    console.log('Notification sound should play here');
+                } catch (e) {
+                    console.log('Audio play failed:', e);
+                }
+            }
+        });
+    </script>}

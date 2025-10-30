@@ -328,3 +328,334 @@
         font-weight: 500;
         letter-spacing: 0.3px;
     }
+/* wwwroot/css/notifications.css */
+
+/* Notification Cards Styles */
+.notification-card {
+    border: none;
+    border-left: 4px solid #0d6efd;
+    transition: all 0.4s ease;
+    margin-bottom: 1rem;
+}
+
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+/* Avatar Circle */
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Table Styles */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Card Header Styles */
+.card-header.bg-light {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Statistics Cards */
+.stats-card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .stats-card.primary {
+        border-left: 4px solid #0d6efd;
+    }
+
+    .stats-card.success {
+        border-left: 4px solid #198754;
+    }
+
+    .stats-card.warning {
+        border-left: 4px solid #ffc107;
+    }
+
+    .stats-card.info {
+        border-left: 4px solid #0dcaf0;
+    }
+
+/* Badge Styles */
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Button Styles */
+.mark-done-btn {
+    transition: all 0.3s ease;
+}
+
+    .mark-done-btn:hover {
+        transform: scale(1.05);
+    }
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-out {
+    animation: slideOutRight 0.5s ease-out forwards;
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Empty State Styles */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+    .empty-state i {
+        opacity: 0.5;
+    }
+
+/* Loading Animation */
+.loading-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Custom Scrollbar for Table */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+/* إضافة هذه الـ Styles لملف notifications.css */
+
+/* زر View Details */
+.view-details-btn {
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+    .view-details-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0.125rem 0.25rem rgba(13, 110, 253, 0.3);
+    }
+
+/* منع تأثير hover على العنوان */
+.patient-name {
+    cursor: default !important;
+}
+
+    .patient-name:hover {
+        color: #0d6efd !important; /* لون ثابت بدون تغيير */
+    }
+
+/* تحسين تخطيط الكارد */
+.card-body {
+    padding: 1.25rem;
+}
+
+.flex-grow-1 {
+    min-width: 0; /* يمنع التخطيط من الكسر */
+}
+
+/* تحسين responsive */
+@media (max-width: 576px) {
+    .view-details-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+        .view-details-btn i {
+            margin-right: 0 !important;
+        }
+
+        .view-details-btn span {
+            display: none;
+        }
+}
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+}
+
+.notify-doctor-btn {
+    transition: all 0.3s ease;
+}
+
+    .notify-doctor-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+#patientNotification {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* تصميم الوقت في الـ navbar */
+.time-display {
+    min-width: 100px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+    .time-display:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-1px);
+    }
+
+.time-text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.date-text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+}
+
+/* تأثيرات للوقت الحي */
+.live-indicator {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #28a745;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+    margin-right: 8px;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+
+    51%, 100% {
+        opacity: 0.3;
+    }
+}
+
+/* تصميم متجاوب للشاشات الصغيرة */
+@@media (max-width: 768px) {
+    .time-display {
+        min-width: 80px;
+        padding: 0.5rem !important;
+    }
+
+    .time-text {
+        font-size: 0.9rem !important;
+    }
+
+    .date-text {
+        font-size: 0.7rem !important;
+    }
+}

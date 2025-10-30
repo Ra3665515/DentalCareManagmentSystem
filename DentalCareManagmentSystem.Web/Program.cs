@@ -3,9 +3,10 @@ using DentalCareManagmentSystem.Domain.Entities;
 using DentalCareManagmentSystem.Infrastructure.Data;
 using DentalCareManagmentSystem.Infrastructure.Identity;
 using DentalCareManagmentSystem.Infrastructure.Services;
+using DentalCareManagmentSystem.Web.Hubs;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
+// إضافة SignalR services
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Supported Cultures
@@ -79,15 +83,18 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
+app.UseStaticFiles(); // هذا مهم لخدمة ملفات الـ JavaScript
 
 app.UseRouting();
+
 // Localization Middleware
 app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 3️⃣ SignalR Hub Mapping - ضعه قبل الـ MapControllerRoute
+app.MapHub<NotificationHub>("/notificationHub");
 
 // Routes
 app.MapControllerRoute(
@@ -100,7 +107,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-// 3️⃣ Seed Data
+// 4️⃣ Seed Data
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

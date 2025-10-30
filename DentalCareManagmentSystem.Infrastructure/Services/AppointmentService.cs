@@ -136,18 +136,30 @@ public class AppointmentService : IAppointmentService
         return GetAll().Where(a => a.Date.Date >= startDate.Date && a.Date.Date <= endDate.Date).ToList();
     }
 
+    //public void MarkAsNotified(Guid id, string userId)
+    //{
+    //    var appointment = _context.Appointments.Find(id);
+    //    if (appointment != null && appointment.Status == AppointmentStatus.Scheduled)
+    //    {
+    //        appointment.Status = AppointmentStatus.Notified;
+    //        _context.NotificationLogs.Add(new NotificationLog
+    //        {
+    //            AppointmentId = id,
+    //            NotifiedById = userId,
+    //            NotifiedAt = DateTime.UtcNow
+    //        });
+    //        _context.SaveChanges();
+    //    }
+    //}
     public void MarkAsNotified(Guid id, string userId)
     {
-        var appointment = _context.Appointments.Find(id);
+        var appointment = _context.Appointments
+            .Include(a => a.Patient)
+            .FirstOrDefault(a => a.Id == id);
+
         if (appointment != null && appointment.Status == AppointmentStatus.Scheduled)
         {
             appointment.Status = AppointmentStatus.Notified;
-            _context.NotificationLogs.Add(new NotificationLog
-            {
-                AppointmentId = id,
-                NotifiedById = userId,
-                NotifiedAt = DateTime.UtcNow
-            });
             _context.SaveChanges();
         }
     }
