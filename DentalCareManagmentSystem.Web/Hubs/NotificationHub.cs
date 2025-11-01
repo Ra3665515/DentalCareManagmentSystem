@@ -5,7 +5,6 @@ namespace DentalCareManagmentSystem.Web.Hubs
     public class NotificationHub : Hub
     {
         private static readonly List<PatientQueueItem> _patientQueue = new();
-        private static string _currentDoctorStatus = "available";
 
         public async Task JoinDoctorRoom(string doctorId)
         {

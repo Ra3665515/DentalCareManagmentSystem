@@ -30,7 +30,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
-
+builder.Services.AddSignalR();
 builder.Services.AddRazorPages()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
@@ -105,6 +105,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapRazorPages();
 
 // 4️⃣ Seed Data
