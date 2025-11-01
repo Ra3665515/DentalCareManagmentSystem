@@ -151,7 +151,7 @@ public class NotificationsController : Controller
         await _hubContext.Clients.All.SendAsync("AddPatientToQueue", notifiedAppointments);
 
         // Return a partial view with the queue
-        return PartialView("~/Views/Appointments/_AppointmentsGrid.cshtml", notifiedAppointments);
+        return Content("<div>Test HTML from server</div>");
     }
 
     [HttpPost]

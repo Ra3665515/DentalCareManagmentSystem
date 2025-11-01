@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <span class="fw-bold">${p.patientName}</span>
                                     <small class="text-muted ms-2">Scheduled: ${new Date(p.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
                                 </div>
-                                <a href="/Patients/Details/${p.id}" class="btn btn-sm btn-info">
+                                <a href="/Patients/Details/${p.patientId}" class="btn btn-sm btn-info">
                                     <i class="fas fa-info-circle me-1"></i> Details
                                 </a>
                             </div>
@@ -125,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Get anti-forgery token
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                console.log("Anti-forgery token:", token);
 
                 // 1️⃣ Call backend controller with appointmentId as query parameter
                 fetch(`/Notifications/AddToQueue?appointmentId=${appointmentId}`, {

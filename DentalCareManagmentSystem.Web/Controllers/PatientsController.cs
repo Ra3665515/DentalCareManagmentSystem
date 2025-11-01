@@ -22,7 +22,7 @@ public class PatientsController : Controller
         _treatmentPlanService = treatmentPlanService;
     }
 
-   
+
     public IActionResult Index()
     {
         var patients = _patientService.GetPatientsWithTotalDue();
@@ -112,7 +112,7 @@ public class PatientsController : Controller
         ViewBag.PatientId = id;
         ViewBag.PatientName = patient.FullName;
 
-    var treatmentPlans = _treatmentPlanService.GetPlansByPatientId(id).ToList();
+        var treatmentPlans = _treatmentPlanService.GetPlansByPatientId(id).ToList();
         ViewBag.TreatmentPlans = treatmentPlans;
 
         return View(patient);
