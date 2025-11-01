@@ -37,13 +37,13 @@ else
                                 </h6>
                                 <small class="text-muted d-block mb-1">
                                     <i class="far fa-calendar-alt me-1"></i>
-                                    @notification.AppointmentDate.ToString("yyyy-MM-dd")
+                                     @notification.AppointmentDate.ToString("yyyy-MM-dd") 
                                 </small>
                                 <small class="text-muted d-block mb-1">
                                     <i class="far fa-clock me-1"></i>
-                                    @notification.Message
+                                      @notification.Message 
                                 </small>
-                                @if (notification.IsDone)
+                                 @if (notification.IsDone)
                                 {
                                     <span class="badge bg-success status-badge">
                                         <i class="fas fa-check me-1"></i> Completed
@@ -54,7 +54,7 @@ else
                                     <span class="badge bg-warning status-badge">
                                         <i class="fas fa-clock me-1"></i> Scheduled
                                     </span>
-                                }
+                                } 
                             </div>
                             <div class="text-muted">
                                 <i class="fas fa-chevron-right"></i>

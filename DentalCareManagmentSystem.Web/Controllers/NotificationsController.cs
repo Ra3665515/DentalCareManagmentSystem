@@ -130,7 +130,7 @@ public class NotificationsController : Controller
     {
         var notifiedAppointments = _appointmentService.GetAll()
             .Where(a => a.Status == "Notified")
-            .OrderBy(a => a.Date) 
+            .OrderBy(a => a.Date)
             .ToList();
         return Json(notifiedAppointments);
     }
@@ -138,32 +138,20 @@ public class NotificationsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddToQueue(Guid appointmentId)
     {
-        try
-        {
-            var appointment = _appointmentService.GetById(appointmentId);
-            if (appointment == null)
-                return Json(new { success = false, message = "Appointment not found" });
+        // Update the status to Notified
+        _appointmentService.UpdateStatus(appointmentId, "Notified");
 
-            // تحديث حالة الموعد
-            _appointmentService.UpdateStatus(appointmentId, "Notified");
+        // Get the updated list of all notified patients
+        var notifiedAppointments = _appointmentService.GetAll()
+            .Where(a => a.Status == "Notified")
+            .OrderBy(a => a.Date)
+            .ToList();
 
-            // إضافة المريض للطابور
-            await _hubContext.Clients.All.SendAsync("AddPatientToQueue",
-                appointmentId,
-                appointment.PatientName,
-                appointment.StartTime.ToString(@"hh\:mm"));
+        // Notify other clients via SignalR in case they need to update their views
+        await _hubContext.Clients.All.SendAsync("AddPatientToQueue", notifiedAppointments);
 
-            return Json(new
-            {
-                success = true,
-                message = "Patient added to queue successfully",
-                patientName = appointment.PatientName
-            });
-        }
-        catch (Exception ex)
-        {
-            return Json(new { success = false, message = ex.Message });
-        }
+        // Return a partial view with the queue
+        return PartialView("~/Views/Appointments/_AppointmentsGrid.cshtml", notifiedAppointments);
     }
 
     [HttpPost]

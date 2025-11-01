@@ -40,55 +40,42 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Listen for new patient added to queue (from other receptionists)
-        connection.on("AddPatientToQueue", (appointmentId, patientName, appointmentTime) => {
-            console.log(`Patient ${patientName} was added to the queue.`);
+        connection.on("AddPatientToQueue", (fullQueueData) => {
+            console.log(`Queue updated. Full queue data:`, fullQueueData);
 
             // --- Logic for Receptionist View ---
-            // The receptionist has the main appointment table. We just remove the row.
-            const appointmentRow = document.getElementById(`appointment-${appointmentId}`);
-            if (appointmentRow) {
-                console.log(`Removing appointment ${appointmentId} from receptionist view.`);
-                appointmentRow.style.transition = 'opacity 0.5s ease';
-                appointmentRow.style.opacity = '0';
-                setTimeout(() => appointmentRow.remove(), 500);
+            const queueList = document.getElementById('queueList');
+            if (queueList) {
+                console.log("Updating receptionist's queue view.");
+                updateQueue(fullQueueData);
             }
 
             // --- Logic for Doctor View ---
-            // The doctor has the #doctorQueueList element. We refresh it.
             const doctorQueueList = document.getElementById('doctorQueueList');
             const doctorWaitingState = document.getElementById('doctorWaitingState');
 
             if (doctorQueueList) {
-                console.log("Refreshing doctor's queue view.");
-                fetch('/Notifications/GetQueue')
-                    .then(response => response.json())
-                    .then(queueData => {
-                        if (queueData && queueData.length > 0) {
-                            // Hide the "No patients waiting" message
-                            if(doctorWaitingState) doctorWaitingState.style.display = 'none';
-
-                            // Populate the queue list
-                            doctorQueueList.innerHTML = `
-                                <h6 class="text-muted">Waiting Queue</h6>
-                                ${queueData.map(p => `
-                                    <div class="d-flex justify-content-between align-items-center p-2 queue-item-small">
-                                        <div>
-                                            <span class="fw-bold">${p.patientName}</span>
-                                            <small class="text-muted ms-2">Scheduled: ${new Date(p.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
-                                        </div>
-                                        <button class="btn btn-sm btn-success" onclick="transferToDoctor('${p.id}', '${p.patientName}')">
-                                            <i class="fas fa-arrow-right me-1"></i> Call In
-                                        </button>
-                                    </div>
-                                `).join("")}
-                            `;
-                        } else {
-                            // Show the "No patients waiting" message
-                            if(doctorWaitingState) doctorWaitingState.style.display = 'block';
-                            doctorQueueList.innerHTML = "";
-                        }
-                    })
-                    .catch(err => console.error("Failed to get queue for doctor view:", err));
+                console.log("Updating doctor's queue view.");
+                if (fullQueueData && fullQueueData.length > 0) {
+                    if(doctorWaitingState) doctorWaitingState.style.display = 'none';
+                    doctorQueueList.innerHTML = `
+                        <h6 class="text-muted">Waiting Queue</h6>
+                        ${fullQueueData.map(p => `
+                            <div class="d-flex justify-content-between align-items-center p-2 queue-item-small">
+                                <div>
+                                    <span class="fw-bold">${p.patientName}</span>
+                                    <small class="text-muted ms-2">Scheduled: ${new Date(p.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                                </div>
+                                <a href="/Patients/Details/${p.id}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-info-circle me-1"></i> Details
+                                </a>
+                            </div>
+                        `).join("")}
+                    `;
+                } else {
+                    if(doctorWaitingState) doctorWaitingState.style.display = 'block';
+                    doctorQueueList.innerHTML = "";
+                }
             }
         });
 
@@ -146,12 +133,40 @@ document.addEventListener("DOMContentLoaded", function () {
                         "RequestVerificationToken": token
                     } : {}
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Notify other clients via SignalR
-                            // The UI update will be handled by the SignalR listener
-                            connection.invoke("AddNewPatient", appointmentId, data.patientName);
+                    .then(response => {
+                        // Check if the response was successful
+                        if (!response.ok) {
+                            // Log the error status and response body
+                            console.error(`Error from server: ${response.status} ${response.statusText}`);
+                            response.text().then(text => console.error("Server error response body:", text));
+                            // Throw an error to jump to the .catch() block
+                            throw new Error('Server responded with an error.');
+                        }
+                        // If response is OK, proceed to parse it as text
+                        return response.text();
+                    })
+                    .then(html => {
+                        console.log("Server response HTML:", html); // Add this line for debugging
+
+                        // --- Logic for Receptionist View ---
+                        const appointmentRow = this.closest('tr');
+                        if (appointmentRow) {
+                            appointmentRow.style.transition = 'opacity 0.5s ease';
+                            appointmentRow.style.opacity = '0';
+                            setTimeout(() => appointmentRow.remove(), 500);
+                        }
+
+                        // --- Logic for Doctor View ---
+                        const doctorQueueList = document.getElementById('doctorQueueList');
+                        const doctorWaitingState = document.getElementById('doctorWaitingState');
+                        if (doctorQueueList) {
+                            if (html && html.trim().length > 0) {
+                                if(doctorWaitingState) doctorWaitingState.style.display = 'none';
+                                doctorQueueList.innerHTML = html;
+                            } else {
+                                if(doctorWaitingState) doctorWaitingState.style.display = 'block';
+                                doctorQueueList.innerHTML = "";
+                            }
                         }
                     })
                     .catch(err => {
