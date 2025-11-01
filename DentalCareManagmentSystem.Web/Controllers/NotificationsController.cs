@@ -1,12 +1,9 @@
-﻿
-using DentalCareManagmentSystem.Application.Interfaces;
+﻿using DentalCareManagmentSystem.Application.Interfaces;
 using DentalCareManagmentSystem.Web.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DentalCareManagmentSystem.Web.Controllers;
 
@@ -17,7 +14,7 @@ public class NotificationsController : Controller
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly IAppointmentService _appointmentService;
 
-    public NotificationsController(IAppointmentService appointmentService, IHubContext<NotificationHub> hubContext,INotificationService notificationService)
+    public NotificationsController(IAppointmentService appointmentService, IHubContext<NotificationHub> hubContext, INotificationService notificationService)
     {
         _appointmentService = appointmentService;
         _hubContext = hubContext;
@@ -127,7 +124,18 @@ public class NotificationsController : Controller
         }
         return View(appointment);
     }
+
+    [HttpGet]
+    public IActionResult GetQueue()
+    {
+        var notifiedAppointments = _appointmentService.GetAll()
+            .Where(a => a.Status == "Notified")
+            .OrderBy(a => a.Date) 
+            .ToList();
+        return Json(notifiedAppointments);
+    }
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddToQueue(Guid appointmentId)
     {
         try
@@ -141,14 +149,15 @@ public class NotificationsController : Controller
 
             // إضافة المريض للطابور
             await _hubContext.Clients.All.SendAsync("AddPatientToQueue",
+                appointmentId,
                 appointment.PatientName,
-                appointment.Id,
                 appointment.StartTime.ToString(@"hh\:mm"));
 
             return Json(new
             {
                 success = true,
-                message = "Patient added to queue successfully"
+                message = "Patient added to queue successfully",
+                patientName = appointment.PatientName
             });
         }
         catch (Exception ex)

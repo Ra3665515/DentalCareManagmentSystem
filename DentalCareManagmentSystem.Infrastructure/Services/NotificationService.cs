@@ -42,7 +42,7 @@ public class NotificationService : INotificationService
         var appointments = await _context.Appointments
             .Include(a => a.Patient)
             .Where(a => a.Date.Date == today.Date &&
-                       a.Status == AppointmentStatus.Scheduled)
+                       a.Status == AppointmentStatus.Scheduled || a.Status == AppointmentStatus.Notified)
             .OrderBy(a => a.StartTime)
             .ToListAsync();
 

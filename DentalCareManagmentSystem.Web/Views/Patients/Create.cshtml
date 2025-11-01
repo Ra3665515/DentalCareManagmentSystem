@@ -28,9 +28,16 @@
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> Add</button>
+                <button type="submit" id="btnAddPatient" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> Add</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>
 </div>
+
+                    
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="~/js/signalr-connection.js"></script>
+    <script src="~/js/reception-actions.js"></script>
+}

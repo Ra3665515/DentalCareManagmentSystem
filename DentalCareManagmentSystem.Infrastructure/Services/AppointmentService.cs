@@ -85,11 +85,18 @@ public class AppointmentService : IAppointmentService
 
     public void UpdateStatus(Guid id, string status)
     {
-        var appointment = _context.Appointments.Find(id);
-        if (appointment != null)
+        var appointmentToUpdate = new Appointment { Id = id };
+        try
         {
-            appointment.Status = Enum.Parse<AppointmentStatus>(status);
+            _context.Appointments.Attach(appointmentToUpdate);
+            appointmentToUpdate.Status = Enum.Parse<AppointmentStatus>(status);
             _context.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception to diagnose potential issues
+            Console.WriteLine($"Error updating appointment status: {ex.Message}");
+            throw; // Re-throw the exception to ensure the caller is aware of the failure
         }
     }
 

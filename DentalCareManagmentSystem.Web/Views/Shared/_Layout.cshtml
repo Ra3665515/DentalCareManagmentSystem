@@ -1,6 +1,4 @@
-﻿
-
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using DentalCareManagmentSystem.Domain.Entities
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
@@ -12,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="~/images/tooth.png" />
     <link rel="stylesheet" href="~/css/mvc-grid.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
 
     <title>@ViewData["Title"] - DentalCareManagmentSystem</title>
@@ -22,7 +19,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
    
     <link rel="stylesheet" href="~/DentalCareManagmentSystem.Web.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -83,18 +80,7 @@
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
-                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-bell"></i>
-                                    <span class="badge bg-danger" id="notificationCount">0</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="notificationDropdown">
-@*                                     <h6 class="dropdown-header">Today's Appointments</h6>
- *@                                    <div id="notificationList">
-                                        <!-- Notifications loaded via AJAX -->
-                                    </div>
-                                </div>
+                            
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.Action("TodaysAppointments", "Appointments")">
                                     <i class="fas fa-calendar-day me-1"></i>
@@ -119,6 +105,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="/js/mvc-grid.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
     <script>
         document.getElementById("sidebarToggle").addEventListener("click", event => {
@@ -127,47 +114,46 @@
             localStorage.setItem("sb-sidenav-toggle", document.body.classList.contains("sb-sidenav-toggled"));
         });
 
-        $(document).ready(function () {
-            function loadNotifications() {
-                        $.get("/Notifications/Today", function (data) {
-            $("#notificationList").html(data);
+        
 
-            var count = $("#notificationList .notification-card").length;
-            $("#notificationCount").text(count);
+            // SignalR connection for real-time notifications
+            const notificationConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
 
-            if (count > 0) {
-                $("#notificationCount").show();
-            } else {
-                $("#notificationCount").hide();
-            }
-        });
+            notificationConnection.start()
+                .then(() => {
+                    console.log("SignalR connected for notifications");
+                })
+                .catch(err => console.error("SignalR connection error:", err));
 
-            }
+            // Listen for new patients added to queue
+            notificationConnection.on("AddPatientToQueue", (appointmentId, patientName, appointmentTime) => {
+                console.log(`New patient added to queue: ${patientName}`);
+                
+                // Refresh notifications immediately
+                loadNotifications();
+                
+                // Show a toast notification (optional)
+                if (typeof showToast === 'function') {
+                    showToast(`Patient ${patientName} added to queue`, 'success');
+                }
+            });
 
-            loadNotifications();
-            setInterval(loadNotifications, 60000);
+            // Listen for patient transfers
+            notificationConnection.on("PatientTransferred", (appointmentId, patientName) => {
+                console.log(`Patient transferred: ${patientName}`);
+                loadNotifications();
+            });
+
+            // Listen for patient completion
+            notificationConnection.on("PatientCompleted", (appointmentId, patientName) => {
+                console.log(`Patient completed: ${patientName}`);
+                loadNotifications();
+            });
         });
     </script>
-
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script>
-        // اتصال SignalR عام لجميع الصفحات
-        const doctorConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub")
-            .build();
-
-        doctorConnection.start().catch(err => console.error('SignalR Connection Error: ', err));
-
-        // دالة عامة للانضمام لغرفة الدكتور
-        function joinDoctorRoom(doctorId) {
-            if (doctorId) {
-                doctorConnection.invoke("JoinDoctorRoom", doctorId)
-                    .then(() => console.log(`Doctor ${doctorId} joined room`))
-                    .catch(err => console.error(err));
-            }
-        }
-    </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
