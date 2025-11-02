@@ -50,7 +50,7 @@ public class PriceListService : IPriceListService
         });
     }
 
-    public PriceListItemDto GetById(Guid id)
+    public PriceListItemDto? GetById(Guid id)
     {
         return GetAll().FirstOrDefault(i => i.Id == id);
     }

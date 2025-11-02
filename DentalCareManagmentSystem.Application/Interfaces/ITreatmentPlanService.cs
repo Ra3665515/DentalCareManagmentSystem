@@ -6,7 +6,7 @@ namespace DentalCareManagmentSystem.Application.Interfaces;
 public interface ITreatmentPlanService
 {
     IQueryable<TreatmentPlanDto> GetAll(); // Added
-    TreatmentPlanDto GetById(Guid id);
+    TreatmentPlanDto? GetById(Guid id);
     List<TreatmentPlanDto> GetPlansByPatientId(Guid patientId);
     Guid CreatePlan(Guid patientId, string createdById);
     void AddItemToPlan(Guid planId, Guid priceListItemId, int quantity);

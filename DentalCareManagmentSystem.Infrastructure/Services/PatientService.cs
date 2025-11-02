@@ -15,8 +15,13 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public void Create(PatientDto patientDto)
+    public Patient Create(PatientDto patientDto)
     {
+        if (patientDto.Gender == null)
+        {
+            throw new ArgumentNullException(nameof(patientDto.Gender));
+        }
+
         var patient = new Patient
         {
             FullName = patientDto.FullName,
@@ -29,6 +34,7 @@ public class PatientService : IPatientService
         };
         _context.Patients.Add(patient);
         _context.SaveChanges();
+        return patient;
     }
 
     public void Delete(Guid id)
@@ -46,7 +52,7 @@ public class PatientService : IPatientService
         return _context.Patients.Where(p => p.IsActive);
     }
 
-    public PatientDto GetById(Guid id)
+    public PatientDto? GetById(Guid id)
     {
         var patient = _context.Patients.Find(id);
         if (patient == null) return null;
@@ -145,6 +151,10 @@ public class PatientService : IPatientService
             patient.FullName = patientDto.FullName;
             patient.Age = patientDto.Age;
             patient.Phone = patientDto.Phone;
+            if (patientDto.Gender == null)
+            {
+                throw new ArgumentNullException(nameof(patientDto.Gender));
+            }
             patient.Gender = Enum.Parse<Domain.Enums.Gender>(patientDto.Gender);
 
             patient.Notes = patientDto.Notes;

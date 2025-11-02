@@ -163,18 +163,30 @@
             }
             <hr />
             <div>
-                @foreach (var note in ViewBag.DiagnosisNotes as List<DentalCareManagmentSystem.Domain.Entities.DiagnosisNote>)
+                @if (ViewBag.DiagnosisNotes != null)
                 {
-                    <div class="mb-2 border p-2 rounded">
-                        <small class="text-muted">@note.CreatedAt.ToString("yyyy-MM-dd")</small>
-                        <p>@note.Note</p>
-                        @if (User.IsInRole("Doctor"))
+                    @foreach (var note in ViewBag.DiagnosisNotes as List<DentalCareManagmentSystem.Domain.Entities.DiagnosisNote>)
+                    {
+                        if (note != null)
                         {
-                            <form asp-action="Delete" asp-controller="Diagnosis" method="post" style="display:inline">
-                                <input type="hidden" name="id" value="@note.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
+                            <div class="mb-2 border p-2 rounded">
+                                <small class="text-muted">@note?.CreatedAt.ToString("yyyy-MM-dd")</small>
+                                <p>@note?.Note</p>
+                                @if (User.IsInRole("Doctor"))
+                                {
+                                    <form asp-action="Delete" asp-controller="Diagnosis" method="post" style="display:inline">
+                                        <input type="hidden" name="id" value="@note!.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                }
+                            </div>
                         }
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info text-center mt-3">
+                        <i class="fas fa-info-circle me-2"></i> No diagnosis notes found for this patient.
                     </div>
                 }
             </div>
@@ -191,18 +203,30 @@
                 </form>
             }
             <div class="d-flex flex-wrap">
-                @foreach (var img in ViewBag.PatientImages as List<DentalCareManagmentSystem.Domain.Entities.PatientImage>)
+                @if (ViewBag.PatientImages != null)
                 {
-                    <div class="me-3 mb-3 text-center">
-                        <img src="@img.ThumbnailPath" class="img-thumbnail" width="150" /><br />
-                        @if (User.IsInRole("Doctor"))
+                    @foreach (var img in ViewBag.PatientImages as List<DentalCareManagmentSystem.Domain.Entities.PatientImage>)
+                    {
+                        if (img != null)
                         {
-                            <form asp-action="DeletePatientImage" asp-controller="Patients" method="post">
-                                <input type="hidden" name="patientId" value="@Model.Id" />
-                                <input type="hidden" name="imageId" value="@img.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger mt-1">Delete</button>
-                            </form>
+                            <div class="me-3 mb-3 text-center">
+                                <img src="@img?.ThumbnailPath" class="img-thumbnail" width="150" /><br />
+                                @if (User.IsInRole("Doctor"))
+                                {
+                                    <form asp-action="DeletePatientImage" asp-controller="Patients" method="post">
+                                        <input type="hidden" name="patientId" value="@Model.Id" />
+                                        <input type="hidden" name="imageId" value="@img.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger mt-1">Delete</button>
+                                    </form>
+                                }
+                            </div>
                         }
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info text-center mt-3">
+                        <i class="fas fa-info-circle me-2"></i> No images found for this patient.
                     </div>
                 }
             </div>

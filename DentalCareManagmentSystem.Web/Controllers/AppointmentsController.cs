@@ -18,12 +18,16 @@ public class AppointmentsController : Controller
         _patientService = patientService;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string searchString)
     {
-        var appointments = _appointmentService.GetAll().ToList();
+        var appointments = _appointmentService.GetAll();
 
+        if (!String.IsNullOrEmpty(searchString))
+        {
+            appointments = appointments.Where(a => a.PatientName != null && a.PatientName.Contains(searchString));
+        }
 
-        return View(appointments);
+        return View(appointments.ToList());
     }
 
     [HttpGet]

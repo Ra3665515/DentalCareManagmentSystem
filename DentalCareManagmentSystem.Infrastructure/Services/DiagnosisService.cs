@@ -18,7 +18,7 @@ public class DiagnosisService : IDiagnosisService
         return _context.DiagnosisNotes;
     }
 
-    public DiagnosisNote GetById(Guid id)
+    public DiagnosisNote? GetById(Guid id)
     {
         return _context.DiagnosisNotes.Find(id);
     }

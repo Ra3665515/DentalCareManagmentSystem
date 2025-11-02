@@ -157,13 +157,13 @@ public class UserService : IUserService
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault()
+                Role = (string?)_userManager.GetRolesAsync(user).Result.FirstOrDefault()
             });
         }
         return userDtos.AsQueryable();
     }
 
-    public async Task<UserDto> GetByIdAsync(string id)
+    public async Task<UserDto?> GetByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return null;
@@ -173,12 +173,16 @@ public class UserService : IUserService
             Id = user.Id,
             FullName = user.FullName,
             Email = user.Email,
-            Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()
+            Role = (string?)(await _userManager.GetRolesAsync(user)).FirstOrDefault()
         };
     }
 
     public async Task UpdateAsync(UserDto userDto)
     {
+        if (userDto.Id == null)
+        {
+            throw new ArgumentNullException(nameof(userDto.Id));
+        }
         var user = await _userManager.FindByIdAsync(userDto.Id);
         if (user != null)
         {
@@ -190,12 +194,15 @@ public class UserService : IUserService
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
 
-            if (!await _roleManager.RoleExistsAsync(userDto.Role))
+            if (userDto.Role != null)
             {
-                await _roleManager.CreateAsync(new IdentityRole(userDto.Role));
-            }
+                if (!await _roleManager.RoleExistsAsync(userDto.Role))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(userDto.Role));
+                }
 
-            await _userManager.AddToRoleAsync(user, userDto.Role);
+                await _userManager.AddToRoleAsync(user, userDto.Role);
+            }
         }
     }
 }

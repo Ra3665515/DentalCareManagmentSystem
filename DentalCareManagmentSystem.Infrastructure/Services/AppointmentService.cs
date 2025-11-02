@@ -48,8 +48,8 @@ public class AppointmentService : IAppointmentService
             {
                 Id = a.Id,
                 PatientId = a.PatientId,
-                PatientName = a.Patient.FullName,
-                PatientPhone = a.Patient.Phone,
+                PatientName = a.Patient != null ? a.Patient.FullName : null,
+                PatientPhone = a.Patient != null ? a.Patient.Phone : null,
                 Date = a.Date,
                 StartTime = a.StartTime,
                 EndTime = a.EndTime, // Added
@@ -58,7 +58,7 @@ public class AppointmentService : IAppointmentService
             });
     }
 
-    public AppointmentDto GetById(Guid id)
+    public AppointmentDto? GetById(Guid id)
     {
         return GetAll().FirstOrDefault(a => a.Id == id);
     }
@@ -180,7 +180,10 @@ public class AppointmentService : IAppointmentService
             appointment.Date = appointmentDto.Date;
             appointment.StartTime = appointmentDto.StartTime;
             appointment.EndTime = appointmentDto.EndTime; // Updated
-            appointment.Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status);
+            if (appointmentDto.Status != null) 
+            {
+                appointment.Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status);
+            }
             appointment.Notes = appointmentDto.Notes; // Added
             _context.SaveChanges();
         }

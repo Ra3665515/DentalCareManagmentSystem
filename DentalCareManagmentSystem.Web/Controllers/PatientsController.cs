@@ -23,25 +23,31 @@ public class PatientsController : Controller
     }
 
 
-    public IActionResult Index()
+    public IActionResult Index(string searchString)
     {
-        var patients = _patientService.GetPatientsWithTotalDue();
-        return View(patients);
-    }
+        var patients = _patientService.GetAll();
 
-    [HttpGet]
-    public IActionResult GetPatientsGrid()
-    {
-        var patients = _patientService.GetAll().Select(p => new PatientDto
+        if (!String.IsNullOrEmpty(searchString))
+        {
+            patients = patients.Where(s => (s.FullName != null && s.FullName.Contains(searchString)) || (s.Phone != null && s.Phone.Contains(searchString)));
+        }
+
+        var patientDtos = patients.Select(p => new PatientDto
         {
             Id = p.Id,
             FullName = p.FullName,
             Phone = p.Phone,
             Age = p.Age,
-            Gender = p.Gender.ToString(),
-            Notes = p.Notes,
-            TotalDue = _patientService.GetById(p.Id).TotalDue
+            Gender = p.Gender.ToString()
         }).ToList();
+
+        return View(patientDtos);
+    }
+
+    [HttpGet]
+    public IActionResult GetPatientsGrid()
+    {
+        var patients = _patientService.GetPatientsWithTotalDue();
         return PartialView("_PatientsGrid", patients);
     }
 
@@ -57,8 +63,8 @@ public class PatientsController : Controller
     {
         if (ModelState.IsValid)
         {
-            _patientService.Create(patientDto);
-            return RedirectToAction(nameof(Index));
+            var patient = _patientService.Create(patientDto);
+            return RedirectToAction("Create", "Appointments", new { patientId = patient.Id });
         }
 
         ViewBag.Genders = new SelectList(Enum.GetNames(typeof(Domain.Enums.Gender)));

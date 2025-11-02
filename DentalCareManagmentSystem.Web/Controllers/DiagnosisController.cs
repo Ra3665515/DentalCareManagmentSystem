@@ -61,6 +61,7 @@ public class DiagnosisController : Controller
         {
             _diagnosisService.UpdateNote(id, note);
             var diagnosisNote = _diagnosisService.GetById(id);
+            if (diagnosisNote == null) return NotFound();
             return RedirectToAction("Details", "Patients", new { id = diagnosisNote.PatientId });
         }
         
@@ -133,7 +134,7 @@ public class DiagnosisController : Controller
 
     public class NoteDto
     {
-        public string Note { get; set; }
+        public string? Note { get; set; }
     }
 
 

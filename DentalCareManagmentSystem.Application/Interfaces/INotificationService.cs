@@ -13,7 +13,7 @@ namespace DentalCareManagmentSystem.Application.Interfaces
         Task<List<NotificationDto>> GetTodayNotificationsAsync();
         Task<List<AppointmentDto>> GetTodayAppointmentsAsync();
         Task<List<AppointmentDto>> GetAppointmentsByDateAsync(string date);
-        Task<AppointmentDto> GetAppointmentByIdAsync(Guid id);
+        Task<AppointmentDto?> GetAppointmentByIdAsync(Guid id);
         Task<bool> MarkAsDoneAsync(Guid appointmentId, string userId);
     }
 }

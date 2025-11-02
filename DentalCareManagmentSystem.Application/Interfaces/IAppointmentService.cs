@@ -5,7 +5,7 @@ namespace DentalCareManagmentSystem.Application.Interfaces;
 
 public interface IAppointmentService
 {
-    AppointmentDto GetById(Guid id);
+    AppointmentDto? GetById(Guid id);
     IQueryable<AppointmentDto> GetAll();
     List<AppointmentDto> GetTodaysAppointments();
     List<AppointmentDto> GetPendingAppointments(); // Added

@@ -55,11 +55,16 @@ public class ImageService : IImageService
         var image = _context.PatientImages.Find(imageId);
         if (image != null)
         {
-            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, image.FilePath.TrimStart('/'));
-            var thumbPath = Path.Combine(_webHostEnvironment.WebRootPath, image.ThumbnailPath.TrimStart('/'));
-
-            if (File.Exists(fullPath)) File.Delete(fullPath);
-            if (File.Exists(thumbPath)) File.Delete(thumbPath);
+            if (image.FilePath != null)
+            {
+                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, image.FilePath.TrimStart('/'));
+                if (File.Exists(fullPath)) File.Delete(fullPath);
+            }
+            if (image.ThumbnailPath != null)
+            {
+                var thumbPath = Path.Combine(_webHostEnvironment.WebRootPath, image.ThumbnailPath.TrimStart('/'));
+                if (File.Exists(thumbPath)) File.Delete(thumbPath);
+            }
 
             _context.PatientImages.Remove(image);
             _context.SaveChanges();

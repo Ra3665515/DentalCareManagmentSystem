@@ -33,7 +33,7 @@
                                     <p class="mb-0"><strong>Patient ID:</strong> @ViewBag.PatientId</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="mb-0"><strong>Created By:</strong> @User.Identity.Name</p>
+                                    <p class="mb-0"><strong>Created By:</strong> @(User.Identity?.Name ?? "Unknown")</p>
                                     <p class="mb-0"><strong>Date:</strong> @DateTime.Now.ToString("MMMM dd, yyyy")</p>
                                 </div>
                             </div>

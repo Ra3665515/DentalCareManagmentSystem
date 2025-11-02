@@ -109,7 +109,7 @@ public class NotificationService : INotificationService
         return new List<AppointmentDto>();
     }
 
-    public async Task<AppointmentDto> GetAppointmentByIdAsync(Guid id)
+    public async Task<AppointmentDto?> GetAppointmentByIdAsync(Guid id)
     {
         var appointment = await _context.Appointments
             .Include(a => a.Patient)

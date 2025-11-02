@@ -6,7 +6,7 @@ namespace DentalCareManagmentSystem.Application.Interfaces;
 
 public interface IPatientService
 {
-    PatientDto GetById(Guid id);
+    PatientDto? GetById(Guid id);
     IQueryable<Patient> GetAll();
     List<PatientDto> GetRecentPatients(); // Added
     List<PatientDto> GetActivePatients(); // Added
@@ -15,7 +15,7 @@ public interface IPatientService
     Dictionary<string, int> GetPatientCountByAgeGroup(); // Added
     List<PatientDto> GetPatientsWithTotalDue();
 
-    void Create(PatientDto patient);
+    Patient Create(PatientDto patient);
     void Update(PatientDto patient);
     void Delete(Guid id);
 }

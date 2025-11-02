@@ -7,7 +7,7 @@ namespace DentalCareManagmentSystem.Application.Interfaces;
 public interface IUserService
 {
     IQueryable<UserDto> GetAll();
-    Task<UserDto> GetByIdAsync(string id);
+    Task<UserDto?> GetByIdAsync(string id);
     //Task CreateAsync(UserDto user, string password, string role);
     Task<IdentityResult> CreateAsync(UserDto userDto, string password, string role);
 
