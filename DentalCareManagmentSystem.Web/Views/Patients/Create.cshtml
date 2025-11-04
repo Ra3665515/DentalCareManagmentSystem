@@ -3,33 +3,36 @@
     ViewData["Title"] = "Add Patient";
 }
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <div class="container mt-5">
-    <h2 class="fw-bold text-primary mb-4"><i class="fas fa-plus-circle me-2"></i> Add New Patient</h2>
+    <h2 class="fw-bold text-primary mb-4"><i class="fas fa-plus-circle me-2"></i> @Localizer["AddNewPatient"]</h2>
     <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="Create" method="post">
                 <div class="mb-3">
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label">@Localizer["FullName"]</label>
                     <input asp-for="FullName" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Age</label>
+                    <label class="form-label">@Localizer["Age"]</label>
                     <input asp-for="Age" class="form-control" type="number" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Phone</label>
+                    <label class="form-label">@Localizer["Phone"]</label>
                     <input asp-for="Phone" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label asp-for="Gender" class="form-label">Gender</label>
+                    <label asp-for="Gender" class="form-label">@Localizer["Gender"]</label>
                     <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders">
-                        <option value="">-- Select Gender --</option>
+                        <option value="">@Localizer["SelectGender"]</option>
                     </select>
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
 
-                <button type="submit" id="btnAddPatient" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> Add</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <button type="submit" id="btnAddPatient" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> @Localizer["Add"]</button>
+                <a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
             </form>
         </div>
     </div>

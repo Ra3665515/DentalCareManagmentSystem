@@ -4,20 +4,22 @@
     ViewData["Title"] = "Today's Appointments";
 }
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="container-fluid py-4 fade-in">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary mb-1">
-                <i class="fas fa-calendar-day me-2"></i>Today's Appointments
+                <i class="fas fa-calendar-day me-2"></i>@Localizer["TodaysAppointments"]
             </h2>
             <p class="text-muted mb-0">@DateTime.Today.ToString("dddd, MMMM dd, yyyy")</p>
         </div>
 
         <div class="d-flex gap-2">
             <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Back
+                <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
             </a>
           
         </div>
@@ -31,7 +33,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Appointments
+                                @Localizer["TotalAppointments"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count</div>
                         </div>
@@ -49,7 +51,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Completed
+                                @Localizer["Completed"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Completed")</div>
                         </div>
@@ -67,7 +69,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending
+                                @Localizer["Pending"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Scheduled")</div>
                         </div>
@@ -85,8 +87,8 @@
     {
         <div class="empty-state">
             <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
-            <h4 class="text-muted">No appointments for today</h4>
-            <p class="text-muted">All caught up! No appointments scheduled for today.</p>
+            <h4 class="text-muted">@Localizer["NoAppointmentsToday"]</h4>
+            <p class="text-muted">@Localizer["AllCaughtUp"]</p>
         </div>
     }
     else
@@ -95,9 +97,9 @@
             <div class="card-header bg-light">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="fas fa-list me-2"></i>Today's Appointments
+                        <i class="fas fa-list me-2"></i>@Localizer["TodaysAppointments"]
                     </h5>
-                    <span class="badge bg-primary status-badge">@Model.Count appointments</span>
+                    <span class="badge bg-primary status-badge">@Model.Count @Localizer["AppointmentsCount"]</span>
                 </div>
             </div>
 
@@ -106,11 +108,11 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th><i class="fas fa-user me-1"></i> Patient</th>
-                                <th><i class="fas fa-phone me-1"></i> Phone</th>
-                                <th><i class="fas fa-clock me-1"></i> Time</th>
-                                <th><i class="fas fa-tag me-1"></i> Status</th>
-                                <th><i class="fas fa-eye me-1"></i> View</th>
+                                <th><i class="fas fa-user me-1"></i> @Localizer["Patient"]</th>
+                                <th><i class="fas fa-phone me-1"></i> @Localizer["Phone"]</th>
+                                <th><i class="fas fa-clock me-1"></i> @Localizer["Time"]</th>
+                                <th><i class="fas fa-tag me-1"></i> @Localizer["Status"]</th>
+                                <th><i class="fas fa-eye me-1"></i> @Localizer["View"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -155,8 +157,8 @@
                                     <td>
                                         <a href="/Notifications/Details/@appointment.Id"
                                            class="btn btn-outline-primary btn-sm"
-                                           title="View Appointment Details">
-                                            <i class="fas fa-external-link-alt"></i> Details
+                                           title="@Localizer["ViewDetails"]">
+                                            <i class="fas fa-external-link-alt"></i> @Localizer["Details"]
                                         </a>
                                     </td>
                                 </tr>

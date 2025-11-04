@@ -1,13 +1,14 @@
-﻿using DentalCareManagmentSystem.Application.Interfaces;
+using DentalCareManagmentSystem.Application.Interfaces;
 using DentalCareManagmentSystem.Domain.Entities;
 using DentalCareManagmentSystem.Infrastructure.Data;
 using DentalCareManagmentSystem.Infrastructure.Identity;
 using DentalCareManagmentSystem.Infrastructure.Services;
 using DentalCareManagmentSystem.Web.Hubs;
+using DentalCareManagmentSystem.Web.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,14 +27,26 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 // Localization
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-// Controllers & Views with Localization
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization()
-    .AddDataAnnotationsLocalization();
-builder.Services.AddSignalR();
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+        opts => { opts.ResourcesPath = "Resources"; })
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    });
 builder.Services.AddRazorPages()
-    .AddViewLocalization()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+        opts => { opts.ResourcesPath = "Resources"; })
     .AddDataAnnotationsLocalization();
+
+builder.Services.AddRequestLocalization(options =>
+{
+    var supportedCultures = new[] { "en-US", "ar-SA" };
+    options.SetDefaultCulture(supportedCultures[0]);
+    options.AddSupportedCultures(supportedCultures);
+    options.AddSupportedUICultures(supportedCultures);
+});
 
 // Register Application Services
 builder.Services.AddScoped<IPatientService, PatientService>();
@@ -52,24 +65,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// إضافة SignalR services
+// SignalR services
 builder.Services.AddSignalR();
 
 var app = builder.Build();
-
-// Supported Cultures
-var supportedCultures = new[]
-{
-    new CultureInfo("en-US"),
-    new CultureInfo("ar-SA")
-};
-
-var localizationOptions = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("en-US"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures
-};
 
 // 2️⃣ Configure Middleware
 if (app.Environment.IsDevelopment())
@@ -83,17 +82,17 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // هذا مهم لخدمة ملفات الـ JavaScript
+app.UseStaticFiles();
 
 app.UseRouting();
 
 // Localization Middleware
-app.UseRequestLocalization(localizationOptions);
+app.UseRequestLocalization();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3️⃣ SignalR Hub Mapping - ضعه قبل الـ MapControllerRoute
+// 3️⃣ SignalR Hub Mapping
 app.MapHub<NotificationHub>("/notificationHub");
 
 // Routes
@@ -105,7 +104,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapRazorPages();
 
 // 4️⃣ Seed Data

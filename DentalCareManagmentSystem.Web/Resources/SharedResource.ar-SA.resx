@@ -1,8 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Home Page -->
   <data name="Welcome" xml:space="preserve">
-    <value>مرحباً بكم في نظام إدارة عيادة الأسنان</value>
+    <value>مرحباً بك في عيادتك لطب الأسنان</value>
   </data>
   <data name="Slogan" xml:space="preserve">
-    <value>الحل الشامل لإدارة عمليات عيادة الأسنان الخاصة بك.</value>
+    <value>ابتسامتك هي أولويتنا.</value>
+  </data>
+  <data name="Patients" xml:space="preserve">
+    <value>المرضى</value>
+  </data>
+  <data name="ManagePatientRecords" xml:space="preserve">
+    <value>إدارة سجلات المرضى والمواعيد وخطط العلاج.</value>
+  </data>
+  <data name="GoToPatients" xml:space="preserve">
+    <value>الذهاب إلى المرضى</value>
+  </data>
+  <data name="Appointments" xml:space="preserve">
+    <value>المواعيد</value>
+  </data>
+  <data name="ViewScheduleAppointments" xml:space="preserve">
+    <value>عرض وجدولة المواعيد لمرضاك.</value>
+  </data>
+  <data name="GoToAppointments" xml:space="preserve">
+    <value>الذهاب إلى المواعيد</value>
+  </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>لوحة الإدارة</value>
+  </data>
+  <data name="ManagePriceListUsers" xml:space="preserve">
+    <value>إدارة قوائم الأسعار والمستخدمين وإعدادات النظام.</value>
+  </data>
+  <data name="GoToAdmin" xml:space="preserve">
+    <value>الذهاب إلى الإدارة</value>
+  </data>
+
+  <!-- Appointments Index -->
+  <data name="CurrentPatientNotification" xml:space="preserve">
+    <value>إشعار المريض الحالي</value>
+  </data>
+  <data name="WaitingForPatientNotifications" xml:space="preserve">
+    <value>في انتظار إشعارات المرضى</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>بدء</value>
+  </data>
+  <data name="AllAppointments" xml:space="preserve">
+    <value>جميع المواعيد</value>
+  </data>
+  <data name="Patient" xml:space="preserve">
+    <value>المريض</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="NoAppointmentsFound" xml:space="preserve">
+    <value>لم يتم العثور على مواعيد.</value>
+  </data>
+  <data name="AddNewAppointment" xml:space="preserve">
+    <value>إضافة موعد جديد</value>
+  </data>
+  <data name="SearchByPatientName" xml:space="preserve">
+    <value>البحث باسم المريض...</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+
+  <!-- Appointment Create -->
+  <data name="AddAppointment" xml:space="preserve">
+    <value>إضافة موعد جديد</value>
+  </data>
+  <data name="SelectPatient" xml:space="preserve">
+    <value>-- اختر المريض --</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>وقت البدء</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>وقت الانتهاء</value>
+  </data>
+  <data name="SelectStatus" xml:space="preserve">
+    <value>-- اختر الحالة --</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="AddAppointmentButton" xml:space="preserve">
+    <value>إضافة موعد</value>
+  </data>
+
+  <!-- Appointment Edit -->
+  <data name="EditAppointment" xml:space="preserve">
+    <value>تعديل الموعد</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>العودة إلى القائمة</value>
+  </data>
+  <data name="AppointmentInformation" xml:space="preserve">
+    <value>معلومات الموعد</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
+  <data name="DoubleCheckDateTime" xml:space="preserve">
+    <value>يرجى التحقق من تاريخ ووقت الموعد قبل الحفظ.</value>
+  </data>
+
+  <!-- Appointment Details -->
+  <data name="AppointmentDetails" xml:space="preserve">
+    <value>تفاصيل الموعد</value>
+  </data>
+  <data name="PatientInformation" xml:space="preserve">
+    <value>معلومات المريض</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+
+  <!-- Today's Appointments -->
+  <data name="TodaysAppointments" xml:space="preserve">
+    <value>مواعيد اليوم</value>
+  </data>
+  <data name="WaitingQueue" xml:space="preserve">
+    <value>طابور الانتظار</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>في الانتظار</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+  <data name="NoPatientsInQueue" xml:space="preserve">
+    <value>لا يوجد مرضى في الطابور</value>
+  </data>
+  <data name="AddPatientsToQueue" xml:space="preserve">
+    <value>أضف مرضى إلى طابور الانتظار</value>
+  </data>
+  <data name="DoctorsPanel" xml:space="preserve">
+    <value>لوحة الطبيب</value>
+  </data>
+  <data name="NoPatientsWaiting" xml:space="preserve">
+    <value>لا يوجد مرضى في الانتظار</value>
+  </data>
+  <data name="YouWillBeNotified" xml:space="preserve">
+    <value>سيتم إشعارك عند وصول المرضى</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>إكمال</value>
+  </data>
+  <data name="NewAppointment" xml:space="preserve">
+    <value>موعد جديد</value>
+  </data>
+  <data name="TotalAppointments" xml:space="preserve">
+    <value>إجمالي المواعيد</value>
+  </data>
+  <data name="Notified" xml:space="preserve">
+    <value>تم الإشعار</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>مجدول</value>
+  </data>
+  <data name="NoAppointmentsToday" xml:space="preserve">
+    <value>لا توجد مواعيد لليوم</value>
+  </data>
+  <data name="AllCaughtUp" xml:space="preserve">
+    <value>كل شيء منتهي! لا توجد مواعيد مجدولة لليوم.</value>
+  </data>
+  <data name="CreateNewAppointment" xml:space="preserve">
+    <value>إنشاء موعد جديد</value>
+  </data>
+  <data name="AppointmentsList" xml:space="preserve">
+    <value>قائمة المواعيد</value>
+  </data>
+  <data name="AppointmentsCount" xml:space="preserve">
+    <value>مواعيد</value>
+  </data>
+  <data name="QueueActions" xml:space="preserve">
+    <value>إجراءات الطابور</value>
+  </data>
+  <data name="AddToQueue" xml:space="preserve">
+    <value>إضافة إلى الطابور</value>
+  </data>
+  <data name="InQueue" xml:space="preserve">
+    <value>في الطابور</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>عرض التفاصيل</value>
+  </data>
+
+  <!-- Appointment Status -->
+  <data name="Cancelled" xml:space="preserve">
+    <value>ملغي</value>
+  </data>
+  <data name="NoShow" xml:space="preserve">
+    <value>لم يحضر</value>
+  </data>
+
+  <!-- Common -->
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>نعم</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>لا</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>جاري التحميل...</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>نجح</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>تحذير</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>معلومات</value>
+  </data>
+
+  <!-- Patients Module -->
+  <data name="PatientDetails" xml:space="preserve">
+    <value>تفاصيل المريض</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+  <data name="Age" xml:space="preserve">
+    <value>العمر</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>الجنس</value>
+  </data>
+  <data name="TotalDue" xml:space="preserve">
+    <value>إجمالي المستحق</value>
+  </data>
+  <data name="TreatmentPlans" xml:space="preserve">
+    <value>خطط العلاج</value>
+  </data>
+  <data name="Diagnosis" xml:space="preserve">
+    <value>التشخيص</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+  <data name="CreateNewPlan" xml:space="preserve">
+    <value>إنشاء خطة جديدة</value>
+  </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>تاريخ الإنشاء</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>أنشئت بواسطة</value>
+  </data>
+  <data name="TotalCost" xml:space="preserve">
+    <value>التكلفة الإجمالية</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+  <data name="NoTreatmentPlansFound" xml:space="preserve">
+    <value>لم يتم العثور على خطط علاج لهذا المريض.</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>إضافة ملاحظة</value>
+  </data>
+  <data name="AddNewDiagnosisNote" xml:space="preserve">
+    <value>إضافة ملاحظة تشخيص جديدة...</value>
+  </data>
+  <data name="NoDiagnosisNotesFound" xml:space="preserve">
+    <value>لم يتم العثور على ملاحظات تشخيص لهذا المريض.</value>
+  </data>
+  <data name="UploadImage" xml:space="preserve">
+    <value>تحميل صورة</value>
+  </data>
+  <data name="NoImagesFound" xml:space="preserve">
+    <value>لم يتم العثور على صور لهذا المريض.</value>
+  </data>
+  <data name="AddNewPatient" xml:space="preserve">
+    <value>إضافة مريض جديد</value>
+  </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>-- اختر الجنس --</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="ConfirmCompletePlan" xml:space="preserve">
+    <value>هل أنت متأكد من أنك تريد وضع علامة على هذه الخطة كمكتملة؟</value>
+  </data>
+  <data name="ConfirmDeletePlan" xml:space="preserve">
+    <value>هل أنت متأكد من أنك تريد حذف خطة العلاج هذه؟</value>
+  </data>
+
+  <!-- Notifications Module -->
+  <data name="Pending" xml:space="preserve">
+    <value>قيد الانتظار</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>عرض</value>
+  </data>
+  <data name="AppointmentInformationDetails" xml:space="preserve">
+    <value>معلومات الموعد</value>
+  </data>
+  <data name="DetailedInformation" xml:space="preserve">
+    <value>معلومات تفصيلية عن الموعد</value>
+  </data>
+  <data name="PatientName" xml:space="preserve">
+    <value>اسم المريض</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>رقم الهاتف</value>
+  </data>
+  <data name="AppointmentDate" xml:space="preserve">
+    <value>تاريخ الموعد</value>
+  </data>
+  <data name="TimeSlot" xml:space="preserve">
+    <value>الوقت المحدد</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>إجراءات سريعة</value>
+  </data>
+  <data name="EditInAppointments" xml:space="preserve">
+    <value>تعديل في المواعيد</value>
+  </data>
+  <data name="AllAppointments" xml:space="preserve">
+    <value>جميع المواعيد</value>
+  </data>
+  <data name="BackToNotifications" xml:space="preserve">
+    <value>العودة إلى الإشعارات</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>العودة إلى القائمة</value>
+  </data>
+
+  <!-- Navigation & Sidebar -->
+  <data name="Dashboard" xml:space="preserve">
+    <value>لوحة التحكم</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>التقارير</value>
+  </data>
+  <data name="PriceList" xml:space="preserve">
+    <value>قائمة الأسعار</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>المستخدمون</value>
+  </data>
+  <data name="ToggleMenu" xml:space="preserve">
+    <value>تبديل القائمة</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>اختر اللغة</value>
   </data>
 </root>
