@@ -26,24 +26,61 @@ public class AppointmentsController : Controller
         return View(appointments);
     }
 
+    //[HttpGet]
+    //public IActionResult Create(Guid? patientId)
+    //{
+    //    ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", patientId);
+
+
+    //    ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)));
+
+    //    var model = new AppointmentDto();
+
+    //    if (patientId.HasValue)
+    //    {
+    //        model.PatientId = patientId.Value;
+    //    }
+
+    //    return View(model);
+    //}
+
+
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public IActionResult Create(AppointmentDto appointmentDto)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        _appointmentService.Create(appointmentDto);
+    //        return RedirectToAction(nameof(Index));
+    //    }
+
+    //    ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", appointmentDto.PatientId);
+    //    ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)), appointmentDto.Status);
+    //    return View(appointmentDto);
+    //}
     [HttpGet]
     public IActionResult Create(Guid? patientId)
     {
-        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", patientId);
-
-    
-        ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)));
-
-        var model = new AppointmentDto();
+       
+        var model = new AppointmentDto
+        {
+            Date = DateTime.Today, 
+            StartTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, 0), 
+            EndTime = new TimeSpan(DateTime.Now.Hour + 1, DateTime.Now.Minute, 0),
+            Status = "Scheduled" 
+        };
 
         if (patientId.HasValue)
         {
             model.PatientId = patientId.Value;
         }
 
+        ViewBag.Patients = new SelectList(_patientService.GetAll(), "Id", "FullName", patientId);
+        ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)));
+
         return View(model);
     }
-
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -59,7 +96,6 @@ public class AppointmentsController : Controller
         ViewBag.StatusOptions = new SelectList(Enum.GetNames(typeof(Domain.Enums.AppointmentStatus)), appointmentDto.Status);
         return View(appointmentDto);
     }
-
     public IActionResult Edit(Guid id)
     {
         var appointment = _appointmentService.GetById(id);

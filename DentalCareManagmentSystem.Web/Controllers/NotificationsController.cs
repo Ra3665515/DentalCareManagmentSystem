@@ -1,4 +1,5 @@
 ﻿
+using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
 using DentalCareManagmentSystem.Web.Hubs;
 using Microsoft.AspNetCore.Authorization;
@@ -67,13 +68,28 @@ public class NotificationsController : Controller
         return View(todayAppointments);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Today()
+  [HttpGet]
+public async Task<IActionResult> Today()
+{
+    try
     {
+        Console.WriteLine("🔍 Today action called");
+        
         // استخدام الدالة الجديدة Async
         var notifications = await _notificationService.GetTodayNotificationsAsync();
-        return PartialView("_TodayNotifications", notifications);
+        Console.WriteLine($"📋 Found {notifications?.Count ?? 0} notifications");
+        
+        return PartialView("_TodayNotifications", notifications );
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error in Today action: {ex.Message}");
+        Console.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+        
+        // إرجاع قائمة فارغة بدلاً من الخطأ
+        return PartialView("_TodayNotifications", new List<AppointmentDto>());
+    }
+}
 
     // للحفاظ على التوافق مع الكود الحالي
     [HttpGet]
@@ -139,11 +155,13 @@ public class NotificationsController : Controller
             // تحديث حالة الموعد
             _appointmentService.UpdateStatus(appointmentId, "Notified");
 
-            // إضافة المريض للطابور
+            // 🔥 استخدام الـ Hub مباشرة لإضافة المريض للطابور
             await _hubContext.Clients.All.SendAsync("AddPatientToQueue",
                 appointment.PatientName,
-                appointment.Id,
+                appointmentId,
                 appointment.StartTime.ToString(@"hh\:mm"));
+
+            Console.WriteLine($"✅ Patient {appointment.PatientName} added to queue via controller");
 
             return Json(new
             {
@@ -153,33 +171,7 @@ public class NotificationsController : Controller
         }
         catch (Exception ex)
         {
-            return Json(new { success = false, message = ex.Message });
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CompletePatient(Guid appointmentId)
-    {
-        try
-        {
-            var appointment = _appointmentService.GetById(appointmentId);
-            if (appointment == null)
-                return Json(new { success = false, message = "Appointment not found" });
-
-            // تحديث حالة الموعد
-            _appointmentService.UpdateStatus(appointmentId, "Completed");
-
-            // إعلام بأن المريض انتهى
-            await _hubContext.Clients.All.SendAsync("PatientCompleted", appointmentId);
-
-            return Json(new
-            {
-                success = true,
-                message = "Patient marked as completed"
-            });
-        }
-        catch (Exception ex)
-        {
+            Console.WriteLine($"❌ Error in AddToQueue: {ex.Message}");
             return Json(new { success = false, message = ex.Message });
         }
     }
@@ -189,8 +181,44 @@ public class NotificationsController : Controller
     {
         try
         {
+            Console.WriteLine("🎯 CallNextPatient endpoint called");
+
+            // استخدام الـ Hub لاستدعاء المريض التالي
             await _hubContext.Clients.All.SendAsync("CallNextPatient");
-            return Json(new { success = true, message = "Next patient called" });
+
+            return Json(new
+            {
+                success = true,
+                message = "Next patient called successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error in CallNextPatient: {ex.Message}");
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    [HttpPost]
+    public async Task<IActionResult> CompletePatient(Guid appointmentId)
+    {
+        try
+        {
+            var appointment = _appointmentService.GetById(appointmentId);
+            if (appointment == null)
+                return Json(new { success = false, message = "Appointment not found" });
+
+            // تحديث حالة الموعد لـ "Completed"
+            _appointmentService.UpdateStatus(appointmentId, "Completed");
+
+            // إرسال إشعار للـ Hub
+            await _hubContext.Clients.All.SendAsync("CompletePatient", appointmentId);
+            await _hubContext.Clients.All.SendAsync("UpdatePatientStatus", appointmentId, "Completed");
+
+            return Json(new
+            {
+                success = true,
+                message = "Patient completed successfully"
+            });
         }
         catch (Exception ex)
         {
@@ -198,6 +226,32 @@ public class NotificationsController : Controller
         }
     }
 
+    [HttpPost]
+    public async Task<IActionResult> RemoveFromQueue(Guid appointmentId)
+    {
+        try
+        {
+            var appointment = _appointmentService.GetById(appointmentId);
+            if (appointment == null)
+                return Json(new { success = false, message = "Appointment not found" });
+
+            // تحديث الحالة لـ Scheduled تاني
+            _appointmentService.UpdateStatus(appointmentId, "Scheduled");
+
+            // إزالة من الطابور في الـ Hub
+            await _hubContext.Clients.All.SendAsync("RemoveFromQueue", appointmentId);
+
+            return Json(new
+            {
+                success = true,
+                message = "Patient removed from queue successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
     [HttpGet]
     public async Task<IActionResult> Search(string date)
     {

@@ -15,7 +15,7 @@ public interface IPatientService
     Dictionary<string, int> GetPatientCountByAgeGroup(); // Added
     List<PatientDto> GetPatientsWithTotalDue();
 
-    void Create(PatientDto patient);
+    Guid Create(PatientDto patientDto);
     void Update(PatientDto patient);
     void Delete(Guid id);
 }

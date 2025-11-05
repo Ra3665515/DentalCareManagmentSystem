@@ -1,5 +1,6 @@
 ﻿using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
+using DentalCareManagmentSystem.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -57,8 +58,8 @@ public class PatientsController : Controller
     {
         if (ModelState.IsValid)
         {
-            _patientService.Create(patientDto);
-            return RedirectToAction(nameof(Index));
+            var patientId = _patientService.Create(patientDto);
+            return RedirectToAction("Create", "Appointments", new { patientId = patientId });
         }
 
         ViewBag.Genders = new SelectList(Enum.GetNames(typeof(Domain.Enums.Gender)));

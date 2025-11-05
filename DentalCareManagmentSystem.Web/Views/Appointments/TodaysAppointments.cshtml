@@ -8,7 +8,6 @@
 
 <div class="container-fluid py-4 fade-in">
 
-    <!-- طابور الانتظار للريسيبشن -->
     @if (isReceptionist)
     {
         <div class="row mb-4">
@@ -25,19 +24,15 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- قائمة الانتظار -->
                         <div id="queueList" class="mb-3">
-                            <!-- سيتم ملؤها بالـ JavaScript -->
                         </div>
 
-                        <!-- حالة الطابور فارغ -->
                         <div id="emptyQueueState" class="text-center py-4">
                             <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
                             <h4 class="text-muted">No patients in queue</h4>
                             <p class="text-muted">Add patients to the waiting queue</p>
                         </div>
 
-                        <!-- إشعارات -->
                         <div id="queueNotifications"></div>
                     </div>
                 </div>
@@ -67,7 +62,6 @@
                             <p class="text-muted">You will be notified when patients arrive</p>
                         </div>
 
-                        <!-- المريض الحالي -->
                         <div id="doctorCurrentPatient" class="d-none">
                             <div class="alert alert-success mb-3">
                                 <div class="d-flex align-items-center">
@@ -92,9 +86,7 @@
                             </div>
                         </div>
 
-                        <!-- قائمة الانتظار للدكتور -->
                         <div id="doctorQueueList" class="mt-3">
-                            <!-- سيتم ملؤها بالـ JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -102,7 +94,6 @@
         </div>
     }
 
-    <!-- باقي المحتوى -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary mb-1">
@@ -124,7 +115,6 @@
         </div>
     </div>
 
-    <!-- الإحصائيات -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stats-card primary h-100">
@@ -329,120 +319,191 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.25/signalr.min.js"></script>
     <script>
-        // تعريف المتغيرات العالمية
+        // تعريف المتغيرات
         let receptionConnection = null;
         let doctorConnection = null;
         let currentAppointmentId = null;
         let currentQueueItem = null;
 
         $(document).ready(function () {
-            // اتصال الريسيبشن
+            console.log('✅ Page loaded, initializing connections...');
+
+            // التأكد من تحميل SignalR
+            if (typeof signalR === 'undefined') {
+                console.error('❌ SignalR not loaded');
+                showNotification('error', 'SignalR not loaded. Please refresh the page.');
+                return;
+            }
+
             @if (isReceptionist)
             {
                     <text>
-                    receptionConnection = new signalR.HubConnectionBuilder()
-                        .withUrl("/notificationHub")
-                        .withAutomaticReconnect()
-                        .build();
-
-                    receptionConnection.start().then(() => {
-                        console.log("✅ Reception connected to SignalR");
-                        receptionConnection.invoke("JoinReceptionRoom");
-                    }).catch(err => console.error('❌ Reception Connection Error: ', err));
-
-                    // استقبال تحديثات الطابور
-                    receptionConnection.on("UpdateQueue", (queue) => {
-                        console.log("📋 Queue updated:", queue);
-                        updateReceptionQueueDisplay(queue);
-                    });
-
-                    receptionConnection.on("PatientCompleted", (patientName) => {
-                        showQueueNotification('success', patientName + ' has completed their appointment');
-                    });
-
-                    receptionConnection.on("NextPatientReady", (patientName, appointmentId) => {
-                        showQueueNotification('info', 'Next patient ready: ' + patientName);
-                    });
+                    console.log('👩‍💼 Initializing reception connection...');
+                    initializeReceptionConnection();
                     </text>
             }
 
-            // اتصال الدكتور
             @if (isDoctor)
             {
                     <text>
-                    doctorConnection = new signalR.HubConnectionBuilder()
-                        .withUrl("/notificationHub")
-                        .withAutomaticReconnect()
-                        .build();
-
-                    doctorConnection.start().then(() => {
-                        console.log("✅ Doctor connected to SignalR");
-                        doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
-                    }).catch(err => console.error('❌ Doctor Connection Error: ', err));
-
-                    doctorConnection.on("UpdateQueue", (queue) => {
-                        console.log("👨‍⚕️ Doctor queue updated:", queue);
-                        updateDoctorQueueDisplay(queue);
-                    });
-
-                    doctorConnection.on("NextPatientCalled", (patientName, appointmentId) => {
-                        showDoctorNotification('info', 'Now serving: ' + patientName);
-                    });
-
-                    doctorConnection.on("ReceiveNewPatient", (patientName, appointmentId, appointmentTime) => {
-                        showDoctorNotification('info', 'New patient added: ' + patientName);
-                    });
-
-                    doctorConnection.on("PatientCompleted", (patientName) => {
-                        showDoctorNotification('success', patientName + ' has completed their appointment');
-                    });
+                    console.log('👨‍⚕️ Initializing doctor connection...');
+                    initializeDoctorConnection();
                     </text>
             }
 
-            // زر إضافة للطابور
-            $('.add-to-queue-btn').click(function () {
+            // إعداد أزرار الإضافة للطابور
+            initializeQueueButtons();
+        });
+
+        function initializeReceptionConnection() {
+            try {
+                receptionConnection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect([0, 1000, 5000, 10000])
+                    .build();
+
+                receptionConnection.start()
+                    .then(() => {
+                        console.log("✅ Reception connected to SignalR");
+                        return receptionConnection.invoke("JoinReceptionRoom");
+                    })
+                    .then(() => {
+                        console.log("✅ Reception joined room successfully");
+                    })
+                    .catch(err => {
+                        console.error('❌ Reception Connection Error: ', err);
+                        showNotification('error', 'Failed to connect to reception service');
+                    });
+
+                // استقبال تحديثات الطابور
+                receptionConnection.on("UpdateQueue", (queue) => {
+                    console.log("📋 Queue updated:", queue);
+                    updateReceptionQueueDisplay(queue);
+                });
+
+                receptionConnection.on("PatientCompleted", (patientName) => {
+                    console.log("✅ Patient completed:", patientName);
+                    showQueueNotification('success', patientName + ' has completed their appointment');
+                });
+
+                receptionConnection.on("ReceiveNewPatient", (patientName, appointmentId, appointmentTime, queueNumber) => {
+                    console.log("🆕 New patient received:", patientName);
+                    showQueueNotification('info', patientName + ' added to queue (# ' + queueNumber + ')');
+                });
+
+                receptionConnection.on("NextPatientReady", (patientName, appointmentId, queueNumber) => {
+                    console.log("⏭️ Next patient ready:", patientName);
+                    showQueueNotification('warning', 'Next patient ready: ' + patientName);
+                });
+
+            } catch (error) {
+                console.error('❌ Reception setup error:', error);
+                showNotification('error', 'Reception setup failed: ' + error.message);
+            }
+        }
+
+        function initializeDoctorConnection() {
+            try {
+                doctorConnection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect([0, 1000, 5000, 10000])
+                    .build();
+
+                doctorConnection.start()
+                    .then(() => {
+                        console.log("✅ Doctor connected to SignalR");
+                        return doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
+                    })
+                    .then(() => {
+                        console.log("✅ Doctor joined room successfully");
+                    })
+                    .catch(err => {
+                        console.error('❌ Doctor Connection Error: ', err);
+                        showNotification('error', 'Failed to connect to doctor service');
+                    });
+
+                doctorConnection.on("UpdateQueue", (queue) => {
+                    console.log("👨‍⚕️ Doctor queue updated:", queue);
+                    updateDoctorQueueDisplay(queue);
+                });
+
+                doctorConnection.on("NextPatientCalled", (patientName, appointmentId) => {
+                    console.log("📢 Next patient called:", patientName);
+                    showDoctorNotification('info', 'Now serving: ' + patientName);
+                });
+
+                doctorConnection.on("ReceiveNewPatient", (patientName, appointmentId, appointmentTime, queueNumber) => {
+                    console.log("🆕 New patient for doctor:", patientName);
+                    showDoctorNotification('info', 'New patient in queue: ' + patientName + ' (# ' + queueNumber + ')');
+                });
+
+                doctorConnection.on("PatientCompleted", (patientName) => {
+                    console.log("✅ Patient completed for doctor:", patientName);
+                    showDoctorNotification('success', patientName + ' has completed their appointment');
+                });
+
+            } catch (error) {
+                console.error('❌ Doctor setup error:', error);
+                showNotification('error', 'Doctor setup failed: ' + error.message);
+            }
+        }
+
+        function initializeQueueButtons() {
+            $('.add-to-queue-btn').off('click').on('click', function () {
                 const $btn = $(this);
                 const appointmentId = $btn.data('appointment-id');
                 const patientName = $btn.data('patient-name');
+                const $row = $btn.closest('tr');
+
+                console.log('🔄 Adding to queue:', patientName, appointmentId);
 
                 $btn.prop('disabled', true);
                 $btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Adding...');
 
-                $.post('@Url.Action("AddToQueue", "Notification")', { appointmentId: appointmentId })
+                // إخفاء الصف فوراً علشان يختفي من الجدول
+                $row.addClass('hidden-row');
+
+                // استخدام الـ Controller الصحيح
+                $.post('@Url.Action("AddToQueue", "Notifications")', { appointmentId: appointmentId })
                     .done(function (response) {
+                        console.log('✅ Add to queue response:', response);
+
                         if (response.success) {
                             $btn.removeClass('btn-success').addClass('btn-outline-info');
                             $btn.html('<i class="fas fa-clock me-1"></i> In Queue');
-
-                            $('#status-' + appointmentId).removeClass('bg-warning').addClass('bg-info');
-                            $('#status-' + appointmentId).text('Notified');
-
+                            $('#status-' + appointmentId).removeClass('bg-warning').addClass('bg-info').text('Notified');
                             showNotification('success', patientName + ' added to waiting queue');
+
+                            // الصف مختفي بالفعل من الخطوة السابقة
                         } else {
-                            showNotification('error', response.message);
-                            $btn.prop('disabled', false);
-                            $btn.html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                            showNotification('error', response.message || 'Failed to add to queue');
+                            $btn.prop('disabled', false).html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                            $row.removeClass('hidden-row'); // إرجاع الصف إذا فشلت الإضافة
                         }
                     })
-                    .fail(function () {
-                        showNotification('error', 'Failed to add to queue');
-                        $btn.prop('disabled', false);
-                        $btn.html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                    .fail(function (xhr, status, error) {
+                        console.error('❌ Add to queue failed:', error);
+                        showNotification('error', 'Failed to add to queue: ' + error);
+                        $btn.prop('disabled', false).html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                        $row.removeClass('hidden-row'); // إرجاع الصف إذا فشلت الإضافة
                     });
             });
-        });
-
-        // ========== وظائف الريسيبشن ==========
+        }
         function updateReceptionQueueDisplay(queue) {
             const $queueList = $('#queueList');
             const $emptyQueue = $('#emptyQueueState');
 
+            console.log('🔄 Updating reception queue display:', queue);
+
             if (!queue || queue.length === 0) {
+                console.log('📭 Queue is empty');
                 $queueList.html('');
                 $emptyQueue.removeClass('d-none');
                 updateQueueCounters(0, 0, 0);
+
+                // إظهار كل الصفوف في الجدول لما الطابور بيكون فاضي
+                $('tr[id^="appointment-"]').removeClass('hidden-row');
                 return;
             }
 
@@ -452,10 +513,27 @@
             let waitingCount = 0;
             let completedCount = 0;
 
-            queue.forEach(function(patient) {
-                const isWaiting = patient.status === 'Waiting';
-                const isInProgress = patient.status === 'In Progress';
-                const isCompleted = patient.status === 'Completed';
+            // مجموعة الـ appointment IDs اللي في الطابور
+            const queueAppointmentIds = [];
+
+            queue.forEach(function(patient, index) {
+                // جمع الـ IDs علشان نخفيها من الجدول
+                const appointmentId = patient.AppointmentId || patient.appointmentId;
+                if (appointmentId) {
+                    queueAppointmentIds.push(appointmentId.toString());
+                }
+
+                // استخدمي الأسماء الصحيحة للخصائص
+                const patientName = patient.PatientName || patient.patientName || 'Unknown';
+                const appointmentTime = patient.AppointmentTime || patient.appointmentTime || '--';
+                const arrivalTime = patient.ArrivalTime || patient.arrivalTime || '--';
+                const status = patient.Status || patient.status || 'Waiting';
+                const queueNumber = patient.QueueNumber || patient.queueNumber || (index + 1);
+                const completedTime = patient.CompletedTime || patient.completedTime;
+
+                const isWaiting = status === 'Waiting';
+                const isInProgress = status === 'In Progress';
+                const isCompleted = status === 'Completed';
 
                 if (isWaiting) waitingCount++;
                 if (isCompleted) completedCount++;
@@ -467,68 +545,83 @@
 
                 let buttonHtml = '';
                 if (isCompleted) {
-                    buttonHtml = '<small class="text-success">Completed: ' + patient.completedTime + '</small>';
+                    buttonHtml = `<small class="text-success">Completed: ${completedTime || '--'}</small>`;
                 } else {
                     const isDisabled = !isWaiting ? 'disabled' : '';
                     const buttonClass = isInProgress ? 'btn-success' : 'btn-outline-secondary';
-                    const buttonText = isWaiting ? 'Call Next' : 'Waiting...';
-                    buttonHtml = '<button class="btn btn-sm ' + buttonClass + '" onclick="callNextPatient()" ' + isDisabled + '>' +
-                                 '<i class="fas fa-bullhorn me-1"></i> ' + buttonText + '</button>';
+                    const buttonText = isWaiting ? 'Call Next' : 'In Progress';
+                    buttonHtml = `<button class="btn btn-sm ${buttonClass}" onclick="callNextPatient('${appointmentId}')" ${isDisabled}>
+                                 <i class="fas fa-bullhorn me-1"></i> ${buttonText}
+                                 </button>`;
                 }
 
-                html += '<div class="queue-item card mb-2 ' + (isInProgress ? 'border-primary' : '') + ' ' + (isCompleted ? 'border-success' : '') + '">' +
-                        '<div class="card-body py-2">' +
-                        '<div class="row align-items-center">' +
-                        '<div class="col-md-3">' +
-                        '<div class="d-flex align-items-center">' +
-                        '<span class="queue-number badge ' + (isInProgress ? 'bg-primary' : isCompleted ? 'bg-success' : 'bg-secondary') + ' me-2">' +
-                        '#' + patient.queueNumber +
-                        '</span>' +
-                        '<strong>' + patient.patientName + '</strong>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="col-md-2">' +
-                        '<small class="text-muted">Appt: ' + patient.appointmentTime + '</small>' +
-                        '</div>' +
-                        '<div class="col-md-2">' +
-                        '<small class="text-muted">Arrived: ' + patient.arrivalTime + '</small>' +
-                        '</div>' +
-                        '<div class="col-md-2">' +
-                        '<span class="badge ' + statusBadge + '">' + patient.status + '</span>' +
-                        '</div>' +
-                        '<div class="col-md-3 text-end">' + buttonHtml + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
+                html += `<div class="queue-item card mb-2 ${isInProgress ? 'border-primary' : ''} ${isCompleted ? 'border-success' : ''}">
+                        <div class="card-body py-2">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="queue-number badge ${isInProgress ? 'bg-primary' : isCompleted ? 'bg-success' : 'bg-secondary'} me-2">
+                                            #${queueNumber}
+                                        </span>
+                                        <strong>${patientName}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <small class="text-muted">Appt: ${appointmentTime}</small>
+                                </div>
+                                <div class="col-md-2">
+                                    <small class="text-muted">Arrived: ${arrivalTime}</small>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="badge ${statusBadge}">${status}</span>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    ${buttonHtml}
+                                    ${!isCompleted ? `<button class="btn btn-outline-danger btn-sm ms-1" onclick="removeFromQueue('${appointmentId}')">
+                                        <i class="fas fa-times"></i>
+                                    </button>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
             });
 
             $queueList.html(html);
             updateQueueCounters(queue.length, waitingCount, completedCount);
+
+            // إخفاء الصفوف اللي في الطابور من الجدول
+            updateAppointmentsTableVisibility(queueAppointmentIds);
+
+            console.log('✅ Queue display updated successfully');
+            console.log('📋 Hidden appointments:', queueAppointmentIds);
         }
 
-        function callNextPatient() {
-            $.post('@Url.Action("CallNextPatient", "Notification")')
-                .done(function (response) {
-                    if (response.success) {
-                        showQueueNotification('info', 'Next patient called');
-                    } else {
-                        showQueueNotification('error', response.message);
-                    }
-                })
-                .fail(function () {
-                    showQueueNotification('error', 'Failed to call next patient');
-                });
-        }
+        // دالة لتحديث ظهور/إخفاء الصفوف في الجدول
+        function updateAppointmentsTableVisibility(queueAppointmentIds) {
+            // إخفاء كل الصفوف اللي في الطابور
+            queueAppointmentIds.forEach(appointmentId => {
+                $(`#appointment-${appointmentId}`).addClass('hidden-row');
+            });
 
-        function updateQueueCounters(total, waiting, completed) {
-            $('#totalQueueCount').text(total + ' Total');
-            $('#waitingQueueCount').text(waiting + ' Waiting');
-            $('#completedQueueCount').text(completed + ' Completed');
-        }
+            // إظهار الصفوف اللي مش في الطابور
+            $('tr[id^="appointment-"]').each(function() {
+                const rowId = $(this).attr('id');
+                const appointmentId = rowId.replace('appointment-', '');
 
-        // ========== وظائف الدكتور ==========
+                if (!queueAppointmentIds.includes(appointmentId)) {
+                    $(this).removeClass('hidden-row');
+                }
+            });
+        }
         function updateDoctorQueueDisplay(queue) {
-            if (!queue) return;
+            console.log('🔄 Updating doctor queue display:', queue);
+
+            if (!queue) {
+                $('#doctorWaitingState').removeClass('d-none');
+                $('#doctorCurrentPatient').addClass('d-none');
+                $('#doctorQueueList').html('');
+                return;
+            }
 
             const waitingPatients = queue.filter(function(p) { return p.status === 'Waiting'; });
             const currentPatient = queue.find(function(p) { return p.status === 'In Progress'; });
@@ -608,33 +701,61 @@
             }
         }
 
+        function callNextPatient() {
+            console.log('📢 Calling next patient...');
+
+            $.post('@Url.Action("CallNextPatient", "Notifications")')
+                .done(function (response) {
+                    console.log('✅ Call next patient response:', response);
+                    if (response.success) {
+                        showQueueNotification('info', 'Next patient called');
+                    } else {
+                        showQueueNotification('error', response.message || 'Failed to call next patient');
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error('❌ Call next patient failed:', error);
+                    showQueueNotification('error', 'Failed to call next patient: ' + error);
+                });
+        }
+
         function completeCurrentPatient() {
             if (currentAppointmentId) {
-                $.post('@Url.Action("CompletePatient", "Notification")', {
+                console.log('✅ Completing patient:', currentAppointmentId);
+
+                $.post('@Url.Action("CompletePatient", "Notifications")', {
                     appointmentId: currentAppointmentId
                 }).done(function(response) {
+                    console.log('✅ Complete patient response:', response);
                     if (response.success) {
                         showDoctorNotification('success', 'Patient completed successfully');
                         currentAppointmentId = null;
                         currentQueueItem = null;
                     } else {
-                        showDoctorNotification('error', response.message);
+                        showDoctorNotification('error', response.message || 'Failed to complete patient');
                     }
-                }).fail(function() {
-                    showDoctorNotification('error', 'Failed to complete patient');
+                }).fail(function(xhr, status, error) {
+                    console.error('❌ Complete patient failed:', error);
+                    showDoctorNotification('error', 'Failed to complete patient: ' + error);
                 });
             }
         }
 
         function startCurrentAppointment() {
             if (currentAppointmentId) {
+                console.log('🚀 Starting appointment:', currentAppointmentId);
                 window.location.href = '@Url.Action("Details", "Appointments")/' + currentAppointmentId;
             }
         }
 
-        // ========== وظائف مساعدة ==========
+        function updateQueueCounters(total, waiting, completed) {
+            $('#totalQueueCount').text(total + ' Total');
+            $('#waitingQueueCount').text(waiting + ' Waiting');
+            $('#completedQueueCount').text(completed + ' Completed');
+        }
+
         function showQueueNotification(type, message) {
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-info';
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
             const notification = $(
                 '<div class="alert ' + alertClass + ' alert-dismissible fade show">' +
                 message +
@@ -646,7 +767,7 @@
         }
 
         function showDoctorNotification(type, message) {
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-info';
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
             const notification = $(
                 '<div class="alert ' + alertClass + ' alert-dismissible fade show">' +
                 message +
@@ -669,86 +790,47 @@
             $('body').append(notification);
             setTimeout(function() { notification.alert('close'); }, 5000);
         }
+                // دالة لإزالة المريض من الطابور
+        function removeFromQueue(appointmentId) {
+            console.log('🗑️ Removing from queue:', appointmentId);
+
+            $.post('@Url.Action("RemoveFromQueue", "Notifications")', { appointmentId: appointmentId })
+                .done(function (response) {
+                    console.log('✅ Remove from queue response:', response);
+                    if (response.success) {
+                        showNotification('success', 'Patient removed from queue');
+                        // إرجاع الحالة لـ Scheduled
+                        $('#status-' + appointmentId).removeClass('bg-info').addClass('bg-warning').text('Scheduled');
+
+                        // إظهار الصف في الجدول تاني
+                        $(`#appointment-${appointmentId}`).removeClass('hidden-row');
+                    } else {
+                        showNotification('error', response.message || 'Failed to remove from queue');
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error('❌ Remove from queue failed:', error);
+                    showNotification('error', 'Failed to remove from queue: ' + error);
+                });
+        }
+
+        // عدلي دالة callNextPatient علشان تاخد الـ appointmentId
+        function callNextPatient(appointmentId) {
+            console.log('📢 Calling next patient:', appointmentId);
+
+            $.post('@Url.Action("CallNextPatient", "Notifications")', { appointmentId: appointmentId })
+                .done(function (response) {
+                    console.log('✅ Call next patient response:', response);
+                    if (response.success) {
+                        showQueueNotification('info', 'Next patient called');
+                    } else {
+                        showQueueNotification('error', response.message || 'Failed to call next patient');
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error('❌ Call next patient failed:', error);
+                    showQueueNotification('error', 'Failed to call next patient: ' + error);
+                });
+        }
     </script>
-
-    <style>
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .status-badge {
-            font-size: 0.75rem;
-        }
-
-        .stats-card {
-            border-left: 4px solid;
-            transition: transform 0.2s;
-        }
-
-            .stats-card:hover {
-                transform: translateY(-2px);
-            }
-
-            .stats-card.primary {
-                border-left-color: #007bff;
-            }
-
-            .stats-card.success {
-                border-left-color: #28a745;
-            }
-
-            .stats-card.warning {
-                border-left-color: #ffc107;
-            }
-
-            .stats-card.danger {
-                border-left-color: #dc3545;
-            }
-
-        .empty-state {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .add-to-queue-btn {
-            transition: all 0.3s ease;
-        }
-
-            .add-to-queue-btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            }
-
-        .queue-item {
-            transition: all 0.3s ease;
-        }
-
-            .queue-item:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            }
-
-        .queue-item-small {
-            transition: all 0.2s ease;
-        }
-
-            .queue-item-small:hover {
-                background-color: #f8f9fa;
-            }
-
-        .queue-number {
-            font-size: 0.9rem;
-            min-width: 40px;
-            text-align: center;
-        }
-    </style>
 }

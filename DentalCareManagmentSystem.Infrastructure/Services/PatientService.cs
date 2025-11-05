@@ -15,21 +15,39 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public void Create(PatientDto patientDto)
+    //public void Create(PatientDto patientDto)
+    //{
+    //    var patient = new Patient
+    //    {
+    //        FullName = patientDto.FullName,
+    //        Age = patientDto.Age,
+    //        Phone = patientDto.Phone,
+    //        Gender = Enum.Parse<Domain.Enums.Gender>(patientDto.Gender),
+    //        Notes = patientDto.Notes,
+    //        CreatedAt = DateTime.UtcNow,
+    //        IsActive = true
+    //    };
+    //    _context.Patients.Add(patient);
+    //    _context.SaveChanges();
+    //}
+    public Guid Create(PatientDto patientDto)
+{
+    var patient = new Patient
     {
-        var patient = new Patient
-        {
-            FullName = patientDto.FullName,
-            Age = patientDto.Age,
-            Phone = patientDto.Phone,
-            Gender = Enum.Parse<Domain.Enums.Gender>(patientDto.Gender),
-            Notes = patientDto.Notes,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        };
-        _context.Patients.Add(patient);
-        _context.SaveChanges();
-    }
+        FullName = patientDto.FullName,
+        Age = patientDto.Age,
+        Phone = patientDto.Phone,
+        Gender = Enum.Parse<Domain.Enums.Gender>(patientDto.Gender),
+        Notes = patientDto.Notes,
+        CreatedAt = DateTime.UtcNow,
+        IsActive = true
+    };
+    
+    _context.Patients.Add(patient);
+    _context.SaveChanges();
+    
+    return patient.Id; // إرجاع الـ ID الجديد
+}
 
     public void Delete(Guid id)
     {

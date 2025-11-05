@@ -1,4 +1,4 @@
-@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+﻿@model DentalCareManagmentSystem.Application.DTOs.PatientDto
 @{
     ViewData["Title"] = "Add Patient";
 }
@@ -28,7 +28,9 @@
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle me-1"></i> Add</button>
+                <button type="submit" name="submitButton"  class="btn btn-success">
+                    <i class="fas fa-plus-circle me-1"></i> Add Appointment
+                </button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
