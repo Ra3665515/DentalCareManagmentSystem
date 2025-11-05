@@ -1,9 +1,10 @@
-
 using DentalCareManagmentSystem.Application.DTOs;
 using DentalCareManagmentSystem.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace DentalCareManagmentSystem.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "SystemAdmin")]
@@ -15,12 +16,15 @@ public class UsersController : Controller
         _userService = userService;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         var users = _userService.GetAll().ToList();
         return View(users);
     }
 
+    [HttpGet]
+    [Route("[action]")]
     public IActionResult Create()
     {
         ViewBag.Roles = new SelectList(new List<string> { "SystemAdmin", "Doctor", "Receptionist" });
@@ -28,6 +32,7 @@ public class UsersController : Controller
     }
 
     [HttpPost]
+    [Route("[action]")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(UserDto userDto, string password)
     {
@@ -52,6 +57,9 @@ public class UsersController : Controller
         ViewBag.Roles = new SelectList(new List<string> { "SystemAdmin", "Doctor", "Receptionist" }, userDto.Role);
         return View(userDto);
     }
+    
+    [HttpGet]
+    [Route("[action]/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -60,12 +68,16 @@ public class UsersController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
+    [Route("[action]/{id}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
         await _userService.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
+    
+    [HttpGet]
+    [Route("[action]/{id}")]
     public async Task<IActionResult> Edit(string id)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -75,6 +87,7 @@ public class UsersController : Controller
     }
 
     [HttpPost]
+    [Route("[action]")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(UserDto userDto)
     {
@@ -86,5 +99,4 @@ public class UsersController : Controller
         ViewBag.Roles = new SelectList(new List<string> { "SystemAdmin", "Doctor", "Receptionist" }, userDto.Role);
         return View(userDto);
     }
-
 }

@@ -16,18 +16,22 @@ public class PriceListController : Controller
         _priceListService = priceListService;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         var items = _priceListService.GetAll().ToList();
         return View(items);
     }
 
+    [HttpGet]
+    [Route("[action]")]
     public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
+    [Route("[action]")]
     [ValidateAntiForgeryToken]
     public IActionResult Create(PriceListItemDto itemDto)
     {
@@ -39,6 +43,8 @@ public class PriceListController : Controller
         return View(itemDto);
     }
 
+    [HttpGet]
+    [Route("[action]/{id}")]
     public IActionResult Edit(Guid id)
     {
         var item = _priceListService.GetById(id);
@@ -47,6 +53,7 @@ public class PriceListController : Controller
     }
 
     [HttpPost]
+    [Route("[action]")]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(PriceListItemDto itemDto)
     {
@@ -58,6 +65,8 @@ public class PriceListController : Controller
         return View(itemDto);
     }
 
+    [HttpGet]
+    [Route("[action]/{id}")]
     public IActionResult Delete(Guid id)
     {
         var item = _priceListService.GetById(id);
@@ -66,6 +75,7 @@ public class PriceListController : Controller
     }
 
     [HttpPost, ActionName("Delete")]
+    [Route("[action]/{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(Guid id)
     {
@@ -74,6 +84,7 @@ public class PriceListController : Controller
     }
 
     [HttpGet]
+    [Route("[action]")]
     public IActionResult GetPriceListGrid()
     {
         var items = _priceListService.GetAll().ToList();

@@ -11,13 +11,14 @@
 
 @{ 
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCulture?.RequestCulture.Culture.Name ?? "en-US";
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
         .ToList();
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,16 +46,22 @@
             </div>
 
             <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Dashboard"]</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Patients" asp-action="Index">@Localizer["Patients"]</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Appointments" asp-action="Index">@Localizer["Appointments"]</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                   href="/@currentCulture/Home/Index">@Localizer["Dashboard"]</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                   href="/@currentCulture/Patients/Index">@Localizer["Patients"]</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                   href="/@currentCulture/Appointments/Index">@Localizer["Appointments"]</a>
 
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("SystemAdmin"))
                 {
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="" asp-controller="Reports" asp-action="Index">@Localizer["Reports"]</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                       href="/@currentCulture/Reports/Index">@Localizer["Reports"]</a>
 
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="PriceList" asp-action="Index">@Localizer["PriceList"]</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" asp-area="Admin" asp-controller="Users" asp-action="Index">@Localizer["Users"]</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                       href="/@currentCulture/Admin/PriceList/Index">@Localizer["PriceList"]</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" 
+                       href="/@currentCulture/Admin/Users/Index">@Localizer["Users"]</a>
                 }
             </div>
         </div>
@@ -95,7 +102,7 @@
                         <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                             
                             <li class="nav-item">
-                                <a class="nav-link text-dark" href="@Url.Action("TodaysAppointments", "Appointments")">
+                                <a class="nav-link text-dark" href="/@currentCulture/Appointments/TodaysAppointments">
                                     <i class="fas fa-calendar-day me-1"></i>
                                 </a>
                             </li>
@@ -109,7 +116,7 @@
                                         @foreach (var culture in cultureItems)
                                         {
                                             <li>
-                                                <button type="submit" class="dropdown-item" name="culture" value="@culture.Value">
+                                                <button type="submit" class="dropdown-item @(culture.Value == currentCulture ? "active" : "")" name="culture" value="@culture.Value">
                                                     @culture.Text
                                                 </button>
                                             </li>

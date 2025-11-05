@@ -4,11 +4,13 @@ using DentalCareManagmentSystem.Infrastructure.Data;
 using DentalCareManagmentSystem.Infrastructure.Identity;
 using DentalCareManagmentSystem.Infrastructure.Services;
 using DentalCareManagmentSystem.Web.Hubs;
-using DentalCareManagmentSystem.Web.Resources;
+using DentalCareManagmentSystem.Web.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,24 +30,27 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
-        opts => { opts.ResourcesPath = "Resources"; })
-    .AddDataAnnotationsLocalization(options =>
-    {
-        options.DataAnnotationLocalizerProvider = (type, factory) =>
-            factory.Create(typeof(SharedResource));
-    });
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+//.AddDataAnnotationsLocalization(options =>
+//{
+//    options.DataAnnotationLocalizerProvider = (type, factory) =>
+//        factory.Create(typeof(SharedResource));
+//});
 builder.Services.AddRazorPages()
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
-        opts => { opts.ResourcesPath = "Resources"; })
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
-builder.Services.AddRequestLocalization(options =>
+builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { "en-US", "ar-SA" };
-    options.SetDefaultCulture(supportedCultures[0]);
-    options.AddSupportedCultures(supportedCultures);
-    options.AddSupportedUICultures(supportedCultures);
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en"),
+        new CultureInfo("ar")
+    };
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider());
 });
 
 // Register Application Services
@@ -86,8 +91,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Localization Middleware
-app.UseRequestLocalization();
+// Localization Middleware - Must be before Authorization
+var localizationOption = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizationOption.Value);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -95,7 +101,25 @@ app.UseAuthorization();
 // 3️⃣ SignalR Hub Mapping
 app.MapHub<NotificationHub>("/notificationHub");
 
-// Routes
+// Routes with Culture Support
+app.MapControllerRoute(
+    name: "areas_localized",
+    pattern: "{culture=en}/{area:exists}/{controller=Home}/{action=Index}/{id?}",
+    constraints: new { culture = @"^(en|ar)$" });
+
+// New route for culture-only URLs
+app.MapControllerRoute(
+    name: "culture_only",
+    pattern: "{culture=en}",
+    defaults: new { controller = "Home", action = "Index" },
+    constraints: new { culture = @"^(en|ar)$" });
+
+app.MapControllerRoute(
+    name: "default_localized",
+    pattern: "{culture=en}/{controller}/{action=Index}/{id?}",
+    constraints: new { culture = @"^(en|ar)$" });
+
+// Fallback routes without culture (redirect to default culture)
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -103,6 +127,12 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Fallback route for non-localized URLs, redirects to default culture
+app.MapControllerRoute(
+    name: "root_redirect",
+    pattern: "/",
+    defaults: new { controller = "Home", action = "RedirectToLocalized" });
 
 app.MapRazorPages();
 
