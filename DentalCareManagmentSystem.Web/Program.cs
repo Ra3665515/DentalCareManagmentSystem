@@ -23,17 +23,42 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<ClinicDbContext>()
     .AddDefaultTokenProviders();
 
-// Localization
+// 🔥 Localization Configuration
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var supportedCultures = new[]
+{
+    new CultureInfo("en-US"),
+    new CultureInfo("ar"),
+    new CultureInfo("ar-SA")
+};
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("ar-SA"), // اللغة الافتراضية
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    ApplyCurrentCultureToResponseHeaders = true
+};
+
+localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
+{
+    new CookieRequestCultureProvider(),          
+    new QueryStringRequestCultureProvider(),     
+    new AcceptLanguageHeaderRequestCultureProvider()
+};
+
 
 // Controllers & Views with Localization
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization()
+    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
 builder.Services.AddRazorPages()
-    .AddViewLocalization()
+    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
+
+builder.Services.AddSignalR();
 
 // Register Application Services
 builder.Services.AddScoped<IPatientService, PatientService>();
@@ -52,24 +77,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// إضافة SignalR services
-builder.Services.AddSignalR();
-
 var app = builder.Build();
-
-// Supported Cultures
-var supportedCultures = new[]
-{
-    new CultureInfo("en-US"),
-    new CultureInfo("ar-SA")
-};
-
-var localizationOptions = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("en-US"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures
-};
 
 // 2️⃣ Configure Middleware
 if (app.Environment.IsDevelopment())
@@ -83,20 +91,19 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // هذا مهم لخدمة ملفات الـ JavaScript
+app.UseStaticFiles();
 
+app.UseRequestLocalization(localizationOptions); 
 app.UseRouting();
-
-// Localization Middleware
-app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3️⃣ SignalR Hub Mapping - ضعه قبل الـ MapControllerRoute
+// 3️⃣ SignalR Hub Mapping
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<NotificationHub>("/hubs/notifications");
 
-// Routes
+// 4️⃣ Routes
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -107,7 +114,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-// 4️⃣ Seed Data
+// 5️⃣ Seed Data
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

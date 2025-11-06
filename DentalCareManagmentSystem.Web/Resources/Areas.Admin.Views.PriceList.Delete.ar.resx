@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Delete Price Item" xml:space="preserve">
+    <value>حذف عنصر السعر</value>
+  </data>
+	<data name="Are you sure you want to delete this item?" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حذف هذا العنصر؟</value>
+  </data>
+	<data name="Confirm Delete" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+	<data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+	<data name="Price" xml:space="preserve">
+    <value>السعر</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Active" xml:space="preserve">
+    <value>نشط</value>
+  </data>
+	<data name="Inactive" xml:space="preserve">
+    <value>غير نشط</value>
+  </data>
+</root>

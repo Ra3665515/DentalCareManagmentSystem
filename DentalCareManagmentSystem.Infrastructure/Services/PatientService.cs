@@ -15,7 +15,22 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public void Create(PatientDto patientDto)
+    //public void Create(PatientDto patientDto)
+    //{
+    //    var patient = new Patient
+    //    {
+    //        FullName = patientDto.FullName,
+    //        Age = patientDto.Age,
+    //        Phone = patientDto.Phone,
+    //        Gender = Enum.Parse<Domain.Enums.Gender>(patientDto.Gender),
+    //        Notes = patientDto.Notes,
+    //        CreatedAt = DateTime.UtcNow,
+    //        IsActive = true
+    //    };
+    //    _context.Patients.Add(patient);
+    //    _context.SaveChanges();
+    //}
+    public Guid Create(PatientDto patientDto)
     {
         var patient = new Patient
         {
@@ -27,8 +42,11 @@ public class PatientService : IPatientService
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
+
         _context.Patients.Add(patient);
         _context.SaveChanges();
+
+        return patient.Id; // إرجاع الـ ID الجديد
     }
 
     public void Delete(Guid id)
@@ -109,7 +127,7 @@ public class PatientService : IPatientService
                 Age = p.Age,
                 Phone = p.Phone,
                 Gender = p.Gender.ToString(),
-                
+
                 Notes = p.Notes
             }).ToList();
     }
@@ -125,7 +143,7 @@ public class PatientService : IPatientService
     public Dictionary<string, int> GetPatientCountByAgeGroup()
     {
         return _context.Patients
-            .AsEnumerable() 
+            .AsEnumerable()
             .GroupBy(p => $"{(p.Age / 10) * 10}-{(p.Age / 10) * 10 + 9}")
             .Select(g => new { AgeGroup = g.Key, Count = g.Count() })
             .ToDictionary(x => x.AgeGroup, x => x.Count);
@@ -156,8 +174,8 @@ public class PatientService : IPatientService
         var patients = _context.Patients
             .Where(p => p.IsActive)
             .Include(p => p.TreatmentPlans)
-                .ThenInclude(tp => tp.Items) 
-            .ToList(); 
+                .ThenInclude(tp => tp.Items)
+            .ToList();
 
         return patients.Select(p => new PatientDto
         {
@@ -169,7 +187,7 @@ public class PatientService : IPatientService
             Notes = p.Notes,
             TotalDue = p.TreatmentPlans
                 .SelectMany(tp => tp.Items)
-                .Sum(i => i.LineTotal) // دلوقتي الحساب هيشتغل
+                .Sum(i => i.LineTotal) 
         }).ToList();
     }
 

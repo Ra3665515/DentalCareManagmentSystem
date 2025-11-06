@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Today's Appointments" xml:space="preserve">
+    <value>مواعيد اليوم</value>
+  </data>
+	<data name="Waiting Queue" xml:space="preserve">
+    <value>طابور الانتظار</value>
+  </data>
+	<data name="No patients in queue" xml:space="preserve">
+    <value>لا يوجد مرضى في الطابور</value>
+  </data>
+	<data name="Add patients to the waiting queue" xml:space="preserve">
+    <value>أضف مرضى إلى طابور الانتظار</value>
+  </data>
+	<data name="Doctor's Panel" xml:space="preserve">
+    <value>لوحة الطبيب</value>
+  </data>
+	<data name="No patients waiting" xml:space="preserve">
+    <value>لا يوجد مرضى في الانتظار</value>
+  </data>
+	<data name="You will be notified when patients arrive" xml:space="preserve">
+    <value>سيتم إشعارك عند وصول المرضى</value>
+  </data>
+	<data name="Complete" xml:space="preserve">
+    <value>إكمال</value>
+  </data>
+	<data name="New Appointment" xml:space="preserve">
+    <value>موعد جديد</value>
+  </data>
+	<data name="Total Appointments" xml:space="preserve">
+    <value>إجمالي المواعيد</value>
+  </data>
+	<data name="No appointments for today" xml:space="preserve">
+    <value>لا توجد مواعيد لليوم</value>
+  </data>
+	<data name="All caught up! No appointments scheduled for today" xml:space="preserve">
+    <value>كل شيء جاهز! لا توجد مواعيد مجدولة لليوم</value>
+  </data>
+	<data name="Create New Appointment" xml:space="preserve">
+    <value>إنشاء موعد جديد</value>
+  </data>
+	<data name="Appointments List" xml:space="preserve">
+    <value>قائمة المواعيد</value>
+  </data>
+	<data name="Queue Actions" xml:space="preserve">
+    <value>إجراءات الطابور</value>
+  </data>
+	<data name="Add to Queue" xml:space="preserve">
+    <value>إضافة للطابور</value>
+  </data>
+	<data name="In Queue" xml:space="preserve">
+    <value>في الطابور</value>
+  </data>
+	<data name="View Details" xml:space="preserve">
+    <value>عرض التفاصيل</value>
+  </data>
+	<data name="Adding" xml:space="preserve">
+    <value>جاري الإضافة</value>
+  </data>
+	<data name="Call Next" xml:space="preserve">
+    <value>استدعاء التالي</value>
+  </data>
+	<data name="Waiting" xml:space="preserve">
+    <value>في الانتظار</value>
+  </data>
+	<data name="Next Patient Ready" xml:space="preserve">
+    <value>المريض التالي جاهز</value>
+  </data>
+	<data name="Now serving" xml:space="preserve">
+    <value>يتم الآن خدمة</value>
+  </data>
+	<data name="New patient added" xml:space="preserve">
+    <value>تم إضافة مريض جديد</value>
+  </data>
+	<data name="has completed their appointment" xml:space="preserve">
+    <value>أكمل موعده</value>
+  </data>
+	<data name="Patient completed successfully" xml:space="preserve">
+    <value>تم إكمال المريض بنجاح</value>
+  </data>
+	<data name="Failed to complete patient" xml:space="preserve">
+    <value>فشل في إكمال المريض</value>
+  </data>
+	<data name="Next patient called" xml:space="preserve">
+    <value>تم استدعاء المريض التالي</value>
+  </data>
+	<data name="Failed to call next patient" xml:space="preserve">
+    <value>فشل في استدعاء المريض التالي</value>
+  </data>
+	<data name="added to waiting queue" xml:space="preserve">
+    <value>تمت الإضافة إلى طابور الانتظار</value>
+  </data>
+	<data name="Failed to add to queue" xml:space="preserve">
+    <value>فشل في الإضافة إلى الطابور</value>
+  </data>
+	<data name="In Progress" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+	<data name="Total" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+</root>

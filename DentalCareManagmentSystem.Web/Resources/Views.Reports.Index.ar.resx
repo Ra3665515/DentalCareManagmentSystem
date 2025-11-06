@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Reports" xml:space="preserve">
+    <value>التقارير</value>
+  </data>
+	<data name="Reports Dashboard" xml:space="preserve">
+    <value>لوحة التقارير</value>
+  </data>
+	<data name="Patient Report" xml:space="preserve">
+    <value>تقرير المرضى</value>
+  </data>
+	<data name="View patient statistics and demographics" xml:space="preserve">
+    <value>عرض إحصائيات وبيانات المرضى</value>
+  </data>
+	<data name="View Report" xml:space="preserve">
+    <value>عرض التقرير</value>
+  </data>
+	<data name="Appointment Report" xml:space="preserve">
+    <value>تقرير المواعيد</value>
+  </data>
+	<data name="Track completed and cancelled appointments" xml:space="preserve">
+    <value>تتبع المواعيد المكتملة والملغاة</value>
+  </data>
+	<data name="Financial Report" xml:space="preserve">
+    <value>التقرير المالي</value>
+  </data>
+	<data name="Analyze revenue and outstanding payments" xml:space="preserve">
+    <value>تحليل الإيرادات والمستحقات</value>
+  </data>
+</root>

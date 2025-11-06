@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Financial Report" xml:space="preserve">
+    <value>التقرير المالي</value>
+  </data>
+	<data name="Total Revenue" xml:space="preserve">
+    <value>إجمالي الإيرادات</value>
+  </data>
+	<data name="Revenue This Month" xml:space="preserve">
+    <value>الإيرادات هذا الشهر</value>
+  </data>
+	<data name="Outstanding Payments" xml:space="preserve">
+    <value>المستحقات</value>
+  </data>
+	<data name="Revenue by Treatment Type" xml:space="preserve">
+    <value>الإيرادات حسب نوع العلاج</value>
+  </data>
+	<data name="Treatment Type" xml:space="preserve">
+    <value>نوع العلاج</value>
+  </data>
+	<data name="Revenue (EGP)" xml:space="preserve">
+    <value>الإيرادات (جنيه)</value>
+  </data>
+	<data name="Monthly Revenue" xml:space="preserve">
+    <value>الإيرادات الشهرية</value>
+  </data>
+	<data name="No data available" xml:space="preserve">
+    <value>لا توجد بيانات متاحة</value>
+  </data>
+	<data name="No monthly data available" xml:space="preserve">
+    <value>لا توجد بيانات شهرية متاحة</value>
+  </data>
+</root>

@@ -1,6 +1,7 @@
-using DentalCareManagmentSystem.Application.Interfaces;
-using DentalCareManagmentSystem.Web.Models; // Added
+﻿using DentalCareManagmentSystem.Application.Interfaces;
+using DentalCareManagmentSystem.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DentalCareManagmentSystem.Web.Controllers;
@@ -37,22 +38,28 @@ public class HomeController : Controller
     {
         return View();
     }
-    //[HttpPost]
-    //public IActionResult SetLanguage(string culture, string returnUrl = null)
-    //{
-    //    Response.Cookies.Append(
-    //        CookieRequestCultureProvider.DefaultCookieName,
-    //        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-    //        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-    //    );
+   
+   [HttpPost]
+    public IActionResult SetLanguage(string culture, string returnUrl)
+    {
+        Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+            new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+                IsEssential = true,
+                SameSite = SameSiteMode.Lax
+            });
 
-    //    return LocalRedirect(returnUrl ?? "/");
-    //}
+        if (string.IsNullOrEmpty(returnUrl))
+            returnUrl = Url.Action("Index", "Home") ?? "/";
 
+        return LocalRedirect(returnUrl);
+    }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View();
     }
 }
-

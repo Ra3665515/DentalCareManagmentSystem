@@ -1,16 +1,18 @@
 @model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit Appointment";
+    ViewData["Title"] = Localizer["Edit Appointment"];
 }
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">
-            <i class="fas fa-calendar-edit me-2"></i> Edit Appointment
+            <i class="fas fa-calendar-edit me-2"></i> @Localizer["Edit Appointment"]
         </h2>
         <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Back to List
+            <i class="fas fa-arrow-left me-1"></i> @Localizer["Back to List"]
         </a>
     </div>
 
@@ -18,7 +20,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-light fw-semibold">
-                    <i class="fas fa-pen me-2 text-primary"></i> Appointment Information
+                    <i class="fas fa-pen me-2 text-primary"></i> @Localizer["Appointment Information"]
                 </div>
                 <div class="card-body">
                     <form asp-action="Edit">
@@ -27,7 +29,7 @@
 
                         <div class="mb-3">
                             <label asp-for="PatientId" class="form-label fw-semibold">
-                                <i class="fas fa-user me-1 text-secondary"></i> Patient
+                                <i class="fas fa-user me-1 text-secondary"></i> @Localizer["Patient"]
                             </label>
                             <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients"></select>
                             <span asp-validation-for="PatientId" class="text-danger"></span>
@@ -35,37 +37,34 @@
 
                         <div class="mb-3">
                             <label asp-for="Date" class="form-label fw-semibold">
-                                <i class="fas fa-calendar-day me-1 text-secondary"></i> Date
+                                <i class="fas fa-calendar-day me-1 text-secondary"></i> @Localizer["Date"]
                             </label>
                             <input asp-for="Date" class="form-control" type="date" />
                             <span asp-validation-for="Date" class="text-danger"></span>
                         </div>
 
-                      
                         <div class="mb-3">
                             <label asp-for="StartTime" class="form-label fw-semibold">
-                                <i class="fas fa-clock me-1 text-secondary"></i> Start Time
+                                <i class="fas fa-clock me-1 text-secondary"></i> @Localizer["Start Time"]
                             </label>
                             <input asp-for="StartTime" class="form-control" type="time" />
                             <span asp-validation-for="StartTime" class="text-danger"></span>
                         </div>
 
-                        
                         <div class="mb-4">
                             <label asp-for="Status" class="form-label fw-semibold">
-                                <i class="fas fa-clipboard-list me-1 text-secondary"></i> Status
+                                <i class="fas fa-clipboard-list me-1 text-secondary"></i> @Localizer["Status"]
                             </label>
                             <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<DentalCareManagmentSystem.Domain.Enums.AppointmentStatus>()"></select>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
 
-                        
                         <div class="d-flex justify-content-between">
                             <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-1"></i> Cancel
+                                <i class="fas fa-times me-1"></i> @Localizer["Cancel"]
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Save Changes
+                                <i class="fas fa-save me-1"></i> @Localizer["Save Changes"]
                             </button>
                         </div>
                     </form>
@@ -74,7 +73,7 @@
 
             <div class="alert alert-info mt-3">
                 <i class="fas fa-info-circle me-2"></i>
-                Please double-check the appointment date and time before saving.
+                @Localizer["Please double-check the appointment date and time before saving"]
             </div>
         </div>
     </div>

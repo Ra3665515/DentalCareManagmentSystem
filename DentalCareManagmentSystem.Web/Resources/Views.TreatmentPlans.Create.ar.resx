@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Create Treatment Plan" xml:space="preserve">
+    <value>إنشاء خطة علاج</value>
+  </data>
+	<data name="Back to Patient" xml:space="preserve">
+    <value>العودة للمريض</value>
+  </data>
+	<data name="Create New Treatment Plan" xml:space="preserve">
+    <value>إنشاء خطة علاج جديدة</value>
+  </data>
+	<data name="Patient Information" xml:space="preserve">
+    <value>معلومات المريض</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+	<data name="Patient ID" xml:space="preserve">
+    <value>رقم المريض</value>
+  </data>
+	<data name="Created By" xml:space="preserve">
+    <value>تم الإنشاء بواسطة</value>
+  </data>
+	<data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+	<data name="Treatment Plan Details" xml:space="preserve">
+    <value>تفاصيل خطة العلاج</value>
+  </data>
+	<data name="Plan Name" xml:space="preserve">
+    <value>اسم الخطة</value>
+  </data>
+	<data name="Enter a descriptive name for this treatment plan" xml:space="preserve">
+    <value>أدخل اسمًا وصفيًا لخطة العلاج هذه</value>
+  </data>
+	<data name="Example: Initial Treatment Plan, Follow-up Care, Emergency Treatment" xml:space="preserve">
+    <value>مثال: خطة العلاج الأولية، الرعاية المتابعة، العلاج الطارئ</value>
+  </data>
+	<data name="Treatment Description" xml:space="preserve">
+    <value>وصف العلاج</value>
+  </data>
+	<data name="Describe the treatment plan, objectives, and any special instructions" xml:space="preserve">
+    <value>صف خطة العلاج والأهداف وأي تعليمات خاصة</value>
+  </data>
+	<data name="Include treatment goals, procedures planned, and any patient-specific considerations" xml:space="preserve">
+    <value>قم بتضمين أهداف العلاج والإجراءات المخطط لها وأي اعتبارات خاصة بالمريض</value>
+  </data>
+	<data name="Estimated Duration (minutes)" xml:space="preserve">
+    <value>المدة المقدرة (دقيقة)</value>
+  </data>
+	<data name="Estimated treatment duration in minutes" xml:space="preserve">
+    <value>المدة المقدرة للعلاج بالدقائق</value>
+  </data>
+	<data name="Priority Level" xml:space="preserve">
+    <value>مستوى الأولوية</value>
+  </data>
+	<data name="Select Priority" xml:space="preserve">
+    <value>اختر الأولوية</value>
+  </data>
+	<data name="Low" xml:space="preserve">
+    <value>منخفض</value>
+  </data>
+	<data name="Medium" xml:space="preserve">
+    <value>متوسط</value>
+  </data>
+	<data name="High" xml:space="preserve">
+    <value>مرتفع</value>
+  </data>
+	<data name="Emergency" xml:space="preserve">
+    <value>طارئ</value>
+  </data>
+	<data name="How urgent is this treatment plan" xml:space="preserve">
+    <value>ما مدى إلحاح خطة العلاج هذه؟</value>
+  </data>
+	<data name="Additional Notes" xml:space="preserve">
+    <value>ملاحظات إضافية</value>
+  </data>
+	<data name="Any additional notes, precautions, or special instructions" xml:space="preserve">
+    <value>أي ملاحظات إضافية أو احتياطات أو تعليمات خاصة</value>
+  </data>
+	<data name="Optional: Include any special considerations or patient preferences" xml:space="preserve">
+    <value>اختياري: قم بتضمين أي اعتبارات خاصة أو تفضيلات المريض</value>
+  </data>
+	<data name="You are creating a treatment plan for" xml:space="preserve">
+    <value>أنت تقوم بإنشاء خطة علاج لـ</value>
+  </data>
+	<data name="After creation, you'll be able to add specific treatment items and procedures" xml:space="preserve">
+    <value>بعد الإنشاء، ستتمكن من إضافة عناصر وإجراءات علاجية محددة</value>
+  </data>
+	<data name="Create Plan" xml:space="preserve">
+    <value>إنشاء الخطة</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+</root>

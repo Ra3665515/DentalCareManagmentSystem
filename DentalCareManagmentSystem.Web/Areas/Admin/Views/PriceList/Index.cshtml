@@ -1,24 +1,26 @@
 @model List<DentalCareManagmentSystem.Application.DTOs.PriceListItemDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Price List";
+    ViewData["Title"] = Localizer["Price List"];
 }
 
 <div class="container mt-4">
-  
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold text-primary">
-            <i class="fas fa-file-invoice-dollar me-2"></i> Price List
+            <i class="fas fa-file-invoice-dollar me-2"></i> @Localizer["Price List"]
         </h2>
         <a asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus-circle me-1"></i> Add New Item
+            <i class="fas fa-plus-circle me-1"></i> @Localizer["Add New Item"]
         </a>
     </div>
 
-   
+
     <div class="card shadow-sm border-0 rounded">
         <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
-            <i class="fas fa-list me-2"></i> All Price List Items
+            <i class="fas fa-list me-2"></i> @Localizer["All Price List Items"]
         </div>
 
         <div class="card-body p-0">
@@ -26,11 +28,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Treatment Name</th>
-                        <th>Category</th>
-                        <th>Price </th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>@Localizer["Treatment Name"]</th>
+                        <th>@Localizer["Category"]</th>
+                        <th>@Localizer["Price"] (EGP)</th>
+                        <th>@Localizer["Status"]</th>
+                        <th>@Localizer["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,19 +50,19 @@
                                 <td>
                                     @if (item.IsActive)
                                     {
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success">@Localizer["Active"]</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="badge bg-secondary">@Localizer["Inactive"]</span>
                                     }
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i> Edit
+                                        <i class="fas fa-edit"></i> @Localizer["Edit"]
                                     </a>
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Delete
+                                        <i class="fas fa-trash-alt"></i> @Localizer["Delete"]
                                     </a>
                                 </td>
                             </tr>
@@ -72,7 +74,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
                                 <i class="fas fa-box-open fa-lg mb-2 d-block"></i>
-                                No items in the price list.
+                                @Localizer["No items in the price list"]
                             </td>
                         </tr>
                     }

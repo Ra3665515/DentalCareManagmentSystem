@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Appointment Details" xml:space="preserve">
+    <value>تفاصيل الموعد</value>
+  </data>
+	<data name="Patient Information" xml:space="preserve">
+    <value>معلومات المريض</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+	<data name="Back" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+</root>

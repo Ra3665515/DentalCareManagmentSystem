@@ -1,19 +1,22 @@
 ﻿@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.PatientDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Patients";
+    ViewData["Title"] = Localizer["Patients"];
 }
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary"><i class="fas fa-users me-2"></i> Patients</h2>
+        <h2 class="fw-bold text-primary"><i class="fas fa-users me-2"></i> @Localizer["Patients"]</h2>
         <a asp-action="Create" class="btn btn-success shadow-sm">
-            <i class="fas fa-plus-circle me-1"></i> Add New Patient
+            <i class="fas fa-plus-circle me-1"></i> @Localizer["Add_New_Patient"]
         </a>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex align-items-center">
-            <i class="fas fa-list me-2"></i> All Patients
+            <i class="fas fa-list me-2"></i> @Localizer["All_Patients"]
         </div>
         <div class="card-body">
             @if (Model != null && Model.Any())
@@ -21,12 +24,12 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Full Name</th>
-                            <th>Age</th>
-                            <th>Phone</th>
-                            <th>Gender</th>
-                            <th>Total Due</th>
-                            <th>Actions</th>
+                            <th>@Localizer["Full_Name"]</th>
+                            <th>@Localizer["Age"]</th>
+                            <th>@Localizer["Phone"]</th>
+                            <th>@Localizer["Gender"]</th>
+                            <th>@Localizer["Total_Due"]</th>
+                            <th>@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,21 +40,21 @@
                                 <td>@patient.Age</td>
                                 <td>@patient.Phone</td>
                                 <td>@patient.Gender</td>
-                                <td>@($"{patient.TotalDue:N2} EGP")</td>
+                                <td>@($"{patient.TotalDue:N2}") @Localizer["EGP"]</td>
 
                                 <td>
                                     <a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@patient.Id" class="btn btn-sm btn-warning me-1">
-                                        <i class="fas fa-calendar-plus"></i> Book Appointment
+                                        <i class="fas fa-calendar-plus"></i> @Localizer["Book_Appointment"]
                                     </a>
 
                                     <a asp-action="Edit" asp-route-id="@patient.Id" class="btn btn-sm btn-warning me-1">
-                                        <i class="fas fa-edit"></i> Edit
+                                        <i class="fas fa-edit"></i> @Localizer["Edit"]
                                     </a>
                                     <a asp-action="Details" asp-route-id="@patient.Id" class="btn btn-sm btn-info me-1">
-                                        <i class="fas fa-info-circle"></i> Details
+                                        <i class="fas fa-info-circle"></i> @Localizer["Details"]
                                     </a>
                                     <a asp-action="Delete" asp-route-id="@patient.Id" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Delete
+                                        <i class="fas fa-trash-alt"></i> @Localizer["Delete"]
                                     </a>
                                 </td>
                             </tr>
@@ -62,7 +65,7 @@
             else
             {
                 <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i>No patients found in the database.
+                    <i class="fas fa-info-circle me-2"></i>@Localizer["No_patients_found"]
                 </div>
             }
         </div>

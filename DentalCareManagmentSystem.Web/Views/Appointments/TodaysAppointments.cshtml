@@ -1,7 +1,9 @@
 ﻿@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Today's Appointments";
+    ViewData["Title"] = Localizer["Today's Appointments"];
     var isDoctor = User.IsInRole("Doctor");
     var isReceptionist = User.IsInRole("Receptionist");
 }
@@ -16,12 +18,12 @@
                 <div class="card border-warning shadow-sm">
                     <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="fas fa-users me-2"></i>Waiting Queue
+                            <i class="fas fa-users me-2"></i>@Localizer["Waiting Queue"]
                         </h5>
                         <div>
-                            <span class="badge bg-dark me-2" id="totalQueueCount">0 Total</span>
-                            <span class="badge bg-info" id="waitingQueueCount">0 Waiting</span>
-                            <span class="badge bg-success" id="completedQueueCount">0 Completed</span>
+                            <span class="badge bg-dark me-2" id="totalQueueCount">0 @Localizer["Total"]</span>
+                            <span class="badge bg-info" id="waitingQueueCount">0 @Localizer["Waiting"]</span>
+                            <span class="badge bg-success" id="completedQueueCount">0 @Localizer["Completed"]</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -33,8 +35,8 @@
                         <!-- حالة الطابور فارغ -->
                         <div id="emptyQueueState" class="text-center py-4">
                             <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No patients in queue</h4>
-                            <p class="text-muted">Add patients to the waiting queue</p>
+                            <h4 class="text-muted">@Localizer["No patients in queue"]</h4>
+                            <p class="text-muted">@Localizer["Add patients to the waiting queue"]</p>
                         </div>
 
                         <!-- إشعارات -->
@@ -52,10 +54,10 @@
                 <div class="card border-primary shadow-sm">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="fas fa-user-md me-2"></i>Doctor's Panel
+                            <i class="fas fa-user-md me-2"></i>@Localizer["Doctor's Panel"]
                         </h5>
                         <div>
-                            <span class="badge bg-light text-primary me-2" id="waitingPatientsCount">0 Waiting</span>
+                            <span class="badge bg-light text-primary me-2" id="waitingPatientsCount">0 @Localizer["Waiting"]</span>
                             <span class="badge bg-success" id="currentQueueNumber">-</span>
                         </div>
                     </div>
@@ -63,8 +65,8 @@
                         <!-- حالة الانتظار -->
                         <div id="doctorWaitingState" class="text-center py-4">
                             <i class="fas fa-user-clock fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No patients waiting</h4>
-                            <p class="text-muted">You will be notified when patients arrive</p>
+                            <h4 class="text-muted">@Localizer["No patients waiting"]</h4>
+                            <p class="text-muted">@Localizer["You will be notified when patients arrive"]</p>
                         </div>
 
                         <!-- المريض الحالي -->
@@ -77,15 +79,15 @@
                                         <p class="mb-1" id="currentAppointmentTime"></p>
                                         <small class="text-muted" id="currentArrivalTime"></small>
                                         <div class="mt-2">
-                                            <span class="badge bg-primary" id="currentPatientQueueNumber">Queue #1</span>
+                                            <span class="badge bg-primary" id="currentPatientQueueNumber">@Localizer["Queue"] #1</span>
                                         </div>
                                     </div>
                                     <div class="ms-3">
                                         <button class="btn btn-success btn-lg me-2" onclick="completeCurrentPatient()">
-                                            <i class="fas fa-check me-1"></i> Complete
+                                            <i class="fas fa-check me-1"></i> @Localizer["Complete"]
                                         </button>
                                         <button class="btn btn-outline-primary" onclick="startCurrentAppointment()">
-                                            <i class="fas fa-play me-1"></i> Start
+                                            <i class="fas fa-play me-1"></i> @Localizer["Start"]
                                         </button>
                                     </div>
                                 </div>
@@ -106,7 +108,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary mb-1">
-                <i class="fas fa-calendar-day me-2"></i>Today's Appointments
+                <i class="fas fa-calendar-day me-2"></i>@Localizer["Today's Appointments"]
             </h2>
             <p class="text-muted mb-0">@DateTime.Today.ToString("dddd, MMMM dd, yyyy")</p>
         </div>
@@ -115,11 +117,11 @@
             @if (isReceptionist)
             {
                 <a href="@Url.Action("Create")" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> New Appointment
+                    <i class="fas fa-plus me-1"></i> @Localizer["New Appointment"]
                 </a>
             }
             <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Back
+                <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
             </a>
         </div>
     </div>
@@ -132,7 +134,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Appointments
+                                @Localizer["Total Appointments"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count</div>
                         </div>
@@ -150,7 +152,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Notified
+                                @Localizer["Notified"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Notified")</div>
                         </div>
@@ -168,7 +170,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Scheduled
+                                @Localizer["Scheduled"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Scheduled")</div>
                         </div>
@@ -186,7 +188,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Completed
+                                @Localizer["Completed"]
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Completed")</div>
                         </div>
@@ -203,12 +205,12 @@
     {
         <div class="empty-state text-center py-5">
             <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
-            <h4 class="text-muted">No appointments for today</h4>
-            <p class="text-muted">All caught up! No appointments scheduled for today.</p>
+            <h4 class="text-muted">@Localizer["No appointments for today"]</h4>
+            <p class="text-muted">@Localizer["All caught up! No appointments scheduled for today"]</p>
             @if (isReceptionist)
             {
                 <a href="@Url.Action("Create")" class="btn btn-primary mt-3">
-                    <i class="fas fa-plus me-1"></i> Create New Appointment
+                    <i class="fas fa-plus me-1"></i> @Localizer["Create New Appointment"]
                 </a>
             }
         </div>
@@ -218,9 +220,9 @@
         <div class="card shadow-sm">
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="fas fa-list me-2"></i>Appointments List
+                    <i class="fas fa-list me-2"></i>@Localizer["Appointments List"]
                 </h5>
-                <span class="badge bg-primary">@Model.Count appointments</span>
+                <span class="badge bg-primary">@Model.Count @Localizer["appointments"]</span>
             </div>
 
             <div class="card-body p-0">
@@ -228,15 +230,15 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th><i class="fas fa-user me-1"></i> Patient</th>
-                                <th><i class="fas fa-phone me-1"></i> Phone</th>
-                                <th><i class="fas fa-clock me-1"></i> Time</th>
-                                <th><i class="fas fa-tag me-1"></i> Status</th>
+                                <th><i class="fas fa-user me-1"></i> @Localizer["Patient"]</th>
+                                <th><i class="fas fa-phone me-1"></i> @Localizer["Phone"]</th>
+                                <th><i class="fas fa-clock me-1"></i> @Localizer["Time"]</th>
+                                <th><i class="fas fa-tag me-1"></i> @Localizer["Status"]</th>
                                 @if (isReceptionist)
                                 {
-                                    <th><i class="fas fa-bell me-1"></i> Queue Actions</th>
+                                    <th><i class="fas fa-bell me-1"></i> @Localizer["Queue Actions"]</th>
                                 }
-                                <th><i class="fas fa-actions me-1"></i> Actions</th>
+                                <th><i class="fas fa-actions me-1"></i> @Localizer["Actions"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -277,9 +279,17 @@
                                                 "NoShow" => "bg-secondary",
                                                 _ => "bg-secondary"
                                             };
+                                            var statusText = appointment.Status switch
+                                            {
+                                                "Scheduled" => Localizer["Scheduled"].Value,
+                                                "Notified" => Localizer["Notified"].Value,
+                                                "Completed" => Localizer["Completed"].Value,
+                                                "Cancelled" => Localizer["Cancelled"].Value,
+                                                _ => appointment.Status
+                                            };
                                         }
                                         <span class="badge @statusClass status-badge" id="status-@appointment.Id">
-                                            @appointment.Status
+                                            @statusText
                                         </span>
                                     </td>
 
@@ -291,19 +301,19 @@
                                                 <button class="btn btn-success btn-sm add-to-queue-btn"
                                                         data-appointment-id="@appointment.Id"
                                                         data-patient-name="@appointment.PatientName">
-                                                    <i class="fas fa-plus me-1"></i> Add to Queue
+                                                    <i class="fas fa-plus me-1"></i> @Localizer["Add to Queue"]
                                                 </button>
                                             }
                                             else if (appointment.Status == "Notified")
                                             {
                                                 <button class="btn btn-outline-info btn-sm" disabled>
-                                                    <i class="fas fa-clock me-1"></i> In Queue
+                                                    <i class="fas fa-clock me-1"></i> @Localizer["In Queue"]
                                                 </button>
                                             }
                                             else if (appointment.Status == "Completed")
                                             {
                                                 <button class="btn btn-outline-success btn-sm" disabled>
-                                                    <i class="fas fa-check me-1"></i> Completed
+                                                    <i class="fas fa-check me-1"></i> @Localizer["Completed"]
                                                 </button>
                                             }
                                         </td>
@@ -313,7 +323,7 @@
                                         <div class="btn-group btn-group-sm">
                                             <a href="@Url.Action("Details", new { id = appointment.Id })"
                                                class="btn btn-outline-primary"
-                                               title="View Details">
+                                               title="@Localizer["View Details"]">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         </div>
@@ -341,64 +351,64 @@
             // اتصال الريسيبشن
             @if (isReceptionist)
             {
-                    <text>
-                    receptionConnection = new signalR.HubConnectionBuilder()
-                        .withUrl("/notificationHub")
-                        .withAutomaticReconnect()
-                        .build();
+                        <text>
+                        receptionConnection = new signalR.HubConnectionBuilder()
+                            .withUrl("/notificationHub")
+                            .withAutomaticReconnect()
+                            .build();
 
-                    receptionConnection.start().then(() => {
-                        console.log("✅ Reception connected to SignalR");
-                        receptionConnection.invoke("JoinReceptionRoom");
-                    }).catch(err => console.error('❌ Reception Connection Error: ', err));
+                        receptionConnection.start().then(() => {
+                            console.log("✅ Reception connected to SignalR");
+                            receptionConnection.invoke("JoinReceptionRoom");
+                        }).catch(err => console.error('❌ Reception Connection Error: ', err));
 
-                    // استقبال تحديثات الطابور
-                    receptionConnection.on("UpdateQueue", (queue) => {
-                        console.log("📋 Queue updated:", queue);
-                        updateReceptionQueueDisplay(queue);
-                    });
+                        // استقبال تحديثات الطابور
+                        receptionConnection.on("UpdateQueue", (queue) => {
+                            console.log("📋 Queue updated:", queue);
+                            updateReceptionQueueDisplay(queue);
+                        });
 
-                    receptionConnection.on("PatientCompleted", (patientName) => {
-                        showQueueNotification('success', patientName + ' has completed their appointment');
-                    });
+                        receptionConnection.on("PatientCompleted", (patientName) => {
+                            showQueueNotification('success', patientName + ' @Localizer["has completed their appointment"]');
+                        });
 
-                    receptionConnection.on("NextPatientReady", (patientName, appointmentId) => {
-                        showQueueNotification('info', 'Next patient ready: ' + patientName);
-                    });
-                    </text>
+                        receptionConnection.on("NextPatientReady", (patientName, appointmentId) => {
+                            showQueueNotification('info', '@Localizer["Next patient ready"]: ' + patientName);
+                        });
+                        </text>
             }
 
             // اتصال الدكتور
             @if (isDoctor)
             {
-                    <text>
-                    doctorConnection = new signalR.HubConnectionBuilder()
-                        .withUrl("/notificationHub")
-                        .withAutomaticReconnect()
-                        .build();
+                        <text>
+                        doctorConnection = new signalR.HubConnectionBuilder()
+                            .withUrl("/notificationHub")
+                            .withAutomaticReconnect()
+                            .build();
 
-                    doctorConnection.start().then(() => {
-                        console.log("✅ Doctor connected to SignalR");
-                        doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
-                    }).catch(err => console.error('❌ Doctor Connection Error: ', err));
+                        doctorConnection.start().then(() => {
+                            console.log("✅ Doctor connected to SignalR");
+                            doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
+                        }).catch(err => console.error('❌ Doctor Connection Error: ', err));
 
-                    doctorConnection.on("UpdateQueue", (queue) => {
-                        console.log("👨‍⚕️ Doctor queue updated:", queue);
-                        updateDoctorQueueDisplay(queue);
-                    });
+                        doctorConnection.on("UpdateQueue", (queue) => {
+                            console.log("👨‍⚕️ Doctor queue updated:", queue);
+                            updateDoctorQueueDisplay(queue);
+                        });
 
-                    doctorConnection.on("NextPatientCalled", (patientName, appointmentId) => {
-                        showDoctorNotification('info', 'Now serving: ' + patientName);
-                    });
+                        doctorConnection.on("NextPatientCalled", (patientName, appointmentId) => {
+                            showDoctorNotification('info', '@Localizer["Now serving"]: ' + patientName);
+                        });
 
-                    doctorConnection.on("ReceiveNewPatient", (patientName, appointmentId, appointmentTime) => {
-                        showDoctorNotification('info', 'New patient added: ' + patientName);
-                    });
+                        doctorConnection.on("ReceiveNewPatient", (patientName, appointmentId, appointmentTime) => {
+                            showDoctorNotification('info', '@Localizer["New patient added"]: ' + patientName);
+                        });
 
-                    doctorConnection.on("PatientCompleted", (patientName) => {
-                        showDoctorNotification('success', patientName + ' has completed their appointment');
-                    });
-                    </text>
+                        doctorConnection.on("PatientCompleted", (patientName) => {
+                            showDoctorNotification('success', patientName + ' @Localizer["has completed their appointment"]');
+                        });
+                        </text>
             }
 
             // زر إضافة للطابور
@@ -408,28 +418,28 @@
                 const patientName = $btn.data('patient-name');
 
                 $btn.prop('disabled', true);
-                $btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Adding...');
+                $btn.html('<i class="fas fa-spinner fa-spin me-1"></i> @Localizer["Adding"]');
 
                 $.post('@Url.Action("AddToQueue", "Notification")', { appointmentId: appointmentId })
                     .done(function (response) {
                         if (response.success) {
                             $btn.removeClass('btn-success').addClass('btn-outline-info');
-                            $btn.html('<i class="fas fa-clock me-1"></i> In Queue');
+                            $btn.html('<i class="fas fa-clock me-1"></i> @Localizer["In Queue"]');
 
                             $('#status-' + appointmentId).removeClass('bg-warning').addClass('bg-info');
-                            $('#status-' + appointmentId).text('Notified');
+                            $('#status-' + appointmentId).text('@Localizer["Notified"]');
 
-                            showNotification('success', patientName + ' added to waiting queue');
+                            showNotification('success', patientName + ' @Localizer["added to waiting queue"]');
                         } else {
                             showNotification('error', response.message);
                             $btn.prop('disabled', false);
-                            $btn.html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                            $btn.html('<i class="fas fa-plus me-1"></i> @Localizer["Add to Queue"]');
                         }
                     })
                     .fail(function () {
-                        showNotification('error', 'Failed to add to queue');
+                        showNotification('error', '@Localizer["Failed to add to queue"]');
                         $btn.prop('disabled', false);
-                        $btn.html('<i class="fas fa-plus me-1"></i> Add to Queue');
+                        $btn.html('<i class="fas fa-plus me-1"></i> @Localizer["Add to Queue"]');
                     });
             });
         });
@@ -467,11 +477,11 @@
 
                 let buttonHtml = '';
                 if (isCompleted) {
-                    buttonHtml = '<small class="text-success">Completed: ' + patient.completedTime + '</small>';
+                    buttonHtml = '<small class="text-success">@Localizer["Completed"]: ' + patient.completedTime + '</small>';
                 } else {
                     const isDisabled = !isWaiting ? 'disabled' : '';
                     const buttonClass = isInProgress ? 'btn-success' : 'btn-outline-secondary';
-                    const buttonText = isWaiting ? 'Call Next' : 'Waiting...';
+                    const buttonText = isWaiting ? '@Localizer["Call Next"]' : '@Localizer["Waiting"]...';
                     buttonHtml = '<button class="btn btn-sm ' + buttonClass + '" onclick="callNextPatient()" ' + isDisabled + '>' +
                                  '<i class="fas fa-bullhorn me-1"></i> ' + buttonText + '</button>';
                 }
@@ -488,13 +498,16 @@
                         '</div>' +
                         '</div>' +
                         '<div class="col-md-2">' +
-                        '<small class="text-muted">Appt: ' + patient.appointmentTime + '</small>' +
+                        '<small class="text-muted">@Localizer["Appointment"]: ' + patient.appointmentTime + '</small>' +
                         '</div>' +
                         '<div class="col-md-2">' +
-                        '<small class="text-muted">Arrived: ' + patient.arrivalTime + '</small>' +
+                        '<small class="text-muted">@Localizer["Arrived"]: ' + patient.arrivalTime + '</small>' +
                         '</div>' +
                         '<div class="col-md-2">' +
-                        '<span class="badge ' + statusBadge + '">' + patient.status + '</span>' +
+                        '<span class="badge ' + statusBadge + '">' +
+                        (patient.status === 'Waiting' ? '@Localizer["Waiting"]' :
+                         patient.status === 'In Progress' ? '@Localizer["In Progress"]' :
+                         '@Localizer["Completed"]') + '</span>' +
                         '</div>' +
                         '<div class="col-md-3 text-end">' + buttonHtml + '</div>' +
                         '</div>' +
@@ -510,20 +523,20 @@
             $.post('@Url.Action("CallNextPatient", "Notification")')
                 .done(function (response) {
                     if (response.success) {
-                        showQueueNotification('info', 'Next patient called');
+                        showQueueNotification('info', '@Localizer["Next patient called"]');
                     } else {
                         showQueueNotification('error', response.message);
                     }
                 })
                 .fail(function () {
-                    showQueueNotification('error', 'Failed to call next patient');
+                    showQueueNotification('error', '@Localizer["Failed to call next patient"]');
                 });
         }
 
         function updateQueueCounters(total, waiting, completed) {
-            $('#totalQueueCount').text(total + ' Total');
-            $('#waitingQueueCount').text(waiting + ' Waiting');
-            $('#completedQueueCount').text(completed + ' Completed');
+            $('#totalQueueCount').text(total + ' @Localizer["Total"]');
+            $('#waitingQueueCount').text(waiting + ' @Localizer["Waiting"]');
+            $('#completedQueueCount').text(completed + ' @Localizer["Completed"]');
         }
 
         // ========== وظائف الدكتور ==========
@@ -534,7 +547,7 @@
             const currentPatient = queue.find(function(p) { return p.status === 'In Progress'; });
             const completedPatients = queue.filter(function(p) { return p.status === 'Completed'; });
 
-            $('#waitingPatientsCount').text(waitingPatients.length + ' Waiting');
+            $('#waitingPatientsCount').text(waitingPatients.length + ' @Localizer["Waiting"]');
 
             if (currentPatient) {
                 showCurrentPatient(currentPatient);
@@ -553,9 +566,9 @@
 
         function showCurrentPatient(patient) {
             $('#currentPatientName').text(patient.patientName);
-            $('#currentAppointmentTime').text('Appointment: ' + patient.appointmentTime);
-            $('#currentArrivalTime').text('Arrived: ' + patient.arrivalTime);
-            $('#currentPatientQueueNumber').text('Queue #' + patient.queueNumber);
+            $('#currentAppointmentTime').text('@Localizer["Appointment"]: ' + patient.appointmentTime);
+            $('#currentArrivalTime').text('@Localizer["Arrived"]: ' + patient.arrivalTime);
+            $('#currentPatientQueueNumber').text('@Localizer["Queue"] #' + patient.queueNumber);
             $('#currentQueueNumber').text('#' + patient.queueNumber);
 
             currentAppointmentId = patient.appointmentId;
@@ -571,13 +584,13 @@
                 '<div class="d-flex align-items-center">' +
                 '<i class="fas fa-user-clock fa-2x me-3"></i>' +
                 '<div class="flex-grow-1">' +
-                '<h6 class="mb-1">Next Patient Ready</h6>' +
-                '<p class="mb-1">' + patient.patientName + ' is waiting</p>' +
-                '<small class="text-muted">Queue #' + patient.queueNumber + ' | Appointment: ' + patient.appointmentTime + '</small>' +
+                '<h6 class="mb-1">@Localizer["Next Patient Ready"]</h6>' +
+                '<p class="mb-1">' + patient.patientName + ' @Localizer["is waiting"]</p>' +
+                '<small class="text-muted">@Localizer["Queue"] #' + patient.queueNumber + ' | @Localizer["Appointment"]: ' + patient.appointmentTime + '</small>' +
                 '</div>' +
                 '<div>' +
                 '<button class="btn btn-primary" onclick="callNextPatient()">' +
-                '<i class="fas fa-play me-1"></i> Start' +
+                '<i class="fas fa-play me-1"></i> @Localizer["Start"]' +
                 '</button>' +
                 '</div>' +
                 '</div>' +
@@ -587,7 +600,7 @@
 
         function updateDoctorQueueList(waitingPatients) {
             if (waitingPatients.length > 0) {
-                let html = '<h6 class="mb-3">Waiting Patients:</h6>';
+                let html = '<h6 class="mb-3">@Localizer["Waiting Patients"]:</h6>';
                 waitingPatients.forEach(function(patient) {
                     html += '<div class="queue-item-small card mb-2">' +
                             '<div class="card-body py-2">' +
@@ -597,7 +610,7 @@
                             '<strong>' + patient.patientName + '</strong>' +
                             '<small class="text-muted ms-2">' + patient.appointmentTime + '</small>' +
                             '</div>' +
-                            '<span class="badge bg-warning">Waiting</span>' +
+                            '<span class="badge bg-warning">@Localizer["Waiting"]</span>' +
                             '</div>' +
                             '</div>' +
                             '</div>';
@@ -614,14 +627,14 @@
                     appointmentId: currentAppointmentId
                 }).done(function(response) {
                     if (response.success) {
-                        showDoctorNotification('success', 'Patient completed successfully');
+                        showDoctorNotification('success', '@Localizer["Patient completed successfully"]');
                         currentAppointmentId = null;
                         currentQueueItem = null;
                     } else {
                         showDoctorNotification('error', response.message);
                     }
                 }).fail(function() {
-                    showDoctorNotification('error', 'Failed to complete patient');
+                    showDoctorNotification('error', '@Localizer["Failed to complete patient"]');
                 });
             }
         }

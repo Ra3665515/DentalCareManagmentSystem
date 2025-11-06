@@ -1,21 +1,27 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model IEnumerable<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+
 @{
-    ViewData["Title"] = "Appointments Calendar";
+    ViewData["Title"] = Localizer["Appointments Calendar"];
 }
 
+
+
 <div class="container mt-4">
-    <h2 class="mb-3"><i class="fas fa-calendar-alt"></i> Calendar</h2>
+    <h2 class="mb-3"><i class="fas fa-calendar-alt"></i> @Localizer["Calendar"]</h2>
 
     <div id="calendar" class="shadow-sm rounded p-3 bg-white">
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
-                    <th>Date</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Patient</th>
-                    <th>Status</th>
+                    <th>@Localizer["Date"]</th>
+                    <th>@Localizer["Start"]</th>
+                    <th>@Localizer["End"]</th>
+                    <th>@Localizer["Patient"]</th>
+                    <th>@Localizer["Status"]</th>
                 </tr>
+            
             </thead>
             <tbody>
                 @foreach (var appt in Model)

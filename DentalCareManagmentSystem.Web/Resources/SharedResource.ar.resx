@@ -98,4 +98,28 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
+	<data name="Dashboard" xml:space="preserve">
+    <value>لوحة التحكم</value>
+</data>
+	<data name="Patients" xml:space="preserve">
+    <value>المرضى</value>
+</data>
+	<data name="Appointments" xml:space="preserve">
+    <value>المواعيد</value>
+</data>
+	<data name="Reports" xml:space="preserve">
+    <value>التقارير</value>
+</data>
+	<data name="Price_List" xml:space="preserve">
+    <value>قائمة الأسعار</value>
+</data>
+	<data name="Users" xml:space="preserve">
+    <value>المستخدمين</value>
+</data>
+	<data name="Todays Appointments" xml:space="preserve">
+    <value>مواعيد اليوم</value>
+</data>
+	<data name="Today" xml:space="preserve">
+    <value>اليوم</value>
+</data>
 </root>

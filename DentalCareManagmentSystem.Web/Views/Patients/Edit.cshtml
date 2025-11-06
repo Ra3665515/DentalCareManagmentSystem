@@ -1,13 +1,15 @@
-@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+﻿@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit Patient";
+    ViewData["Title"] = Localizer["Edit Patient"];
 }
 
 <div class="container mt-4">
     <div class="card shadow-sm border-0 rounded">
         <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
-            <i class="fas fa-user-injured me-2"></i> Edit Patient
+            <i class="fas fa-user-injured me-2"></i> @Localizer["Edit Patient"]
         </div>
 
         <div class="card-body">
@@ -18,7 +20,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label asp-for="FullName" class="form-label fw-semibold">
-                            <i class="fas fa-user me-1"></i> Full Name
+                            <i class="fas fa-user me-1"></i> @Localizer["Full Name"]
                         </label>
                         <input asp-for="FullName" class="form-control" required />
                         <span asp-validation-for="FullName" class="text-danger"></span>
@@ -26,7 +28,7 @@
 
                     <div class="col-md-3">
                         <label asp-for="Age" class="form-label fw-semibold">
-                            <i class="fas fa-hourglass-half me-1"></i> Age
+                            <i class="fas fa-hourglass-half me-1"></i> @Localizer["Age"]
                         </label>
                         <input asp-for="Age" type="number" class="form-control" required />
                         <span asp-validation-for="Age" class="text-danger"></span>
@@ -34,17 +36,17 @@
 
                     <div class="col-md-3">
                         <label asp-for="Gender" class="form-label fw-semibold">
-                            <i class="fas fa-venus-mars me-1"></i> Gender
+                            <i class="fas fa-venus-mars me-1"></i> @Localizer["Gender"]
                         </label>
                         <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders" required>
-                            <option value="">-- Select Gender --</option>
+                            <option value="">@Localizer["Select Gender"]</option>
                         </select>
                         <span asp-validation-for="Gender" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
                         <label asp-for="Phone" class="form-label fw-semibold">
-                            <i class="fas fa-phone me-1"></i> Phone
+                            <i class="fas fa-phone me-1"></i> @Localizer["Phone"]
                         </label>
                         <input asp-for="Phone" class="form-control" required />
                         <span asp-validation-for="Phone" class="text-danger"></span>
@@ -52,18 +54,18 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                            <i class="fas fa-money-bill-wave me-1"></i> Total Due 
+                            <i class="fas fa-money-bill-wave me-1"></i> @Localizer["Total_Due"]
                         </label>
                         <input asp-for="TotalDue" type="number" step="0.01" class="form-control" readonly />
                     </div>
-
+                </div>
 
                 <div class="d-flex justify-content-end mt-4">
                     <a asp-action="Index" class="btn btn-secondary me-2">
-                        <i class="fas fa-arrow-left me-1"></i> Cancel
+                        <i class="fas fa-arrow-left me-1"></i> @Localizer["Cancel"]
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> Save Changes
+                        <i class="fas fa-save me-1"></i> @Localizer["Save Changes"]
                     </button>
                 </div>
             </form>
@@ -73,4 +75,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+   
 }

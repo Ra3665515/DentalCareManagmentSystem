@@ -100,6 +100,36 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     color: var(--dark-text) !important;
 }
 
+/* Ensure RTL/LTR consistency */
+body {
+    direction: inherit;
+}
+
+/* Fix for sidebar in RTL */
+[dir="rtl"] #sidebar-wrapper {
+    right: 0;
+    left: auto;
+}
+
+[dir="ltr"] #sidebar-wrapper {
+    left: 0;
+    right: auto;
+}
+
+/* Ensure navbar items align properly */
+.navbar-nav {
+    direction: inherit;
+}
+
+/* Fix for dropdown menus */
+.dropdown-menu {
+    direction: inherit;
+}
+
+/* Ensure all text follows direction */
+.container-fluid, .row, .col, [class*="col-"] {
+    direction: inherit;
+}
 .nav-link:hover {
     color: var(--primary-color) !important;
 }
