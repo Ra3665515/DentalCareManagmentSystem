@@ -6,65 +6,183 @@
         }
 
         // Listen for new patients added to queue
-        connection.on("AddPatientToQueue", (appointmentId, patientName, appointmentTime) => {
-            console.log(`🧍‍♂️ New patient added to queue: ${patientName} at ${appointmentTime}`);
+        connection.on("AddPatientToQueue", (fullQueueData) => {
+            console.log(`🧍‍♂️ Queue updated with ${fullQueueData?.length || 0} patients`, fullQueueData);
             
-            // Show notification to doctor
-            if (typeof showToast === 'function') {
-                showToast(`New patient in queue: ${patientName} (${appointmentTime})`, 'info');
-            } else {
-                alert(`🧍‍♂️ New patient added to queue: ${patientName}`);
+            if (fullQueueData && fullQueueData.length > 0) {
+                const latestPatient = fullQueueData[fullQueueData.length - 1];
+                const patientName = latestPatient.patientName || latestPatient.PatientName;
+                const startTime = formatTime(latestPatient.startTime || latestPatient.StartTime);
+                
+                // Show notification to doctor
+                showToast(`New patient in queue: ${patientName} (${startTime})`, 'info');
+                
+                // Play notification sound (optional)
+                playNotificationSound();
             }
-
-            // Play notification sound (optional)
-            playNotificationSound();
             
-            // Update the doctor's queue view if the function exists
-            if (typeof refreshDoctorQueue === 'function') {
-                refreshDoctorQueue();
-            }
+            // Update the doctor's queue view
+            updateDoctorQueueView(fullQueueData);
         });
 
         connection.on("ReceiveNewPatient", (appointmentId, name) => {
             console.log(`🧍‍♂️ New patient added: ${name}`);
-            if (typeof showToast === 'function') {
-                showToast(`New patient: ${name}`, 'info');
-            } else {
-                alert(`🧍‍♂️ New patient added: ${name}`);
-            }
+            showToast(`New patient: ${name}`, 'info');
         });
 
         connection.on("PatientTransferred", (appointmentId, name) => {
             console.log(`➡️ Patient transferred: ${name}`);
-            if (typeof showToast === 'function') {
-                showToast(`Patient transferred: ${name}`, 'warning');
-            } else {
-                alert(`➡️ Patient transferred: ${name}`);
-            }
+            showToast(`Patient transferred: ${name}`, 'warning');
         });
 
+        connection.on("PatientCompleted", (appointmentId, name) => {
+            console.log(`✅ Patient completed: ${name}`);
+            showToast(`Patient ${name} completed`, 'success');
+            
+            // Reload queue after completion
+            loadDoctorQueue();
+        });
+
+        // Complete button handler
         const completeBtn = document.getElementById("btnComplete");
         if (completeBtn) {
             completeBtn.addEventListener("click", () => {
-                const id = document.getElementById("completeId").value;
-                const name = document.getElementById("completeName").value;
+                const id = document.getElementById("completeId")?.value;
+                const name = document.getElementById("completeName")?.value;
                 if (!id || !name) {
                     alert("Please enter appointment ID and patient name");
                     return;
                 }
-                connection.invoke("CompleteSession", id, name);
-                alert(`✅ Completed session for ${name}`);
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                
+                fetch(`/Notifications/CompletePatient?appointmentId=${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": token || ""
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`✅ Completed session for ${name}`);
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error completing patient:", err);
+                    alert(`Failed to complete session: ${err.message}`);
+                });
             });
         }
+
+        // Load initial queue on page load if doctor view exists
+        if (document.getElementById('doctorQueueList')) {
+            loadDoctorQueue();
+        }
+
     }).catch(err => {
         console.error("Error during SignalR promise resolution: ", err);
     });
 });
 
+// Load the current queue for doctor view
+function loadDoctorQueue() {
+    fetch('/Notifications/GetQueue')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Doctor queue loaded:", data);
+            updateDoctorQueueView(data);
+        })
+        .catch(err => console.error("Error loading doctor queue:", err));
+}
+
+// Update doctor's queue view
+function updateDoctorQueueView(queueData) {
+    const doctorQueueList = document.getElementById('doctorQueueList');
+    const doctorWaitingState = document.getElementById('doctorWaitingState');
+    const waitingPatientsCount = document.getElementById('waitingPatientsCount');
+
+    if (!doctorQueueList) return; // Not on doctor's page
+
+    if (!queueData || queueData.length === 0) {
+        if (doctorWaitingState) doctorWaitingState.style.display = 'block';
+        doctorQueueList.innerHTML = "";
+        if (waitingPatientsCount) waitingPatientsCount.textContent = "0 Waiting";
+        return;
+    }
+
+    if (doctorWaitingState) doctorWaitingState.style.display = 'none';
+    if (waitingPatientsCount) waitingPatientsCount.textContent = `${queueData.length} Waiting`;
+
+    doctorQueueList.innerHTML = `
+        <h6 class="text-muted mb-3">
+            <i class="fas fa-users me-2"></i>Waiting Queue (${queueData.length})
+        </h6>
+        ${queueData.map((p, index) => {
+            const pName = p.patientName || p.PatientName;
+            const pId = p.id || p.Id;
+            const pPatientId = p.patientId || p.PatientId;
+            const pStartTime = p.startTime || p.StartTime;
+            
+            return `
+            <div class="card mb-2 queue-item-small">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary me-2 fs-6">#${index + 1}</span>
+                                <h6 class="mb-0 fw-bold">${pName}</h6>
+                            </div>
+                            <small class="text-muted">
+                                <i class="far fa-clock me-1"></i>
+                                Scheduled: ${formatTime(pStartTime)}
+                            </small>
+                        </div>
+                        <div class="btn-group">
+                            <a href="/Appointments/Details/${pId}" class="btn btn-sm btn-outline-primary" title="View Appointment">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/Patients/Details/${pPatientId}" class="btn btn-sm btn-outline-info" title="View Patient">
+                                <i class="fas fa-user"></i>
+                            </a>
+                            <button class="btn btn-sm btn-success" onclick="startAppointment('${pId}', '${pName}')" title="Start Appointment">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ';
+        }).join("")}
+    `;
+}
+
+// Start appointment function
+function startAppointment(appointmentId, patientName) {
+    if (confirm(`Start appointment with ${patientName}?`)) {
+        // Redirect to appointment details or treatment page
+        window.location.href = `/Appointments/Details/${appointmentId}`;
+    }
+}
+
+// Helper function to format time
+function formatTime(timeString) {
+    if (!timeString) return 'N/A';
+    try {
+        const time = new Date(timeString);
+        return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    } catch {
+        return timeString;
+    }
+}
+
 // Helper function to play notification sound
 function playNotificationSound() {
     try {
-        const audio = new Audio('/sounds/notification.mp3'); // You can add a notification sound file
+        const audio = new Audio('/sounds/notification.mp3');
         audio.volume = 0.5;
         audio.play().catch(err => console.log('Could not play notification sound:', err));
     } catch (err) {
@@ -74,19 +192,20 @@ function playNotificationSound() {
 
 // Helper function to show toast notifications
 function showToast(message, type = 'info') {
-    const toastContainer = document.getElementById('toastContainer');
+    let toastContainer = document.getElementById('toastContainer');
     if (!toastContainer) {
-        const container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.style.position = 'fixed';
-        container.style.top = '20px';
-        container.style.right = '20px';
-        container.style.zIndex = '9999';
-        document.body.appendChild(container);
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.top = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
     }
     
     const toast = document.createElement('div');
-    toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show`;
+    const alertClass = type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info';
+    toast.className = `alert alert-${alertClass} alert-dismissible fade show shadow`;
     toast.role = 'alert';
     toast.innerHTML = `
         <strong><i class="fas fa-bell me-2"></i></strong>
@@ -94,16 +213,10 @@ function showToast(message, type = 'info') {
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    document.getElementById('toastContainer').appendChild(toast);
+    toastContainer.appendChild(toast);
     
     setTimeout(() => {
-        toast.remove();
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 150);
     }, 5000);
-}
-
-// Function to refresh doctor's queue (to be called when new patient is added)
-function refreshDoctorQueue() {
-    // Reload the queue data - you can implement this based on your needs
-    console.log('Refreshing doctor queue...');
-    // Example: window.location.reload(); // or load via AJAX
 }

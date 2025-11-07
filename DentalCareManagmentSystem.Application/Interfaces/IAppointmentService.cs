@@ -8,17 +8,17 @@ public interface IAppointmentService
     AppointmentDto? GetById(Guid id);
     IQueryable<AppointmentDto> GetAll();
     List<AppointmentDto> GetTodaysAppointments();
-    List<AppointmentDto> GetPendingAppointments(); // Added
+    List<AppointmentDto> GetPendingAppointments();
     void Create(AppointmentDto appointment);
     void Update(AppointmentDto appointment);
-    void Delete(Guid id); // Added
-    void UpdateStatus(Guid id, string status); // Added
-    List<AppointmentDto> GetAppointmentsByDate(DateTime date); // Added
-    List<AppointmentDto> GetCompletedAppointments(); // Added
-    List<AppointmentDto> GetCancelledAppointments(); // Added
-    List<AppointmentDto> GetAppointmentsThisMonth(); // Added
-    Dictionary<string, int> GetAppointmentCountByStatus(); // Added
-    Dictionary<string, int> GetAppointmentsByMonth(); // Added
-    List<AppointmentDto> GetAppointmentsByDateRange(DateTime startDate, DateTime endDate); // Added
+    void Delete(Guid id);
+    void UpdateStatus(Guid id, string status);
+    List<AppointmentDto> GetAppointmentsByDate(DateTime date);
+    List<AppointmentDto> GetCompletedAppointments();
+    List<AppointmentDto> GetCancelledAppointments();
+    List<AppointmentDto> GetAppointmentsThisMonth();
+    Dictionary<string, int> GetAppointmentCountByStatus();
+    Dictionary<string, int> GetAppointmentsByMonth();
+    List<AppointmentDto> GetAppointmentsByDateRange(DateTime startDate, DateTime endDate);
     void MarkAsNotified(Guid id, string userId);
 }

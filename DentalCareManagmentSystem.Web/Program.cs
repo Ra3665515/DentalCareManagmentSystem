@@ -93,7 +93,7 @@ app.UseRequestLocalization(localizationOptions);
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3️⃣ SignalR Hub Mapping - ضعه قبل الـ MapControllerRoute
+// 3️⃣ SignalR Hub Mapping - single endpoint
 app.MapHub<NotificationHub>("/notificationHub");
 
 // Routes
@@ -105,7 +105,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<NotificationHub>("/hubs/notifications");
 app.MapRazorPages();
 
 // 4️⃣ Seed Data
@@ -123,4 +122,4 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.Run();
+app.Run();app.Run();

@@ -138,20 +138,51 @@ public class NotificationsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddToQueue(Guid appointmentId)
     {
-        // Update the status to Notified
-        _appointmentService.UpdateStatus(appointmentId, "Notified");
+        try
+        {
+            // Get the appointment
+            var appointment = _appointmentService.GetById(appointmentId);
+            if (appointment == null)
+            {
+                return Json(new { success = false, message = "Appointment not found" });
+            }
 
-        // Get the updated list of all notified patients
-        var notifiedAppointments = _appointmentService.GetAll()
-            .Where(a => a.Status == "Notified")
-            .OrderBy(a => a.Date)
-            .ToList();
+            // Update the status to Notified
+            _appointmentService.UpdateStatus(appointmentId, "Notified");
 
-        // Notify other clients via SignalR in case they need to update their views
-        await _hubContext.Clients.All.SendAsync("AddPatientToQueue", notifiedAppointments);
+            // Get the updated list of all notified patients for today
+            var notifiedAppointments = _appointmentService.GetAll()
+                .Where(a => a.Status == "Notified" && a.Date.Date == DateTime.Today)
+                .OrderBy(a => a.StartTime)
+                .Select(a => new
+                {
+                    id = a.Id,
+                    patientName = a.PatientName,
+                    patientId = a.PatientId,
+                    startTime = a.StartTime,
+                    endTime = a.EndTime,
+                    status = a.Status,
+                    date = a.Date
+                })
+                .ToList();
 
-        // Return a partial view with the queue
-        return Content("<div>Test HTML from server</div>");
+            // Notify all clients (receptionists and doctors) via SignalR
+            await _hubContext.Clients.All.SendAsync("AddPatientToQueue", notifiedAppointments);
+
+            // Return success response
+            return Json(new
+            {
+                success = true,
+                message = $"Patient {appointment.PatientName} added to queue successfully",
+                appointmentId = appointmentId,
+                patientName = appointment.PatientName,
+                queueData = notifiedAppointments
+            });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = $"Error: {ex.Message}" });
+        }
     }
 
     [HttpPost]
@@ -167,12 +198,14 @@ public class NotificationsController : Controller
             _appointmentService.UpdateStatus(appointmentId, "Completed");
 
             // إعلام بأن المريض انتهى
-            await _hubContext.Clients.All.SendAsync("PatientCompleted", appointmentId);
+            await _hubContext.Clients.All.SendAsync("PatientCompleted", appointmentId, appointment.PatientName);
 
             return Json(new
             {
                 success = true,
-                message = "Patient marked as completed"
+                message = "Patient marked as completed",
+                appointmentId = appointmentId,
+                patientName = appointment.PatientName
             });
         }
         catch (Exception ex)
@@ -182,6 +215,7 @@ public class NotificationsController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CallNextPatient()
     {
         try

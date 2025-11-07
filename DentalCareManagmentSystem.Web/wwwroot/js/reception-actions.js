@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
             
+            // Update queue display
+            loadQueue();
+            
             // Show notification
             if (typeof showToast === 'function') {
                 showToast(`Patient ${name} completed`, 'success');
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Listen for new patient added to queue (from other receptionists)
+        // Listen for new patient added to queue (from other receptionists or same receptionist)
         connection.on("AddPatientToQueue", (fullQueueData) => {
             console.log(`Queue updated. Full queue data:`, fullQueueData);
 
@@ -60,14 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     if(doctorWaitingState) doctorWaitingState.style.display = 'none';
                     doctorQueueList.innerHTML = `
                         <h6 class="text-muted">Waiting Queue</h6>
-                        ${fullQueueData.map(p => `
-                            <div class="d-flex justify-content-between align-items-center p-2 queue-item-small">
-                                <div>
-                                    <span class="fw-bold">${p.patientName}</span>
-                                    <small class="text-muted ms-2">Scheduled: ${new Date(p.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                        ${fullQueueData.map((p, index) => `
+                            <div class="d-flex justify-content-between align-items-center p-2 mb-2 border-bottom queue-item-small">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary me-2">#${index + 1}</span>
+                                        <span class="fw-bold">${p.patientName}</span>
+                                    </div>
+                                    <small class="text-muted ms-4">Scheduled: ${formatTime(p.startTime)}</small>
                                 </div>
-                                <a href="/Patients/Details/${p.patientId}" class="btn btn-sm btn-info">
-                                    <i class="fas fa-info-circle me-1"></i> Details
+                                <a href="/Appointments/Details/${p.id}" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-info-circle"></i>
                                 </a>
                             </div>
                         `).join("")}
@@ -79,43 +85,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        const addBtn = document.getElementById("btnAddPatient");
-        if (addBtn) {
-            addBtn.addEventListener("click", () => {
-                const name = document.getElementById("patientName").value;
-                const id = document.getElementById("appointmentId").value;
-                if (!name || !id) {
-                    alert("Please enter patient name and appointment ID");
-                    return;
-                }
-                connection.invoke("AddNewPatient", id, name);
-                alert(`🟢 Patient ${name} added successfully`);
-            });
-        }
-
-        const transferBtn = document.getElementById("btnTransfer");
-        if (transferBtn) {
-            transferBtn.addEventListener("click", () => {
-                const name = document.getElementById("patientName").value;
-                const id = document.getElementById("appointmentId").value;
-                if (!name || !id) {
-                    alert("Please enter patient name and appointment ID");
-                    return;
-                }
-                connection.invoke("TransferToDoctor", id, name);
-                alert(`➡️ Patient ${name} transferred to doctor`);
-            });
-        }
-
         // Handle "Add to Queue" button click
-        document.querySelectorAll(".add-to-queue-btn").forEach(btn => {
-            btn.addEventListener("click", function (e) {
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.closest('.add-to-queue-btn')) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                const appointmentId = this.getAttribute('data-appointment-id');
-                const patientName = this.getAttribute('data-patient-name');
-                const button = this;
+                const button = e.target.closest('.add-to-queue-btn');
+                const appointmentId = button.getAttribute('data-appointment-id');
+                const patientName = button.getAttribute('data-patient-name');
                 const parentCell = button.closest('td');
                 const appointmentRow = document.getElementById(`appointment-${appointmentId}`);
 
@@ -125,65 +103,79 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Get anti-forgery token
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-                console.log("Anti-forgery token:", token);
 
-                // 1️⃣ Call backend controller with appointmentId as query parameter
+                // Call backend controller
                 fetch(`/Notifications/AddToQueue?appointmentId=${appointmentId}`, {
                     method: "POST",
-                    headers: token ? {
-                        "RequestVerificationToken": token
-                    } : {}
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": token || ""
+                    }
                 })
-                    .then(response => {
-                        // Check if the response was successful
-                        if (!response.ok) {
-                            // Log the error status and response body
-                            console.error(`Error from server: ${response.status} ${response.statusText}`);
-                            response.text().then(text => console.error("Server error response body:", text));
-                            // Throw an error to jump to the .catch() block
-                            throw new Error('Server responded with an error.');
-                        }
-                        // If response is OK, proceed to parse it as text
-                        return response.text();
-                    })
-                    .then(html => {
-                        console.log("Server response HTML:", html); // Add this line for debugging
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Server response:", data);
 
-                        // --- Logic for Receptionist View ---
-                        const appointmentRow = this.closest('tr');
+                    if (data.success) {
+                        // Update the appointment row status
                         if (appointmentRow) {
-                            appointmentRow.style.transition = 'opacity 0.5s ease';
-                            appointmentRow.style.opacity = '0';
-                            setTimeout(() => appointmentRow.remove(), 500);
-                        }
-
-                        // --- Logic for Doctor View ---
-                        const doctorQueueList = document.getElementById('doctorQueueList');
-                        const doctorWaitingState = document.getElementById('doctorWaitingState');
-                        if (doctorQueueList) {
-                            if (html && html.trim().length > 0) {
-                                if(doctorWaitingState) doctorWaitingState.style.display = 'none';
-                                doctorQueueList.innerHTML = html;
-                            } else {
-                                if(doctorWaitingState) doctorWaitingState.style.display = 'block';
-                                doctorQueueList.innerHTML = "";
+                            const statusBadge = appointmentRow.querySelector(`#status-${appointmentId}`);
+                            if (statusBadge) {
+                                statusBadge.className = 'badge bg-info status-badge';
+                                statusBadge.textContent = 'Notified';
                             }
                         }
-                    })
-                    .catch(err => {
-                        console.error("Fetch error:", err);
-                        // Re-enable button on error
-                        button.disabled = false;
-                        button.innerHTML = '<i class="fas fa-plus me-1"></i> Add to Queue';
-                        alert('❌ Failed to add patient to queue. Please try again.');
-                    });
-            });
+
+                        // Update button in parent cell
+                        if (parentCell) {
+                            parentCell.innerHTML = `
+                                <button class="btn btn-outline-info btn-sm" disabled>
+                                    <i class="fas fa-clock me-1"></i> In Queue
+                                </button>`;
+                        }
+
+                        // Show success notification
+                        showToast(`${patientName} added to queue successfully`, 'success');
+                        
+                        // Note: SignalR will broadcast the update to all connected clients
+                        // including this one, which will update the queue display
+                    } else {
+                        throw new Error(data.message || 'Failed to add patient to queue');
+                    }
+                })
+                .catch(err => {
+                    console.error("Fetch error:", err);
+                    // Re-enable button on error
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-plus me-1"></i> Add to Queue';
+                    showToast(`Failed to add patient to queue: ${err.message}`, 'error');
+                });
+            }
         });
+
+        // Load initial queue on page load
+        loadQueue();
+
     }).catch(err => {
         console.error("Error during SignalR promise resolution: ", err);
     });
 });
 
+// Load the current queue from the server
+function loadQueue() {
+    fetch('/Notifications/GetQueue')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Queue loaded:", data);
+            updateQueue(data);
+        })
+        .catch(err => console.error("Error loading queue:", err));
+}
 
 function updateQueue(queue) {
     const queueList = document.getElementById("queueList");
@@ -191,6 +183,8 @@ function updateQueue(queue) {
     const totalCount = document.getElementById("totalQueueCount");
     const waitingCount = document.getElementById("waitingQueueCount");
     const completedCount = document.getElementById("completedQueueCount");
+
+    if (!queueList) return; // Exit if we're not on a page with queue
 
     if (!queue || queue.length === 0) {
         queueList.innerHTML = "";
@@ -202,80 +196,54 @@ function updateQueue(queue) {
     }
 
     if (emptyState) emptyState.style.display = "none";
-    queueList.innerHTML = queue.map((p, index) => `
+    
+    const notifiedCount = queue.filter(p => p.status === "Notified" || p.Status === "Notified").length;
+    const completedPatients = queue.filter(p => p.status === "Completed" || p.Status === "Completed").length;
+    
+    queueList.innerHTML = queue.map((p, index) => {
+        const pName = p.patientName || p.PatientName;
+        const pStatus = p.status || p.Status;
+        const pId = p.id || p.Id;
+        const pStartTime = p.startTime || p.StartTime;
+        
+        return `
         <div class="card mb-2 queue-item">
-            <div class="card-body d-flex align-items-center p-2">
-                <span class="badge bg-primary me-3 queue-number">#${index + 1}</span>
+            <div class="card-body d-flex align-items-center p-3">
+                <span class="badge bg-primary me-3 queue-number fs-6">#${index + 1}</span>
                 <div class="flex-grow-1">
-                    <h6 class="mb-0">${p.PatientName}</h6>
-                    <small class="text-muted">Arrived: ${new Date(p.ArrivalTime).toLocaleTimeString()}</small>
+                    <h6 class="mb-1 fw-bold">${pName}</h6>
+                    <small class="text-muted">
+                        <i class="far fa-clock me-1"></i>
+                        Scheduled: ${formatTime(pStartTime)}
+                    </small>
                 </div>
-                ${p.Status === "Waiting" ?
-            `<button class="btn btn-sm btn-success" onclick="transferToDoctor('${p.AppointmentId}', '${p.PatientName}')">
-                        <i class="fas fa-arrow-right me-1"></i> Send to Doctor
-                    </button>` :
-            `<span class="badge bg-success"><i class="fas fa-check me-1"></i> Sent</span>`
-        }
+                <div>
+                    ${pStatus === "Notified" ?
+                        `<span class="badge bg-info"><i class="fas fa-clock me-1"></i> Waiting</span>` :
+                        `<span class="badge bg-success"><i class="fas fa-check me-1"></i> Completed</span>`
+                    }
+                    <a href="/Appointments/Details/${pId}" class="btn btn-sm btn-outline-primary ms-2">
+                        <i class="fas fa-eye"></i> Details
+                    </a>
+                </div>
             </div>
         </div>
-    `).join("");
+    `;
+    }).join("");
 
     if (totalCount) totalCount.textContent = `${queue.length} Total`;
-    if (waitingCount) waitingCount.textContent = `${queue.filter(p => p.Status === "Waiting").length} Waiting`;
-    if (completedCount) completedCount.textContent = `${queue.filter(p => p.Status === "Completed").length} Completed`;
+    if (waitingCount) waitingCount.textContent = `${notifiedCount} Waiting`;
+    if (completedCount) completedCount.textContent = `${completedPatients} Completed`;
 }
 
-function updateDoctorView(waitingPatients, currentPatient) {
-    const doctorWaitingState = document.getElementById("doctorWaitingState");
-    const doctorCurrentPatient = document.getElementById("doctorCurrentPatient");
-    const doctorQueueList = document.getElementById("doctorQueueList");
-    const waitingPatientsCount = document.getElementById("waitingPatientsCount");
-    const currentQueueNumber = document.getElementById("currentQueueNumber");
-
-    if (!waitingPatientsCount) return;
-
-    // Update waiting patients count
-    waitingPatientsCount.textContent = `${waitingPatients.length} Waiting`;
-
-    // Handle current patient display
-    if (currentPatient) {
-        if (doctorWaitingState) doctorWaitingState.style.display = "none";
-        if (doctorCurrentPatient) doctorCurrentPatient.classList.remove("d-none");
-        
-        const currentPatientName = document.getElementById("currentPatientName");
-        const currentAppointmentTime = document.getElementById("currentAppointmentTime");
-        const currentArrivalTime = document.getElementById("currentArrivalTime");
-        const currentPatientQueueNumber = document.getElementById("currentPatientQueueNumber");
-        
-        if (currentPatientName) currentPatientName.textContent = currentPatient.PatientName;
-        if (currentAppointmentTime) currentAppointmentTime.textContent = `Appointment: ${new Date(currentPatient.AppointmentTime).toLocaleTimeString()}`;
-        if (currentArrivalTime) currentArrivalTime.textContent = `Arrived: ${new Date(currentPatient.ArrivalTime).toLocaleTimeString()}`;
-        if (currentPatientQueueNumber) currentPatientQueueNumber.textContent = `Queue #${currentPatient.QueueNumber}`;
-        if (currentQueueNumber) currentQueueNumber.textContent = `#${currentPatient.QueueNumber}`;
-    } else {
-        if (doctorWaitingState) doctorWaitingState.style.display = "block";
-        if (doctorCurrentPatient) doctorCurrentPatient.classList.add("d-none");
-        if (currentQueueNumber) currentQueueNumber.textContent = "-";
-    }
-
-    // Update doctor's queue list
-    if (doctorQueueList) {
-        if (waitingPatients && waitingPatients.length > 0) {
-            doctorQueueList.innerHTML = `
-                <h6 class="text-muted">Next in Queue</h6>
-                ${waitingPatients.map(p => `
-                    <div class="d-flex justify-content-between align-items-center p-2 queue-item-small">
-                        <div>
-                            <span class="fw-bold">${p.PatientName}</span>
-                            <small class="text-muted ms-2">Arrived: ${new Date(p.ArrivalTime).toLocaleTimeString()}</small>
-                        </div>
-                        <span class="badge bg-secondary">#${p.QueueNumber}</span>
-                    </div>
-                `).join("")}
-            `;
-        } else {
-            doctorQueueList.innerHTML = "";
-        }
+// Helper function to format time
+function formatTime(timeString) {
+    if (!timeString) return 'N/A';
+    try {
+        const time = new Date(timeString);
+        return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    } catch {
+        return timeString;
     }
 }
 
@@ -284,11 +252,7 @@ function transferToDoctor(appointmentId, patientName) {
         if (connection) {
             connection.invoke("TransferToDoctor", appointmentId, patientName)
                 .then(() => {
-                    if (typeof showToast === 'function') {
-                        showToast(`Patient ${patientName} sent to doctor`, 'info');
-                    } else {
-                        alert(`➡️ Patient ${patientName} sent to doctor`);
-                    }
+                    showToast(`Patient ${patientName} sent to doctor`, 'info');
                 })
                 .catch(err => console.error("Transfer error:", err));
         }
@@ -296,20 +260,46 @@ function transferToDoctor(appointmentId, patientName) {
 }
 
 function completeCurrentPatient() {
-    // Logic to mark the current patient as complete
-    // This would typically involve getting the current patient's appointmentId
-    // and invoking a SignalR method or making a fetch call.
-    alert("Completing patient...");
+    const currentPatientElement = document.getElementById('doctorCurrentPatient');
+    if (!currentPatientElement) return;
+    
+    // Get the current patient's appointment ID (you'll need to store this in a data attribute)
+    const appointmentId = currentPatientElement.getAttribute('data-appointment-id');
+    if (!appointmentId) {
+        alert("No patient currently selected");
+        return;
+    }
+    
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+    
+    fetch(`/Notifications/CompletePatient?appointmentId=${appointmentId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": token || ""
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Patient ${data.patientName} completed successfully`, 'success');
+            // The SignalR event will handle UI updates
+        } else {
+            throw new Error(data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Error completing patient:", err);
+        showToast(`Failed to complete patient: ${err.message}`, 'error');
+    });
 }
 
 function startCurrentAppointment() {
-    // Logic to start the appointment
-    alert("Starting appointment...");
+    alert("Starting appointment... (This functionality can be implemented based on your requirements)");
 }
 
 // Helper function to show toast notifications
 function showToast(message, type = 'info') {
-    // Get or create toast container
     let toastContainer = document.getElementById('toastContainer');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
@@ -322,9 +312,11 @@ function showToast(message, type = 'info') {
     }
     
     const toast = document.createElement('div');
-    toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show`;
+    const alertClass = type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info';
+    toast.className = `alert alert-${alertClass} alert-dismissible fade show shadow`;
     toast.role = 'alert';
     toast.innerHTML = `
+        <strong><i class="fas fa-bell me-2"></i></strong>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
@@ -332,6 +324,7 @@ function showToast(message, type = 'info') {
     toastContainer.appendChild(toast);
     
     setTimeout(() => {
-        toast.remove();
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 150);
     }, 5000);
 }
