@@ -141,8 +141,8 @@ public class AppointmentsController : Controller
     }
     public IActionResult TodaysAppointments()
     {
-        var todaysAppointments = _appointmentService.GetTodaysAppointments()
-            .Where(a => a.Status == "Scheduled").ToList();
+        // Get all today's appointments regardless of status
+        var todaysAppointments = _appointmentService.GetTodaysAppointments().ToList();
         return View(todaysAppointments);
     }
 }

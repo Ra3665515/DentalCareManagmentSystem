@@ -121,6 +121,19 @@ public class PatientsController : Controller
         var treatmentPlans = _treatmentPlanService.GetPlansByPatientId(id).ToList();
         ViewBag.TreatmentPlans = treatmentPlans;
 
+        // Check if there's an active (Notified) appointment for this patient today
+        var appointmentService = HttpContext.RequestServices.GetService<IAppointmentService>();
+        if (appointmentService != null)
+        {
+            var currentAppointment = appointmentService.GetAll()
+                .Where(a => a.PatientId == id && 
+                           a.Status == "Notified" && 
+                           a.Date.Date == DateTime.Today)
+                .FirstOrDefault();
+            
+            ViewBag.CurrentAppointment = currentAppointment;
+        }
+
         return View(patient);
     }
 

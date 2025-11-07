@@ -6,9 +6,13 @@
     var isReceptionist = User.IsInRole("Receptionist");
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/appointments-queue.css" />
+}
+
 <div class="container-fluid py-4 fade-in">
 
-    <!-- طابور الانتظار للريسيبشن -->
+    <!-- Waiting Queue for Receptionist -->
     @if (isReceptionist)
     {
         <div class="row mb-4">
@@ -19,32 +23,28 @@
                             <i class="fas fa-users me-2"></i>Waiting Queue
                         </h5>
                         <div>
-                            <span class="badge bg-dark me-2" id="totalQueueCount">0 Total</span>
-                            <span class="badge bg-info" id="waitingQueueCount">0 Waiting</span>
-                            <span class="badge bg-success" id="completedQueueCount">0 Completed</span>
+                            <span class="badge bg-dark" id="queueCount">0 in Queue</span>
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- قائمة الانتظار -->
+                        <!-- Queue List -->
                         <div id="queueList" class="mb-3">
-                            <!-- سيتم ملؤها بالـ JavaScript -->
+                            <!-- Will be populated by JavaScript -->
                         </div>
 
-                        <!-- حالة الطابور فارغ -->
+                        <!-- Empty Queue State -->
                         <div id="emptyQueueState" class="text-center py-4">
                             <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
                             <h4 class="text-muted">No patients in queue</h4>
-                            <p class="text-muted">Add patients to the waiting queue</p>
+                            <p class="text-muted">Click "Send to Doctor" to add patients to the waiting queue</p>
                         </div>
-
-                        <!-- إشعارات -->
-                        <div id="queueNotifications"></div>
                     </div>
                 </div>
             </div>
         </div>
     }
 
+    <!-- Doctor's Panel -->
     @if (isDoctor)
     {
         <div class="row mb-4">
@@ -52,49 +52,23 @@
                 <div class="card border-primary shadow-sm">
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
-                            <i class="fas fa-user-md me-2"></i>Doctor's Panel
+                            <i class="fas fa-user-md me-2"></i>Waiting Patients Queue
                         </h5>
                         <div>
-                            <span class="badge bg-light text-primary me-2" id="waitingPatientsCount">0 Waiting</span>
-                            <span class="badge bg-success" id="currentQueueNumber">-</span>
+                            <span class="badge bg-light text-primary" id="doctorQueueCount">0 Waiting</span>
                         </div>
                     </div>
                     <div class="card-body">
-                        <!-- حالة الانتظار -->
+                        <!-- Waiting State -->
                         <div id="doctorWaitingState" class="text-center py-4">
                             <i class="fas fa-user-clock fa-3x text-muted mb-3"></i>
                             <h4 class="text-muted">No patients waiting</h4>
-                            <p class="text-muted">You will be notified when patients arrive</p>
+                            <p class="text-muted">You will be notified when receptionist sends patients</p>
                         </div>
 
-                        <!-- المريض الحالي -->
-                        <div id="doctorCurrentPatient" class="d-none">
-                            <div class="alert alert-success mb-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-user-injured fa-2x me-3"></i>
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1 fw-bold" id="currentPatientName"></h5>
-                                        <p class="mb-1" id="currentAppointmentTime"></p>
-                                        <small class="text-muted" id="currentArrivalTime"></small>
-                                        <div class="mt-2">
-                                            <span class="badge bg-primary" id="currentPatientQueueNumber">Queue #1</span>
-                                        </div>
-                                    </div>
-                                    <div class="ms-3">
-                                        <button class="btn btn-success btn-lg me-2" onclick="completeCurrentPatient()">
-                                            <i class="fas fa-check me-1"></i> Complete
-                                        </button>
-                                        <button class="btn btn-outline-primary" onclick="startCurrentAppointment()">
-                                            <i class="fas fa-play me-1"></i> Start
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- قائمة الانتظار للدكتور -->
-                        <div id="doctorQueueList" class="mt-3">
-                            <!-- سيتم ملؤها بالـ JavaScript -->
+                        <!-- Queue List for Doctor -->
+                        <div id="doctorQueueList">
+                            <!-- Will be populated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -102,7 +76,7 @@
         </div>
     }
 
-    <!-- باقي المحتوى -->
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary mb-1">
@@ -125,81 +99,7 @@
         </div>
     </div>
 
-    <!-- الإحصائيات -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stats-card primary h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Appointments
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count</div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stats-card success h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Notified
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Notified")</div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-bell fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stats-card warning h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Scheduled
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Scheduled")</div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stats-card danger h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Completed
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(a => a.Status == "Completed")</div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Appointments List -->
     @if (Model == null || !Model.Any())
     {
         <div class="empty-state text-center py-5">
@@ -235,15 +135,18 @@
                                 <th><i class="fas fa-tag me-1"></i> Status</th>
                                 @if (isReceptionist)
                                 {
-                                    <th><i class="fas fa-bell me-1"></i> Queue Actions</th>
+                                    <th><i class="fas fa-tasks me-1"></i> Actions</th>
                                 }
-                                <th><i class="fas fa-actions me-1"></i> Actions</th>
+                                @if (isDoctor)
+                                {
+                                    <th><i class="fas fa-eye me-1"></i> Details</th>
+                                }
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="appointmentsTableBody">
                             @foreach (var appointment in Model.OrderBy(a => a.StartTime))
                             {
-                                <tr class="align-middle" id="appointment-@appointment.Id">
+                                <tr class="align-middle appointment-row" id="appointment-@appointment.Id" data-status="@appointment.Status">
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-circle me-3">
@@ -289,10 +192,11 @@
                                         <td>
                                             @if (appointment.Status == "Scheduled")
                                             {
-                                                <button class="btn btn-success btn-sm add-to-queue-btn"
+                                                <button class="btn btn-success btn-sm send-to-doctor-btn"
                                                         data-appointment-id="@appointment.Id"
+                                                        data-patient-id="@appointment.PatientId"
                                                         data-patient-name="@appointment.PatientName">
-                                                    <i class="fas fa-plus me-1"></i> Add to Queue
+                                                    <i class="fas fa-paper-plane me-1"></i> Send to Doctor
                                                 </button>
                                             }
                                             else if (appointment.Status == "Notified")
@@ -310,15 +214,16 @@
                                         </td>
                                     }
 
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="@Url.Action("Details", new { id = appointment.Id })"
-                                               class="btn btn-outline-primary"
-                                               title="View Details">
-                                                <i class="fas fa-eye"></i>
+                                    @if (isDoctor)
+                                    {
+                                        <td>
+                                            <a href="@Url.Action("Details", "Patients", new { id = appointment.PatientId })"
+                                               class="btn btn-outline-primary btn-sm"
+                                               title="View Patient Details">
+                                                <i class="fas fa-user me-1"></i> Patient Details
                                             </a>
-                                        </div>
-                                    </td>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>

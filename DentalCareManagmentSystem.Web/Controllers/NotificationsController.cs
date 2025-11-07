@@ -128,37 +128,51 @@ public class NotificationsController : Controller
     [HttpGet]
     public IActionResult GetQueue()
     {
-        var notifiedAppointments = _appointmentService.GetAll()
-            .Where(a => a.Status == "Notified")
-            .OrderBy(a => a.Date)
-            .ToList();
-        return Json(notifiedAppointments);
+        try
+        {
+            var notifiedAppointments = _appointmentService.GetAll()
+                .Where(a => a.Status == "Notified" && a.Date.Date == DateTime.Today)
+                .OrderBy(a => a.StartTime)
+                .ToList();
+            return Json(notifiedAppointments);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = ex.Message });
+        }
     }
+
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddToQueue(Guid appointmentId)
+    public async Task<IActionResult> AddToQueueTest(Guid appointmentId)
     {
         try
         {
+            Console.WriteLine($"AddToQueue called with appointmentId: {appointmentId}");
+
             // Get the appointment
             var appointment = _appointmentService.GetById(appointmentId);
             if (appointment == null)
             {
+                Console.WriteLine($"Appointment not found: {appointmentId}");
                 return Json(new { success = false, message = "Appointment not found" });
             }
 
-            // Update the status to Notified
-            _appointmentService.UpdateStatus(appointmentId, "Notified");
+            Console.WriteLine($"Appointment found: {appointment.PatientName}, Status: {appointment.Status}");
 
-            // Get the updated list of all notified patients for today
+            // Update the status to Notified (patient sent to doctor)
+            _appointmentService.UpdateStatus(appointmentId, "Notified");
+            Console.WriteLine($"Status updated to Notified");
+
+            // Get the updated list of all notified patients for today (patients in queue)
             var notifiedAppointments = _appointmentService.GetAll()
                 .Where(a => a.Status == "Notified" && a.Date.Date == DateTime.Today)
                 .OrderBy(a => a.StartTime)
                 .Select(a => new
                 {
                     id = a.Id,
-                    patientName = a.PatientName,
                     patientId = a.PatientId,
+                    patientName = a.PatientName,
+                    patientPhone = a.PatientPhone,
                     startTime = a.StartTime,
                     endTime = a.EndTime,
                     status = a.Status,
@@ -166,14 +180,17 @@ public class NotificationsController : Controller
                 })
                 .ToList();
 
+            Console.WriteLine($"Queue count: {notifiedAppointments.Count}");
+
             // Notify all clients (receptionists and doctors) via SignalR
-            await _hubContext.Clients.All.SendAsync("AddPatientToQueue", notifiedAppointments);
+            await _hubContext.Clients.All.SendAsync("PatientSentToDoctor", notifiedAppointments);
+            Console.WriteLine($"SignalR notification sent");
 
             // Return success response
             return Json(new
             {
                 success = true,
-                message = $"Patient {appointment.PatientName} added to queue successfully",
+                message = $"Patient {appointment.PatientName} sent to doctor successfully",
                 appointmentId = appointmentId,
                 patientName = appointment.PatientName,
                 queueData = notifiedAppointments
@@ -181,11 +198,14 @@ public class NotificationsController : Controller
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"ERROR in AddToQueue: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
             return Json(new { success = false, message = $"Error: {ex.Message}" });
         }
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CompletePatient(Guid appointmentId)
     {
         try
@@ -194,18 +214,36 @@ public class NotificationsController : Controller
             if (appointment == null)
                 return Json(new { success = false, message = "Appointment not found" });
 
-            // تحديث حالة الموعد
+            // Update appointment status to Completed
             _appointmentService.UpdateStatus(appointmentId, "Completed");
 
-            // إعلام بأن المريض انتهى
-            await _hubContext.Clients.All.SendAsync("PatientCompleted", appointmentId, appointment.PatientName);
+            // Get updated queue (remaining patients in queue)
+            var notifiedAppointments = _appointmentService.GetAll()
+                .Where(a => a.Status == "Notified" && a.Date.Date == DateTime.Today)
+                .OrderBy(a => a.StartTime)
+                .Select(a => new
+                {
+                    id = a.Id,
+                    patientId = a.PatientId,
+                    patientName = a.PatientName,
+                    patientPhone = a.PatientPhone,
+                    startTime = a.StartTime,
+                    endTime = a.EndTime,
+                    status = a.Status,
+                    date = a.Date
+                })
+                .ToList();
+
+            // Notify all clients that the patient is completed
+            await _hubContext.Clients.All.SendAsync("PatientCompleted", appointmentId, appointment.PatientName, notifiedAppointments);
 
             return Json(new
             {
                 success = true,
-                message = "Patient marked as completed",
+                message = "Patient session completed",
                 appointmentId = appointmentId,
-                patientName = appointment.PatientName
+                patientName = appointment.PatientName,
+                queueData = notifiedAppointments
             });
         }
         catch (Exception ex)
@@ -235,5 +273,68 @@ public class NotificationsController : Controller
         var appointments = await _notificationService.GetAppointmentsByDateAsync(
             date ?? DateTime.Today.ToString("yyyy-MM-dd"));
         return View("Index", appointments);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddToQueue(Guid appointmentId)
+    {
+        try
+        {
+            Console.WriteLine($"AddToQueue called with appointmentId: {appointmentId}");
+
+            // Get the appointment
+            var appointment = _appointmentService.GetById(appointmentId);
+            if (appointment == null)
+            {
+                Console.WriteLine($"Appointment not found: {appointmentId}");
+                return Json(new { success = false, message = "Appointment not found" });
+            }
+
+            Console.WriteLine($"Appointment found: {appointment.PatientName}, Status: {appointment.Status}");
+
+            // Update the status to Notified (patient sent to doctor)
+            _appointmentService.UpdateStatus(appointmentId, "Notified");
+            Console.WriteLine($"Status updated to Notified");
+
+            // Get the updated list of all notified patients for today (patients in queue)
+            var notifiedAppointments = _appointmentService.GetAll()
+                .Where(a => a.Status == "Notified" && a.Date.Date == DateTime.Today)
+                .OrderBy(a => a.StartTime)
+                .Select(a => new
+                {
+                    id = a.Id,
+                    patientId = a.PatientId,
+                    patientName = a.PatientName,
+                    patientPhone = a.PatientPhone,
+                    startTime = a.StartTime,
+                    endTime = a.EndTime,
+                    status = a.Status,
+                    date = a.Date
+                })
+                .ToList();
+
+            Console.WriteLine($"Queue count: {notifiedAppointments.Count}");
+
+            // Notify all clients (receptionists and doctors) via SignalR
+            await _hubContext.Clients.All.SendAsync("PatientSentToDoctor", notifiedAppointments);
+            Console.WriteLine($"SignalR notification sent");
+
+            // Return success response
+            return Json(new
+            {
+                success = true,
+                message = $"Patient {appointment.PatientName} sent to doctor successfully",
+                appointmentId = appointmentId,
+                patientName = appointment.PatientName,
+                queueData = notifiedAppointments
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR in AddToQueue: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return Json(new { success = false, message = $"Error: {ex.Message}" });
+        }
     }
 }
