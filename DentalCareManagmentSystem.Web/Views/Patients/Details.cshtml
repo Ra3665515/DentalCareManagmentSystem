@@ -1,7 +1,9 @@
 ﻿@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Patient Details";
+    ViewData["Title"] = Localizer["Patient Details"];
     var treatmentPlans = ViewBag.TreatmentPlans as List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto> ?? new List<DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto>();
     var currentAppointment = ViewBag.CurrentAppointment as DentalCareManagmentSystem.Application.DTOs.AppointmentDto;
 }
@@ -32,34 +34,46 @@
         </div>
     }
 
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <p><strong>Full Name:</strong> @Model.FullName</p>
-            <p><strong>Age:</strong> @Model.Age</p>
-            <p><strong>Gender:</strong> @Model.Gender</p>
-        </div>
-        <div class="col-md-6">
-            <p><strong>Phone:</strong> @Model.Phone</p>
-            <p><strong>Notes:</strong> @Model.Notes</p>
-            <p><strong>Total Due:</strong> @($"{Model.TotalDue:N2} EGP")</p>
-        </div>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <p><strong>@Localizer["Full Name"]:</strong> @Model.FullName</p>
+        <p><strong>@Localizer["Age"]:</strong> @Model.Age</p>
+        <p><strong>@Localizer["Gender"]:</strong> 
+            @if (Model.Gender == "Male")
+            {
+                @Localizer["Male"]
+            }
+            else if (Model.Gender == "Female")
+            {
+                @Localizer["Female"]
+            }
+            else
+            {
+                @Model.Gender
+            }
+        </p>
     </div>
-
+    <div class="col-md-6">
+        <p><strong>@Localizer["Phone"]:</strong> @Model.Phone</p>
+        <p><strong>@Localizer["Notes"]:</strong> @Model.Notes</p>
+        <p><strong>@Localizer["Total Due"]:</strong> @($"{Model.TotalDue:N2}") @Localizer["EGP"]</p>
+    </div>
+</div>
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="patientTabs" role="tablist">
         <li class="nav-item">
-            <button class="nav-link active" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatmentContent" type="button" role="tab">Treatment Plans</button>
+            <button class="nav-link active" id="treatment-tab" data-bs-toggle="tab" data-bs-target="#treatmentContent" type="button" role="tab">@Localizer["Treatment Plans"]</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosisContent" type="button" role="tab">Diagnosis</button>
+            <button class="nav-link" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#diagnosisContent" type="button" role="tab">@Localizer["Diagnosis"]</button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#imagesContent" type="button" role="tab">Images</button>
+            <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#imagesContent" type="button" role="tab">@Localizer["Images"]</button>
         </li>
     </ul>
 
     <div class="tab-content mt-3">
-        <!-- Treatment Plans Tab -  -->
+        <!-- Treatment Plans Tab -->
         <div class="tab-pane fade show active" id="treatmentContent" role="tabpanel">
             @if (TempData["SuccessMessage"] != null)
             {
@@ -77,12 +91,12 @@
             }
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Treatment Plans</h5>
+                <h5 class="mb-0">@Localizer["Treatment Plans"]</h5>
                 @if (User.IsInRole("Doctor"))
                 {
                     <a href="@Url.Action("Create", "TreatmentPlans", new { patientId = Model.Id })"
                        class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i> Create New Plan
+                        <i class="fas fa-plus me-1"></i> @Localizer["Create New Plan"]
                     </a>
                 }
             </div>
@@ -93,11 +107,11 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>Created Date</th>
-                                <th>Created By</th>
-                                <th>Total Cost</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>@Localizer["Created Date"]</th>
+                                <th>@Localizer["Created By"]</th>
+                                <th>@Localizer["Total Cost"]</th>
+                                <th>@Localizer["Status"]</th>
+                                <th>@Localizer["Actions"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,15 +120,15 @@
                                 <tr>
                                     <td>@plan.CreatedAt.ToString("yyyy/MM/dd")</td>
                                     <td>@plan.CreatedBy</td>
-                                    <td>@plan.TotalCost.ToString("N2") EGP</td>
+                                    <td>@plan.TotalCost.ToString("N2") @Localizer["EGP"]</td>
                                     <td>
                                         @if (plan.IsCompleted)
                                         {
-                                            <span class="badge bg-success"> Completed</span>
+                                            <span class="badge bg-success">@Localizer["Completed"]</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning">In Progress</span>
+                                            <span class="badge bg-warning">@Localizer["In Progress"]</span>
                                         }
                                     </td>
                                     <td>
@@ -127,7 +141,7 @@
                                                    asp-route-id="@plan.Id"
                                                    class="btn btn-outline-info btn-sm"
                                                    title="View Details">
-                                                    <i class="fas fa-eye me-1"></i>Details
+                                                    <i class="fas fa-eye me-1"></i>@Localizer["Details"]
                                                 </a>
                                             }
 
@@ -138,8 +152,9 @@
                                                       asp-action="CompletePlan"
                                                       class="d-inline complete-plan-form">
                                                     <input type="hidden" name="planId" value="@plan.Id" />
-                                                    <button type="submit" class="btn btn-outline-success">
-                                                        <i class="fas fa-check me-1"></i>Complete
+                                                    <button type="submit" class="btn btn-outline-success"
+                                                            onclick="return confirm('Are you sure you want to mark this plan as completed?');">
+                                                        <i class="fas fa-check me-1"></i>@Localizer["Complete"]
                                                     </button>
                                                 </form>
                                             }
@@ -152,7 +167,7 @@
                                                       class="d-inline delete-plan-form">
                                                     <input type="hidden" name="id" value="@plan.Id" />
                                                     <button type="submit" class="btn btn-outline-danger">
-                                                        <i class="fas fa-trash me-1"></i>Delete
+                                                        <i class="fas fa-trash me-1"></i>@Localizer["Delete"]
                                                     </button>
                                                 </form>
                                             }
@@ -168,7 +183,7 @@
             else
             {
                 <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i> No treatment plans found for this patient.
+                    <i class="fas fa-info-circle me-2"></i> @Localizer["No treatment plans found"]
                 </div>
             }
         </div>
@@ -179,8 +194,8 @@
             {
                 <form asp-action="AddNote" asp-controller="Diagnosis" method="post">
                     <input type="hidden" name="patientId" value="@Model.Id" />
-                    <textarea name="note" class="form-control mb-2" rows="3" placeholder="Add a new diagnosis note..."></textarea>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Note</button>
+                    <textarea name="note" class="form-control mb-2" rows="3" placeholder="@Localizer["Add diagnosis note"]"></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> @Localizer["Add Note"]</button>
                 </form>
             }
             <hr />
@@ -221,7 +236,7 @@
                 <form asp-action="UploadPatientImage" asp-controller="Patients" method="post" enctype="multipart/form-data" class="mb-3 d-flex">
                     <input type="hidden" name="patientId" value="@Model.Id" />
                     <input type="file" name="imageFile" class="form-control me-2" accept="image/*" />
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Image</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> @Localizer["Upload Image"]</button>
                 </form>
             }
             <div class="d-flex flex-wrap">

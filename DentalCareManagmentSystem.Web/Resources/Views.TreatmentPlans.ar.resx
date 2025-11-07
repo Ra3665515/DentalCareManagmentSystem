@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- Treatment Plans Section -->
+	<data name="Treatment Plans" xml:space="preserve">
+    <value>خطط العلاج</value>
+  </data>
+	<data name="Manage patient treatment plans and track progress" xml:space="preserve">
+    <value>إدارة خطط علاج المرضى ومتابعة التقدم</value>
+  </data>
+	<data name="New Plan" xml:space="preserve">
+    <value>خطة جديدة</value>
+  </data>
+	<data name="Create new treatment plan" xml:space="preserve">
+    <value>إنشاء خطة علاج جديدة</value>
+  </data>
+
+	<!-- Statistics -->
+	<data name="Total Plans" xml:space="preserve">
+    <value>إجمالي الخطط</value>
+  </data>
+	<data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+	<data name="In Progress" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+	<data name="Total Value" xml:space="preserve">
+    <value>القيمة الإجمالية</value>
+  </data>
+
+	<!-- Table Headers -->
+	<data name="Created Date" xml:space="preserve">
+    <value>تاريخ الإنشاء</value>
+  </data>
+	<data name="Created By" xml:space="preserve">
+    <value>تم الإنشاء بواسطة</value>
+  </data>
+	<data name="Total Cost" xml:space="preserve">
+    <value>التكلفة الإجمالية</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+
+	<!-- Buttons & Actions -->
+	<data name="View full details" xml:space="preserve">
+    <value>عرض التفاصيل الكاملة</value>
+  </data>
+	<data name="Mark as completed" xml:space="preserve">
+    <value>تعليم كمكتمل</value>
+  </data>
+	<data name="Delete plan" xml:space="preserve">
+    <value>حذف الخطة</value>
+  </data>
+	<data name="View Details" xml:space="preserve">
+    <value>عرض التفاصيل</value>
+  </data>
+
+	<!-- Treatment Details -->
+	<data name="Treatment Details" xml:space="preserve">
+    <value>تفاصيل العلاج</value>
+  </data>
+	<data name="Detailed breakdown of each treatment plan" xml:space="preserve">
+    <value>تفصيل مفصل لكل خطة علاج</value>
+  </data>
+
+	<!-- Empty State -->
+	<data name="No Treatment Plans Found" xml:space="preserve">
+    <value>لا توجد خطط علاج</value>
+  </data>
+	<data name="Get started by creating the first treatment plan for this patient" xml:space="preserve">
+    <value>ابدأ بإنشاء أول خطة علاج لهذا المريض</value>
+  </data>
+	<data name="Create First Plan" xml:space="preserve">
+    <value>إنشاء أول خطة</value>
+  </data>
+
+	<!-- Create Plan Page -->
+	<data name="Create Treatment Plan" xml:space="preserve">
+    <value>إنشاء خطة علاج</value>
+  </data>
+	<data name="Back to Patient" xml:space="preserve">
+    <value>العودة للمريض</value>
+  </data>
+	<data name="Create New Treatment Plan" xml:space="preserve">
+    <value>إنشاء خطة علاج جديدة</value>
+  </data>
+	<data name="Patient Information" xml:space="preserve">
+    <value>معلومات المريض</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+	<data name="Patient ID" xml:space="preserve">
+    <value>رقم المريض</value>
+  </data>
+	<data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+
+	<!-- Form Labels -->
+	<data name="Plan Name" xml:space="preserve">
+    <value>اسم الخطة</value>
+  </data>
+	<data name="Enter a descriptive name for this treatment plan" xml:space="preserve">
+    <value>أدخل اسمًا وصفيًا لخطة العلاج هذه</value>
+  </data>
+	<data name="Example: Initial Treatment Plan, Follow-up Care, Emergency Treatment" xml:space="preserve">
+    <value>مثال: خطة العلاج الأولية، متابعة الرعاية، العلاج الطارئ</value>
+  </data>
+	<data name="Treatment Description" xml:space="preserve">
+    <value>وصف العلاج</value>
+  </data>
+	<data name="Describe the treatment plan, objectives, and any special instructions" xml:space="preserve">
+    <value>صف خطة العلاج والأهداف وأي تعليمات خاصة</value>
+  </data>
+	<data name="Include treatment goals, procedures planned, and any patient-specific considerations" xml:space="preserve">
+    <value>قم بتضمين أهداف العلاج والإجراءات المخطط لها وأي اعتبارات خاصة بالمريض</value>
+  </data>
+	<data name="Estimated Duration (minutes)" xml:space="preserve">
+    <value>المدة المقدرة (دقيقة)</value>
+  </data>
+	<data name="Estimated treatment duration in minutes" xml:space="preserve">
+    <value>المدة المقدرة للعلاج بالدقائق</value>
+  </data>
+	<data name="Priority Level" xml:space="preserve">
+    <value>مستوى الأولوية</value>
+  </data>
+	<data name="Select Priority" xml:space="preserve">
+    <value>اختر الأولوية</value>
+  </data>
+	<data name="Low" xml:space="preserve">
+    <value>منخفض</value>
+  </data>
+	<data name="Medium" xml:space="preserve">
+    <value>متوسط</value>
+  </data>
+	<data name="High" xml:space="preserve">
+    <value>مرتفع</value>
+  </data>
+	<data name="Emergency" xml:space="preserve">
+    <value>طارئ</value>
+  </data>
+	<data name="How urgent is this treatment plan" xml:space="preserve">
+    <value>ما مدى إلحاحية خطة العلاج هذه</value>
+  </data>
+	<data name="Additional Notes" xml:space="preserve">
+    <value>ملاحظات إضافية</value>
+  </data>
+	<data name="Any additional notes, precautions, or special instructions" xml:space="preserve">
+    <value>أي ملاحظات إضافية أو احتياطات أو تعليمات خاصة</value>
+  </data>
+	<data name="Optional: Include any special considerations or patient preferences" xml:space="preserve">
+    <value>اختياري: قم بتضمين أي اعتبارات خاصة أو تفضيلات المريض</value>
+  </data>
+
+	<!-- Info Messages -->
+	<data name="You are creating a treatment plan for" xml:space="preserve">
+    <value>أنت تقوم بإنشاء خطة علاج لـ</value>
+  </data>
+	<data name="After creation, you'll be able to add specific treatment items and procedures" xml:space="preserve">
+    <value>بعد الإنشاء، ستتمكن من إضافة بنود علاج وإجراءات محددة</value>
+  </data>
+
+	<!-- Buttons -->
+	<data name="Create Plan" xml:space="preserve">
+    <value>إنشاء الخطة</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+
+	<!-- Validation Messages -->
+	<data name="Please enter a plan name before creating the treatment plan" xml:space="preserve">
+    <value>يرجى إدخال اسم الخطة قبل إنشاء خطة العلاج</value>
+  </data>
+	<data name="Please enter a treatment description before creating the treatment plan" xml:space="preserve">
+    <value>يرجى إدخال وصف العلاج قبل إنشاء خطة العلاج</value>
+  </data>
+	<data name="Are you sure you want to create this treatment plan?" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إنشاء خطة العلاج هذه؟</value>
+  </data>
+
+	<!-- Details Page -->
+	<data name="Treatment Plan Details" xml:space="preserve">
+    <value>تفاصيل خطة العلاج</value>
+  </data>
+	<data name="Treatment Plan Information" xml:space="preserve">
+    <value>معلومات خطة العلاج</value>
+  </data>
+	<data name="Plan ID" xml:space="preserve">
+    <value>رقم الخطة</value>
+  </data>
+	<data name="Patient" xml:space="preserve">
+    <value>المريض</value>
+  </data>
+	<data name="Treatment Items" xml:space="preserve">
+    <value>بنود العلاج</value>
+  </data>
+	<data name="Service Name" xml:space="preserve">
+    <value>اسم الخدمة</value>
+  </data>
+	<data name="Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+	<data name="Unit Price" xml:space="preserve">
+    <value>سعر الوحدة</value>
+  </data>
+	<data name="Total" xml:space="preserve">
+    <value>المجموع</value>
+  </data>
+	<data name="Grand Total" xml:space="preserve">
+    <value>الإجمالي الكلي</value>
+  </data>
+	<data name="EGP" xml:space="preserve">
+    <value>جنيه</value>
+  </data>
+
+	<!-- Plan Actions -->
+	<data name="Plan Actions" xml:space="preserve">
+    <value>إجراءات الخطة</value>
+  </data>
+	<data name="Complete Plan" xml:space="preserve">
+    <value>إكمال الخطة</value>
+  </data>
+	<data name="Add Treatment Item" xml:space="preserve">
+    <value>إضافة بند علاج</value>
+  </data>
+	<data name="Delete Plan" xml:space="preserve">
+    <value>حذف الخطة</value>
+  </data>
+	<data name="Plan Status" xml:space="preserve">
+    <value>حالة الخطة</value>
+  </data>
+	<data name="This plan has been completed" xml:space="preserve">
+    <value>تم إكمال هذه الخطة</value>
+  </data>
+	<data name="No further modifications can be made" xml:space="preserve">
+    <value>لا يمكن إجراء المزيد من التعديلات</value>
+  </data>
+	<data name="This plan is in progress" xml:space="preserve">
+    <value>هذه الخطة قيد التنفيذ</value>
+  </data>
+	<data name="You can add, modify, or remove treatment items" xml:space="preserve">
+    <value>يمكنك إضافة أو تعديل أو إزالة بنود العلاج</value>
+  </data>
+
+	<!-- Quick Stats -->
+	<data name="Quick Stats" xml:space="preserve">
+    <value>إحصائيات سريعة</value>
+  </data>
+	<data name="Total Items" xml:space="preserve">
+    <value>إجمالي البنود</value>
+  </data>
+	<data name="Total Quantity" xml:space="preserve">
+    <value>إجمالي الكمية</value>
+  </data>
+	<data name="Average Price" xml:space="preserve">
+    <value>متوسط السعر</value>
+  </data>
+
+	<!-- Modal -->
+	<data name="Select Service" xml:space="preserve">
+    <value>اختر الخدمة</value>
+  </data>
+	<data name="Price" xml:space="preserve">
+    <value>السعر</value>
+  </data>
+	<data name="each" xml:space="preserve">
+    <value>لكل</value>
+  </data>
+
+	<!-- No Items -->
+	<data name="No Treatment Items" xml:space="preserve">
+    <value>لا توجد بنود علاج</value>
+  </data>
+	<data name="Add treatment items to this plan to get started" xml:space="preserve">
+    <value>أضف بنود العلاج إلى هذه الخطة للبدء</value>
+  </data>
+	<data name="Add First Item" xml:space="preserve">
+    <value>إضافة أول بند</value>
+  </data>
+
+	<!-- Confirmation Messages -->
+	<data name="Are you sure you want to mark this plan as completed? This action cannot be undone" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد تعليم هذه الخطة كمكتملة؟ لا يمكن التراجع عن هذا الإجراء</value>
+  </data>
+	<data name="Are you sure you want to delete this treatment plan? This action cannot be undone" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حذف خطة العلاج هذه؟ لا يمكن التراجع عن هذا الإجراء</value>
+  </data>
+	<data name="Are you sure you want to remove this item?" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد إزالة هذا البند؟</value>
+  </data>
+</root>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Patient Report" xml:space="preserve">
+    <value>تقرير المرضى</value>
+  </data>
+	<data name="Export Patients" xml:space="preserve">
+    <value>تصدير بيانات المرضى</value>
+  </data>
+	<data name="Total Patients" xml:space="preserve">
+    <value>إجمالي المرضى</value>
+  </data>
+	<data name="Active Patients" xml:space="preserve">
+    <value>المرضى النشطين</value>
+  </data>
+	<data name="New This Month" xml:space="preserve">
+    <value>جدد هذا الشهر</value>
+  </data>
+	<data name="Patients by Gender" xml:space="preserve">
+    <value>المرضى حسب النوع</value>
+  </data>
+	<data name="Patients by Age Group" xml:space="preserve">
+    <value>المرضى حسب الفئة العمرية</value>
+  </data>
+	<data name="Number of Patients" xml:space="preserve">
+    <value>عدد المرضى</value>
+  </data>
+</root>

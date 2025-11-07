@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Delete User" xml:space="preserve">
+    <value>حذف المستخدم</value>
+  </data>
+	<data name="Are you sure you want to delete this user?" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حذف هذا المستخدم؟</value>
+  </data>
+	<data name="Confirm Delete" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+	<data name="Role" xml:space="preserve">
+    <value>الدور</value>
+  </data>
+</root>

@@ -1,13 +1,15 @@
 @model DentalCareManagmentSystem.Application.DTOs.PriceListItemDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Create Price List Item";
+    ViewData["Title"] = Localizer["Create Price List Item"];
 }
 
 <div class="container mt-5">
     <div class="card shadow-sm border-0 p-4">
         <h2 class="fw-bold text-primary mb-4">
-            <i class="fas fa-plus-circle me-2"></i> Create Price List Item
+            <i class="fas fa-plus-circle me-2"></i> @Localizer["Create Price List Item"]
         </h2>
 
         <form asp-action="Create" method="post">
@@ -16,7 +18,7 @@
             <div class="mb-3 row">
                 <label asp-for="Name" class="col-sm-3 col-form-label fw-semibold"></label>
                 <div class="col-sm-9">
-                    <input asp-for="Name" class="form-control" placeholder="Enter treatment name" />
+                    <input asp-for="Name" class="form-control" placeholder="@Localizer["Enter treatment name"]" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
             </div>
@@ -24,7 +26,7 @@
             <div class="mb-3 row">
                 <label asp-for="Category" class="col-sm-3 col-form-label fw-semibold"></label>
                 <div class="col-sm-9">
-                    <input asp-for="Category" class="form-control" placeholder="Enter category (e.g., Basic, Surgery)" />
+                    <input asp-for="Category" class="form-control" placeholder="@Localizer["Enter category (e.g., Basic, Surgery)"]" />
                     <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
             </div>
@@ -32,7 +34,7 @@
             <div class="mb-3 row">
                 <label asp-for="DefaultPrice" class="col-sm-3 col-form-label fw-semibold"></label>
                 <div class="col-sm-9">
-                    <input asp-for="DefaultPrice" class="form-control" placeholder="Enter price" />
+                    <input asp-for="DefaultPrice" class="form-control" placeholder="@Localizer["Enter price"]" />
                     <span asp-validation-for="DefaultPrice" class="text-danger"></span>
                 </div>
             </div>
@@ -41,16 +43,16 @@
                 <label asp-for="IsActive" class="col-sm-3 col-form-label fw-semibold"></label>
                 <div class="col-sm-9 d-flex align-items-center">
                     <input class="form-check-input me-2" asp-for="IsActive" checked="checked" />
-                    <span class="text-muted">Active by default</span>
+                    <span class="text-muted">@Localizer["Active by default"]</span>
                 </div>
             </div>
 
             <div class="text-end mt-4">
                 <a asp-action="Index" class="btn btn-secondary me-2">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> @Localizer["Back to List"]
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Create
+                    <i class="fas fa-save"></i> @Localizer["Create"]
                 </button>
             </div>
         </form>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Welcome" xml:space="preserve">
+    <value>مرحباً بك</value>
+  </data>
+	<data name="Slogan" xml:space="preserve">
+    <value>نظام إدارة عيادة الأسنان</value>
+  </data>
+	<data name="Patients" xml:space="preserve">
+    <value>المرضى</value>
+  </data>
+	<data name="Manage patient records" xml:space="preserve">
+    <value>إدارة سجلات المرضى والمواعيد وخطط العلاج</value>
+  </data>
+	<data name="Go to Patients" xml:space="preserve">
+    <value>الذهاب إلى المرضى</value>
+  </data>
+	<data name="Appointments" xml:space="preserve">
+    <value>المواعيد</value>
+  </data>
+	<data name="View and schedule appointments" xml:space="preserve">
+    <value>عرض وجدولة المواعيد لمرضاك</value>
+  </data>
+	<data name="Go to Appointments" xml:space="preserve">
+    <value>الذهاب إلى المواعيد</value>
+  </data>
+	<data name="Admin Panel" xml:space="preserve">
+    <value>لوحة الإدارة</value>
+  </data>
+	<data name="Manage price lists" xml:space="preserve">
+    <value>إدارة قوائم الأسعار والمستخدمين وإعدادات النظام</value>
+  </data>
+	<data name="Go to Admin" xml:space="preserve">
+    <value>الذهاب إلى الإدارة</value>
+  </data>
+</root>

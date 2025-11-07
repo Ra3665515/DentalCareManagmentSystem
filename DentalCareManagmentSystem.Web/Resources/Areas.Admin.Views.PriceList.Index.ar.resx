@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Price List" xml:space="preserve">
+    <value>قائمة الأسعار</value>
+  </data>
+	<data name="Add New Item" xml:space="preserve">
+    <value>إضافة عنصر جديد</value>
+  </data>
+	<data name="All Price List Items" xml:space="preserve">
+    <value>جميع عناصر قائمة الأسعار</value>
+  </data>
+	<data name="Treatment Name" xml:space="preserve">
+    <value>اسم العلاج</value>
+  </data>
+	<data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+	<data name="Price" xml:space="preserve">
+    <value>السعر</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="Active" xml:space="preserve">
+    <value>نشط</value>
+  </data>
+	<data name="Inactive" xml:space="preserve">
+    <value>غير نشط</value>
+  </data>
+	<data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+	<data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+	<data name="No items in the price list" xml:space="preserve">
+    <value>لا توجد عناصر في قائمة الأسعار</value>
+  </data>
+</root>
