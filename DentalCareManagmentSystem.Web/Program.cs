@@ -30,12 +30,12 @@ var supportedCultures = new[]
 {
     new CultureInfo("en-US"),
     new CultureInfo("ar"),
-    new CultureInfo("ar-SA")
+    new CultureInfo("ar-EG")
 };
 
 var localizationOptions = new RequestLocalizationOptions
 {
-    DefaultRequestCulture = new RequestCulture("ar-SA"), // اللغة الافتراضية
+    DefaultRequestCulture = new RequestCulture("ar-EG"),
     SupportedCultures = supportedCultures,
     SupportedUICultures = supportedCultures,
     ApplyCurrentCultureToResponseHeaders = true
@@ -43,8 +43,8 @@ var localizationOptions = new RequestLocalizationOptions
 
 localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
 {
-    new CookieRequestCultureProvider(),          
-    new QueryStringRequestCultureProvider(),     
+    new CookieRequestCultureProvider(),
+    new QueryStringRequestCultureProvider(),
     new AcceptLanguageHeaderRequestCultureProvider()
 };
 
@@ -93,7 +93,7 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRequestLocalization(localizationOptions); 
+app.UseRequestLocalization(localizationOptions);
 app.UseRouting();
 
 app.UseAuthentication();
