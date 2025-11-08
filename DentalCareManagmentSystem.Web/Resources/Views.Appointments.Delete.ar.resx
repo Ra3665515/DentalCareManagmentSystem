@@ -15,8 +15,6 @@
 	<data name="Patient Information" xml:space="preserve">
     <value>معلومات المريض</value>
   </data>
-<<<<<<< HEAD
-=======
 	<data name="Name" xml:space="preserve"><value>الاسم</value></data>
 	<data name="Phone" xml:space="preserve"><value>رقم الهاتف</value></data>
 	<data name="Time" xml:space="preserve"><value>الوقت</value></data>
@@ -26,7 +24,6 @@
 	<data name="Date" xml:space="preserve"><value>التاريخ</value></data>
 	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
 	<data name="Cancel" xml:space="preserve"><value>إلغاء</value></data>
->>>>>>> finish
 	<data name="Appointment Info" xml:space="preserve">
     <value>معلومات الموعد</value>
   </data>

@@ -12,12 +12,10 @@
 	<data name="Start" xml:space="preserve">
     <value>بدء</value>
   </data>
-<<<<<<< HEAD
 	<data name="Add_New_Appointment" xml:space="preserve">
     <value>إضافة موعد جديد</value>
   </data>
-	<data name="All_Appointments" xml:space="preserve">
-=======
+
 	<data name="Search" xml:space="preserve">
     <value>بحث</value>
   </data>
@@ -35,7 +33,6 @@
     <value>إضافة موعد جديد</value>
   </data>
 	<data name="All Appointments" xml:space="preserve">
->>>>>>> finish
     <value>جميع المواعيد</value>
   </data>
 	<data name="Patient" xml:space="preserve">
@@ -68,11 +65,7 @@
 	<data name="Delete" xml:space="preserve">
     <value>حذف</value>
   </data>
-<<<<<<< HEAD
-	<data name="No_appointments_found" xml:space="preserve">
-=======
 	<data name="No appointments found" xml:space="preserve">
->>>>>>> finish
     <value>لا توجد مواعيد</value>
   </data>
 	<data name="Appointment" xml:space="preserve">
@@ -85,12 +78,15 @@
     <value>مجدول</value>
   </data>
 	<data name="Notified" xml:space="preserve">
-    <value>تم الإشعار</value>
-  </data>
+		<value>تم الإشعار</value>
+	 </data>
 	<data name="Completed" xml:space="preserve">
-    <value>مكتمل</value>
-  </data>
+	 <value>مكتمل</value>
+	 </data>
 	<data name="Cancelled" xml:space="preserve">
-    <value>ملغى</value>
-  </data>
+		<value>ملغى</value>
+	</data>
+	<data name="All_Appointments" xml:space="preserve">
+		<value>جميع المواعيد</value>
+	</data>
 </root>

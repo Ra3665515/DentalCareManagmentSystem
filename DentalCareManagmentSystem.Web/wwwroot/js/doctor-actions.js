@@ -8,25 +8,11 @@
         // Listen for patients sent to doctor
         connection.on("PatientSentToDoctor", (queueData) => {
             console.log(`🧍‍♂️ Patient sent to doctor. Queue updated:`, queueData);
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> finish
             if (queueData && queueData.length > 0) {
                 const latestPatient = queueData[queueData.length - 1];
                 const patientName = latestPatient.patientName || latestPatient.PatientName;
                 const startTime = formatTime(latestPatient.startTime || latestPatient.StartTime);
-<<<<<<< HEAD
-                
-                // Show notification to doctor
-                showToast(`New patient waiting: ${patientName} (${startTime})`, 'info');
-                
-                // Play notification sound
-                playNotificationSound();
-            }
-            
-=======
 
                 // Show notification to doctor
                 showToast(`New patient waiting: ${patientName} (${startTime})`, 'info');
@@ -35,18 +21,13 @@
                 playNotificationSound();
             }
 
->>>>>>> finish
             // Update the doctor's queue view
             updateDoctorQueueView(queueData);
         });
 
         connection.on("PatientCompleted", (appointmentId, patientName, updatedQueue) => {
             console.log(`✅ Patient completed: ${patientName}`);
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> finish
             // Update appointment row status in the table
             const appointmentRow = document.getElementById(`appointment-${appointmentId}`);
             if (appointmentRow) {
@@ -56,36 +37,21 @@
                     statusBadge.textContent = 'Completed';
                 }
             }
-<<<<<<< HEAD
-            
-            // Update queue view with remaining patients
-            updateDoctorQueueView(updatedQueue);
-            
-=======
 
             // Update queue view with remaining patients
             updateDoctorQueueView(updatedQueue);
 
->>>>>>> finish
             showToast(`Session with ${patientName} completed`, 'success');
         });
 
         // Handle "Complete Session" button clicks in Patient Details
-<<<<<<< HEAD
-        document.addEventListener('click', function(e) {
-=======
         document.addEventListener('click', function (e) {
->>>>>>> finish
             if (e.target && e.target.closest('.complete-session-btn')) {
                 e.preventDefault();
                 const button = e.target.closest('.complete-session-btn');
                 const appointmentId = button.getAttribute('data-appointment-id');
                 const patientName = button.getAttribute('data-patient-name');
-<<<<<<< HEAD
-                
-=======
 
->>>>>>> finish
                 completePatientSession(appointmentId, patientName);
             }
         });
@@ -135,11 +101,7 @@ function updateDoctorQueueView(queueData) {
         const pPatientId = p.patientId || p.PatientId;
         const pStartTime = p.startTime || p.StartTime;
         const pPhone = p.patientPhone || p.PatientPhone;
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> finish
         return `
         <div class="card mb-3 queue-item-doctor shadow-sm">
             <div class="card-body p-3">
@@ -190,15 +152,9 @@ function completePatientSession(appointmentId, patientName) {
                 button.disabled = true;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Completing...';
             }
-<<<<<<< HEAD
-            
-            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-            
-=======
 
             const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
->>>>>>> finish
             fetch(`/Notifications/CompletePatient?appointmentId=${appointmentId}`, {
                 method: "POST",
                 headers: {
@@ -206,28 +162,6 @@ function completePatientSession(appointmentId, patientName) {
                     "RequestVerificationToken": token || ""
                 }
             })
-<<<<<<< HEAD
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(`Session with ${patientName} completed successfully. Redirecting...`, 'success');
-                    // SignalR will handle UI updates, then redirect after a short delay
-                    setTimeout(() => {
-                        window.location.href = '/Appointments/TodaysAppointments';
-                    }, 1500);
-                } else {
-                    throw new Error(data.message);
-                }
-            })
-            .catch(err => {
-                console.error("Error completing patient:", err);
-                showToast(`Failed to complete session: ${err.message}`, 'error');
-                if (button) {
-                    button.disabled = false;
-                    button.innerHTML = '<i class="fas fa-check me-1"></i> Complete';
-                }
-            });
-=======
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -248,7 +182,6 @@ function completePatientSession(appointmentId, patientName) {
                         button.innerHTML = '<i class="fas fa-check me-1"></i> Complete';
                     }
                 });
->>>>>>> finish
         }
     );
 }
@@ -287,11 +220,7 @@ function showToast(message, type = 'info') {
         toastContainer.style.zIndex = '9999';
         document.body.appendChild(toastContainer);
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> finish
     const toast = document.createElement('div');
     const alertClass = type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info';
     toast.className = `alert alert-${alertClass} alert-dismissible fade show shadow`;
@@ -301,15 +230,9 @@ function showToast(message, type = 'info') {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-<<<<<<< HEAD
-    
-    toastContainer.appendChild(toast);
-    
-=======
 
     toastContainer.appendChild(toast);
 
->>>>>>> finish
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 150);
@@ -328,26 +251,15 @@ function showConfirmationToast(message, onConfirm, onCancel = null) {
         toastContainer.style.zIndex = '9999';
         document.body.appendChild(toastContainer);
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> finish
     const toast = document.createElement('div');
     toast.className = 'alert alert-warning alert-dismissible fade show shadow';
     toast.style.minWidth = '350px';
     toast.role = 'alert';
-<<<<<<< HEAD
-    
-    const confirmId = 'confirm-' + Date.now();
-    const cancelId = 'cancel-' + Date.now();
-    
-=======
 
     const confirmId = 'confirm-' + Date.now();
     const cancelId = 'cancel-' + Date.now();
 
->>>>>>> finish
     toast.innerHTML = `
         <div>
             <strong><i class="fas fa-question-circle me-2"></i></strong>
@@ -362,41 +274,23 @@ function showConfirmationToast(message, onConfirm, onCancel = null) {
             </button>
         </div>
     `;
-<<<<<<< HEAD
-    
-    toastContainer.appendChild(toast);
-    
-    // Handle confirm button
-    document.getElementById(confirmId).addEventListener('click', function() {
-=======
 
     toastContainer.appendChild(toast);
 
     // Handle confirm button
     document.getElementById(confirmId).addEventListener('click', function () {
->>>>>>> finish
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 150);
         if (onConfirm) onConfirm();
     });
-<<<<<<< HEAD
-    
-    // Handle cancel button
-    document.getElementById(cancelId).addEventListener('click', function() {
-=======
 
     // Handle cancel button
     document.getElementById(cancelId).addEventListener('click', function () {
->>>>>>> finish
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 150);
         if (onCancel) onCancel();
     });
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> finish
     // Auto-remove after 30 seconds if no action taken
     setTimeout(() => {
         if (toast.parentElement) {

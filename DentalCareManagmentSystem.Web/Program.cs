@@ -48,12 +48,11 @@ localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
     new AcceptLanguageHeaderRequestCultureProvider()
 };
 
-
 // Controllers & Views with Localization
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
-builder.Services.AddSignalR();
+
 builder.Services.AddRazorPages()
     .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
@@ -99,18 +98,17 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3️⃣ SignalR Hub Mapping - single endpoint
+// 3️⃣ SignalR Hub Mapping
 app.MapHub<NotificationHub>("/notificationHub");
-app.MapHub<NotificationHub>("/hubs/notifications");
 
 // 4️⃣ Routes
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{controller=Appointments}/{action=TodaysAppointments}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Appointments}/{action=TodaysAppointments}/{id?}");
 
 app.MapRazorPages();
 
