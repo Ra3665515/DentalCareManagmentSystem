@@ -26,7 +26,12 @@
                     </tr>
                     <tr>
                         <th>@Localizer["Date"]</th>
+<<<<<<< HEAD
                         <td>@Model.Date.ToString("dddd, MMMM dd, yyyy")</td>
+=======
+                        @using System.Globalization
+                        <td>@Model.Date.ToString("dddd, dd MMMM yyyy", CultureInfo.CurrentCulture)</td>
+>>>>>>> finish
                     </tr>
                     <tr>
                         <th>@Localizer["Time"]</th>

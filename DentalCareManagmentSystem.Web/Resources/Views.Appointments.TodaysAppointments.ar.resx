@@ -15,6 +15,30 @@
 	<data name="Doctor's Panel" xml:space="preserve">
     <value>لوحة الطبيب</value>
   </data>
+<<<<<<< HEAD
+=======
+	<data name="Patient" xml:space="preserve">
+    <value>المريض</value>
+  </data>
+	<data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+	<data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+	<data name="Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+>>>>>>> finish
 	<data name="No patients waiting" xml:space="preserve">
     <value>لا يوجد مرضى في الانتظار</value>
   </data>

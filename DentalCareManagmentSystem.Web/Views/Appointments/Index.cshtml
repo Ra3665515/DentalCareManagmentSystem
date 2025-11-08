@@ -10,12 +10,17 @@
 
 <div class="container mt-4">
 
+<<<<<<< HEAD
     <div class="d-flex justify-content-between align-items-center mb-3">
+=======
+@*     <div class="d-flex justify-content-between align-items-center mb-3">
+>>>>>>> finish
         <h2 class="fw-bold text-primary">
             <i class="fas fa-calendar-check me-2"></i> Appointments
         </h2>
         <a asp-action="Create" class="btn btn-success">
             <i class="fas fa-plus-circle me-1"></i> Add New Appointment
+<<<<<<< HEAD
         </a>
     </div>
 
@@ -25,6 +30,11 @@
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
         </div>
     </form>
+=======
+        </a> 
+    </div>
+ *@
+>>>>>>> finish
 
     <div class="container-fluid py-4">
         <!-- نافذة الإشعارات للدكتور فقط -->
@@ -35,6 +45,7 @@
                     <div class="card border-primary">
                         <div class="card-header bg-primary text-white">
                             <h5 class="mb-0">
+<<<<<<< HEAD
                                 <i class="fas fa-bell me-2"></i>Current Patient Notification
                             </h5>
                         </div>
@@ -56,11 +67,39 @@
                                     <button class="btn btn-success btn-sm" onclick="startCurrentAppointment()">
                                         <i class="fas fa-play me-1"></i> @Localizer["Start"]
                                     </button>
+=======
+                                <i class="fas fa-bell me-2"></i>@Localizer["Current Patient Notification"]
+                            </h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div id="doctorWaitingState" class="text-center py-3">
+                                <i class="fas fa-user-clock fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">@Localizer["Waiting for patient notifications"]</p>
+                            </div>
+
+                            <div id="doctorPatientNotification" class="alert alert-success d-none">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-injured fa-2x me-3 text-success"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-success fw-bold" id="currentPatientName"></h6>
+                                        <p class="mb-1 small" id="currentAppointmentTime"></p>
+                                        <small class="text-muted" id="currentArrivalTime"></small>
+                                    </div>
+                                    <div class="ms-3">
+                                        <button class="btn btn-success btn-sm" onclick="startCurrentAppointment()">
+                                            <i class="fas fa-play me-1"></i> @Localizer["Start"]
+                                        </button>
+                                    </div>
+>>>>>>> finish
                                 </div>
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
                 </div>
+=======
+>>>>>>> finish
             </div>
         </div>
     }
@@ -71,6 +110,7 @@
                 <i class="fas fa-calendar-check me-2"></i> @Localizer["Appointments"]
             </h2>
             <a asp-action="Create" class="btn btn-success">
+<<<<<<< HEAD
                 <i class="fas fa-plus-circle me-1"></i> @Localizer["Add_New_Appointment"]
             </a>
         </div>
@@ -78,6 +118,22 @@
         <div class="card shadow-sm border-0 rounded">
             <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
                 <i class="fas fa-list me-2"></i> @Localizer["All_Appointments"]
+=======
+                <i class="fas fa-plus-circle me-1"></i> @Localizer["Add New Appointment"]
+            </a>
+        </div>
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="searchString" class="form-control" placeholder="@Localizer["Search by patient name..."]" value="@ViewData["CurrentFilter"]">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> @Localizer["Search"]</button>
+                </div>
+            </form>
+
+
+        <div class="card shadow-sm border-0 rounded">
+            <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
+                <i class="fas fa-list me-2"></i> @Localizer["All Appointments"]
+>>>>>>> finish
             </div>
             <div class="card-body p-0">
                 <table class="table table-hover mvc-grid mb-0">
@@ -100,7 +156,13 @@
                                 <tr>
                                     <td>@appt.PatientName</td>
                                     <td>@appt.PatientPhone</td>
+<<<<<<< HEAD
                                     <td>@appt.Date.ToString("dd/MM/yyyy")</td>
+=======
+                                        <td>
+                                            @appt.Date.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                        </td>
+>>>>>>> finish
                                     <td>@appt.StartTime.ToString(@"hh\:mm") - @appt.EndTime.ToString(@"hh\:mm")</td>
                                     <td>
                                         @{
@@ -145,7 +207,11 @@
                             <tr>
                                 <td colspan="7" class="text-center text-muted py-4">
                                     <i class="fas fa-calendar-times fa-lg mb-2 d-block"></i>
+<<<<<<< HEAD
                                     @Localizer["No_appointments_found"]
+=======
+                                    @Localizer["No appointments found"]
+>>>>>>> finish
                                 </td>
                             </tr>
                         }
@@ -172,7 +238,11 @@
                         .build();
 
                     doctorConnection.start().then(() => {
+<<<<<<< HEAD
                         console.log("✅ Doctor connected to SignalR");
+=======
+                        console.log("Doctor connected to SignalR");
+>>>>>>> finish
                         doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
                     }).catch(err => console.error('❌ Doctor Connection Error: ', err));
 
@@ -182,7 +252,11 @@
                     });
 
                     doctorConnection.on("UpdateQueue", (queue) => {
+<<<<<<< HEAD
                         console.log("👨‍⚕️ Doctor queue updated:", queue);
+=======
+                        console.log("👨‍⚕ Doctor queue updated:", queue);
+>>>>>>> finish
                         updateDoctorQueueDisplay(queue);
                     });
                     </text>

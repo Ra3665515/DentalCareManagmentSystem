@@ -15,12 +15,22 @@
 	<data name="Male" xml:space="preserve">
     <value>ذكر</value>
 </data>
+<<<<<<< HEAD
+=======
+	<data name="Search" xml:space="preserve">
+    <value>بحث</value>
+</data>
+	<data name="Search by name or phone number..." xml:space="preserve">
+    <value>ابحث بالاسم او رقم التليفون</value>
+</data>
+>>>>>>> finish
 	<data name="Female" xml:space="preserve">
     <value>أنثى</value>
 </data>
 	<data name="Patients" xml:space="preserve">
     <value>المرضى</value>
   </data>
+<<<<<<< HEAD
 	<data name="Add_New_Patient" xml:space="preserve">
     <value>إضافة مريض جديد</value>
   </data>
@@ -28,6 +38,15 @@
     <value>جميع المرضى</value>
   </data>
 	<data name="Full_Name" xml:space="preserve">
+=======
+	<data name="Add New Patient" xml:space="preserve">
+    <value>إضافة مريض جديد</value>
+  </data>
+	<data name="All Patients" xml:space="preserve">
+    <value>جميع المرضى</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+>>>>>>> finish
     <value>الاسم الكامل</value>
   </data>
 	<data name="Age" xml:space="preserve">

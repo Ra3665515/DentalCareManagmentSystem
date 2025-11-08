@@ -33,6 +33,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <div class="col-md-4">
         <div class="card shadow-sm border-0">
             <div class="card-body text-center">
@@ -43,4 +44,19 @@
             </div>
         </div>
     </div>
+=======
+    @if (User.IsInRole("SystemAdmin"))
+    {
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">@Localizer["Admin Panel"]</h5>
+                    <p class="card-text">@Localizer["Manage price lists"]</p>
+                    <a asp-area="Admin" asp-controller="PriceList" asp-action="Index" class="btn btn-info text-white">@Localizer["Go to Admin"]</a>
+                </div>
+            </div>
+        </div>
+    }
+>>>>>>> finish
 </div>

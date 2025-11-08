@@ -250,6 +250,7 @@
             </div>
 
             <div class="list-group list-group-flush">
+<<<<<<< HEAD
                 <a class="list-group-item list-group-item-action p-3" asp-controller="Home" asp-action="Index">
                     <i class="fas fa-tachometer-alt @marginClass-2"></i>@Localizer["Dashboard"]
                 </a>
@@ -257,12 +258,26 @@
                     <i class="fas fa-user-injured @marginClass-2"></i>@Localizer["Patients"]
                 </a>
                 <a class="list-group-item list-group-item-action p-3" asp-controller="Appointments" asp-action="Index">
+=======
+                <a class="list-group-item list-group-item-action p-3" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-tachometer-alt @marginClass-2"></i>@Localizer["Dashboard"]
+                </a>
+                <a class="list-group-item list-group-item-action p-3" asp-area="" asp-controller="Patients" asp-action="Index">
+                    <i class="fas fa-user-injured @marginClass-2"></i>@Localizer["Patients"]
+                </a>
+
+                <a class="list-group-item list-group-item-action p-3" asp-area="" asp-controller="Appointments" asp-action="Index">
+>>>>>>> finish
                     <i class="fas fa-calendar-check @marginClass-2"></i>@Localizer["Appointments"]
                 </a>
 
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("SystemAdmin"))
                 {
+<<<<<<< HEAD
                     <a class="list-group-item list-group-item-action p-3" asp-controller="Reports" asp-action="Index">
+=======
+                    <a class="list-group-item list-group-item-action p-3" asp-area="" asp-controller="Reports" asp-action="Index">
+>>>>>>> finish
                         <i class="fas fa-chart-bar @marginClass-2"></i>@Localizer["Reports"]
                     </a>
                     <a class="list-group-item list-group-item-action p-3" asp-area="Admin" asp-controller="PriceList" asp-action="Index">
@@ -304,7 +319,11 @@
                             
                         <ul class='navbar-nav @(isRTL ? "me-auto" : "ms-auto") mt-2 mt-lg-0'>
 
+<<<<<<< HEAD
                             <!-- ✅ Language Selector (يحفظ في Cookie) -->
+=======
+                            <!--  Language Selector (يحفظ في Cookie) -->
+>>>>>>> finish
                             <li class="nav-item dropdown language-dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -312,6 +331,7 @@
                                     @(isRTL ? "العربية" : "English")
                                 </a>
                                 <div class='dropdown-menu @(isRTL ? "" : "dropdown-menu-end")' aria-labelledby="languageDropdown">
+<<<<<<< HEAD
                                     <form asp-controller="Home" asp-action="SetLanguage" method="post" class="dropdown-item p-0">
                                         <input type="hidden" name="culture" value="en-US" />
                                         <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
@@ -332,6 +352,28 @@
                                 </a>
                             </li>
                             <partial name="_LoginPartial" />
+=======
+                                        <form asp-area="" asp-controller="Home" asp-action="SetLanguage" method="post" class="dropdown-item p-0">
+                                            <input type="hidden" name="culture" value="en-US" />
+                                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                            <button type="submit" class="btn w-100 text-start px-3 py-2 border-0 bg-transparent">English</button>
+                                        </form>
+
+                                        <form asp-area="" asp-controller="Home" asp-action="SetLanguage" method="post" class="dropdown-item p-0">
+                                            <input type="hidden" name="culture" value="ar-SA" />
+                                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                            <button type="submit" class="btn w-100 text-start px-3 py-2 border-0 bg-transparent">العربية</button>
+                                        </form>
+                                    </div>
+                            </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="@Url.Action("TodaysAppointments", "Appointments", new { area = "" })">
+                                        <i class="fas fa-calendar-day @marginClass-1"></i>@Localizer["Today Appointments"]
+                                    </a>
+                                </li>
+                                <partial name="_LoginPartial" />
+>>>>>>> finish
                         </ul>
                     </div>
                 </div>

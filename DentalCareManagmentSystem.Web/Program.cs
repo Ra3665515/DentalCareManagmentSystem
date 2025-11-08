@@ -106,7 +106,7 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 // 4️⃣ Routes
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Appointments}/{action=TodaysAppointments}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

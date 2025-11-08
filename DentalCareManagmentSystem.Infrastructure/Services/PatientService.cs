@@ -19,9 +19,16 @@ public class PatientService : IPatientService
     {
         if (patientDto.Gender == null)
         {
+<<<<<<< HEAD
             throw new ArgumentNullException(nameof(patientDto.Gender));
         }
 
+=======
+            throw new ArgumentNullException("Gender", "من فضلك أدخل النوع (Gender)");
+        }
+
+
+>>>>>>> finish
         var patient = new Patient
         {
             FullName = patientDto.FullName,

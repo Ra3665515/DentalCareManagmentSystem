@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+<<<<<<< HEAD
 	<data name="Appointment Details" xml:space="preserve">
     <value>تفاصيل الموعد</value>
   </data>
@@ -13,3 +14,18 @@
     <value>رجوع</value>
   </data>
 </root>
+=======
+	<data name="Appointment Details" xml:space="preserve"><value>تفاصيل الموعد</value></data>
+	<data name="Patient Information" xml:space="preserve"><value>معلومات المريض</value></data>
+	<data name="Name" xml:space="preserve"><value>الاسم</value></data>
+	<data name="Phone" xml:space="preserve"><value>رقم الهاتف</value></data>
+	<data name="Date" xml:space="preserve"><value>التاريخ</value></data>
+	<data name="Time" xml:space="preserve"><value>الوقت</value></data>
+	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="Completed" xml:space="preserve"><value>مكتمل</value></data>
+	<data name="Cancelled" xml:space="preserve"><value>ملغي</value></data>
+	<data name="Notes" xml:space="preserve"><value>ملاحظات</value></data>
+	<data name="Edit" xml:space="preserve"><value>تعديل</value></data>
+	<data name="Back" xml:space="preserve"><value>رجوع</value></data>
+</root>
+>>>>>>> finish

@@ -12,10 +12,30 @@
 	<data name="Start" xml:space="preserve">
     <value>بدء</value>
   </data>
+<<<<<<< HEAD
 	<data name="Add_New_Appointment" xml:space="preserve">
     <value>إضافة موعد جديد</value>
   </data>
 	<data name="All_Appointments" xml:space="preserve">
+=======
+	<data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+	<data name="Waiting for patient notifications" xml:space="preserve">
+    <value>في انتظار إشعارات المرضى</value>
+  </data>
+
+	<data name="Current Patient Notification" xml:space="preserve">
+    <value>إشعار المريض الحالي</value>
+  </data>
+	<data name="Search by patient name..." xml:space="preserve">
+    <value>ابحث باسم المريض...</value>
+  </data>
+	<data name="Add New Appointment" xml:space="preserve">
+    <value>إضافة موعد جديد</value>
+  </data>
+	<data name="All Appointments" xml:space="preserve">
+>>>>>>> finish
     <value>جميع المواعيد</value>
   </data>
 	<data name="Patient" xml:space="preserve">
@@ -48,7 +68,11 @@
 	<data name="Delete" xml:space="preserve">
     <value>حذف</value>
   </data>
+<<<<<<< HEAD
 	<data name="No_appointments_found" xml:space="preserve">
+=======
+	<data name="No appointments found" xml:space="preserve">
+>>>>>>> finish
     <value>لا توجد مواعيد</value>
   </data>
 	<data name="Appointment" xml:space="preserve">
