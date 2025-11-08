@@ -225,19 +225,20 @@ function updateQueue(queue) {
 }
 
 // Helper function to format time
-function formatTime(timeString)
-{
+function formatTime(timeString) {
     if (!timeString) return 'N/A';
-    try
-        {
+    try {
         const time = new Date(timeString);
-        return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-        }
-    catch
-        ({
-            return timeString
-        })
+        return time.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (error) {
+        return timeString;
+    }
 }
+
 
 // Helper function to show toast notifications
 function showToast(message, type = 'info') {
