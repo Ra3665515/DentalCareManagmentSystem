@@ -1,0 +1,334 @@
+You are a senior .NET architect and full-stack engineer.  
+Generate a **production-ready monolithic ASP.NET Core MVC application** for a **Dental Clinic Management System** called {{ClinicName}} that follows **Clean Architecture** (Domain, Application, Infrastructure, Web) WITHOUT CQRS or paid libraries.  
+Use **.NET 9 (or latest LTS)**, **EF Core (SQL Server)** with code-first migrations, **Identity** for authentication, and **NonFactors.Grid.Mvc6** for server-side data grids using AJAX.  
+
+==================================================
+🏗️ SOLUTION STRUCTURE (Clean Architecture)
+==================================================
+Create a Visual Studio solution with 4 projects:
+
+1. **{{ClinicName}}.Domain**
+   - Contains all Entities, Enums, and Business Rules.
+   - No external dependencies.
+
+2. **{{ClinicName}}.Application**
+   - Contains Service Interfaces and Implementations (use case logic).
+   - Contains DTOs/ViewModels, Mappers, and Validators.
+   - Depends only on Domain abstractions.
+
+3. **{{ClinicName}}.Infrastructure**
+   - EF Core DbContext, Configurations, Repository Implementations, Identity setup, Local file storage, Seeding.
+   - References Domain + Application.
+
+4. **{{ClinicName}}.Web**
+   - ASP.NET Core MVC UI.
+   - Uses Razor views, AJAX, NonFactors.Grid.Mvc6 for grids, Bootstrap for layout.
+   - References Application + Infrastructure.
+
+==================================================
+👥 USER ROLES
+==================================================
+There are **three roles**:
+1. **Doctor** → main admin for clinic operations
+2. **Receptionist** → patient registration, notifications
+3. **SystemAdmin** → manage price list, curing plans, users
+
+==================================================
+🦷 FUNCTIONAL MODULES (NO PAYMENT MODULE)
+==================================================
+**1. Patient Management**
+- Receptionist adds patients: FullName, Age, Phone, Gender, Notes.
+- Each patient has calculated totals based on treatment plans (no money transactions tracked).
+- Each patient has an appointment and history.
+
+**2. Notification System**
+- A bell icon in navbar shows **Today’s Appointments**.
+- On click → opens a **modal popup** listing Name, Phone, AppointmentTime.
+- Each row has a **“Done”** button → marks patient as Notified (Appointment.Status = “Notified”).
+- Doctor and Receptionist both see notifications.
+
+**3. Diagnosis & Images**
+- Doctor can add Diagnosis notes per patient.
+- Upload intraoral / x-ray images (stored in `/wwwroot/uploads/patients/{id}`).
+- Auto-generate thumbnails (300px width).
+
+**4. Treatment Plans & Price List**
+- Admin defines **Price List Items** (e.g., Filling, Cleaning, Root Canal, etc.) with a name, category, and default price.
+- Doctor adds a **Treatment Plan** per patient and selects items from Price List.
+- Each item snapshot stores name + price.
+- Automatically calculate total cost per patient.
+- Remainder = TotalDue (no payment tracking, just the total owed).
+
+**5. Admin Management**
+- Admin can:
+  - CRUD Price List items
+  - CRUD Treatment Plan templates
+  - Manage Users (Doctor, Receptionist)
+
+==================================================
+📦 DOMAIN LAYER ({{ClinicName}}.Domain)
+==================================================
+**Entities:**
+- Patient(Id, FullName, Age, Phone, Gender, Notes, CreatedAt, IsActive)
+- Appointment(Id, PatientId, Date, StartTime, EndTime, Status[Scheduled|Notified|Completed|NoShow|Cancelled])
+- DiagnosisNote(Id, PatientId, DoctorId, Note, CreatedAt)
+- PatientImage(Id, PatientId, FileName, FilePath, ThumbnailPath, UploadedAt)
+- PriceListItem(Id, Name, Category, DefaultPrice, IsActive)
+- TreatmentPlan(Id, PatientId, CreatedAt, CreatedBy)
+- TreatmentItem(Id, TreatmentPlanId, PriceListItemId, NameSnapshot, PriceSnapshot, Quantity, LineTotal)
+- User (extends IdentityUser: FullName, Role)
+- NotificationLog(Id, AppointmentId, NotifiedBy, NotifiedAt)
+- AuditLog(Id, EntityName, EntityId, Action, UserId, Timestamp, ChangesJson)
+
+==================================================
+⚙️ APPLICATION LAYER ({{ClinicName}}.Application)
+==================================================
+**Services:**
+- IPatientService
+- IAppointmentService
+- IDiagnosisService
+- IImageService
+- IPriceListService
+- ITreatmentPlanService
+- IUserService
+- INotificationService
+
+Each service:
+- CRUD operations and search logic.
+- Uses DTOs for ViewModels.
+
+Example:
+```csharp
+public class PatientDto {
+    public Guid Id { get; set; }
+    public string FullName { get; set; }
+    public int Age { get; set; }
+    public string Phone { get; set; }
+    public string Gender { get; set; }
+    public string Notes { get; set; }
+    public decimal TotalDue { get; set; }
+}
+==================================================
+🗄️ INFRASTRUCTURE LAYER ({{ClinicName}}.Infrastructure)
+EF Core DbContext (ClinicDbContext)
+
+Repositories implementing interfaces from Application layer.
+
+Seed default data:
+
+SystemAdmin (admin@clinic.local / Admin@123)
+
+Doctor (doctor@clinic.local / Doctor@123)
+
+Receptionist (reception@clinic.local / Reception@123)
+
+Sample PriceList Items (e.g., Cleaning, Filling, Whitening)
+
+Image utility using ImageSharp to create thumbnails.
+
+==================================================
+🌐 WEB LAYER ({{ClinicName}}.Web)
+Frontend:
+
+Bootstrap 5, Cairo font, dental theme (white, blue, teal)
+
+Responsive layout with RTL support ready
+
+Razor views organized in Areas or folders per module
+
+Use NonFactors.Grid.Mvc6 for all listings
+
+==================================================
+📊 GRID.MVC6 EXAMPLES (with AJAX)
+Install:
+
+bash
+Copy code
+dotnet add package NonFactors.Grid.Mvc6
+Partial view _PatientsGrid.cshtml:
+
+cshtml
+Copy code
+@(Html.Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(m => m.FullName).Titled("Name").Sortable(true).Filterable(true);
+        columns.Add(m => m.Phone).Titled("Phone");
+        columns.Add(m => m.Age).Titled("Age");
+        columns.Add(m => m.TotalDue).Titled("Total Due").Formatted("{0:C}");
+        columns.Add().Encoded(false).RenderedAs(m =>
+            Html.ActionLink("Details", "Details", new { id = m.Id }, new { @class = "btn btn-sm btn-primary" })
+        );
+    })
+    .Empty("No patients found")
+    .Filterable()
+    .Sortable()
+    .Pageable(pager => { pager.RowsPerPage = 10; })
+)
+Index view:
+
+cshtml
+Copy code
+<div id="patientsGrid">
+    @(Html.AjaxGrid(Url.Action("PatientsGrid", "Patients")))
+</div>
+Controller:
+
+csharp
+Copy code
+public IActionResult PatientsGrid()
+{
+    var patients = _patientService.GetAll().Select(p => new PatientDto {
+        Id = p.Id,
+        FullName = p.FullName,
+        Phone = p.Phone,
+        Age = p.Age,
+        TotalDue = p.TreatmentPlans.Sum(tp => tp.Items.Sum(i => i.LineTotal))
+    }).ToList();
+
+    return PartialView("_PatientsGrid", patients);
+}
+==================================================
+📋 CONTROLLERS TO GENERATE
+PatientsController
+
+Index (grid + search)
+
+Create/Edit/Delete
+
+Details (tabs: Overview, Diagnosis, Images, Treatment Plans)
+
+AJAX partials for each tab
+
+AppointmentsController
+
+Index (grid)
+
+Create/Edit
+
+MarkDone (AJAX POST for notifications)
+
+DiagnosisController
+
+AddNote (AJAX)
+
+GetNotes (partial view)
+
+ImagesController
+
+Upload (AJAX)
+
+Delete (AJAX)
+
+View thumbnails
+
+TreatmentPlansController
+
+AddPlan (modal with price list)
+
+AddItem (AJAX)
+
+DeleteItem
+
+GetPatientPlans (partial)
+
+Admin/PriceListController
+
+Index (grid)
+
+Create/Edit/Delete
+
+Admin/UsersController
+
+Index (grid)
+
+Create/Edit/Delete users
+
+NotificationsController
+
+Today() GET → partial grid with today’s appointments
+
+MarkDone(id) POST → mark appointment notified
+
+==================================================
+🔒 AUTHENTICATION & AUTHORIZATION
+Use ASP.NET Core Identity
+
+Roles: SystemAdmin, Doctor, Receptionist
+
+[Authorize(Roles = "Doctor,Receptionist,SystemAdmin")] applied as needed.
+
+==================================================
+🎨 DESIGN
+Navbar: logo, notification bell (shows count)
+
+Sidebar: Dashboard, Patients, Appointments, Price List, Admin (visible per role)
+
+Dental-themed colors (#0D6EFD blue, #20C997 teal, white backgrounds)
+
+==================================================
+🧩 SEEDING
+3 default users with roles
+
+5 sample price list items
+
+Sample patient for demo
+
+==================================================
+🧠 BUSINESS FLOW
+Receptionist creates a patient + schedules appointment.
+
+Notification bell shows today's appointment.
+
+Receptionist clicks Done → appointment marked notified.
+
+Doctor opens patient details, adds diagnosis and treatment plan.
+
+SystemAdmin updates price list when needed.
+
+==================================================
+🧪 DELIVERABLES
+Generate the complete Visual Studio solution with:
+
+All 4 projects (Domain, Application, Infrastructure, Web)
+
+All controllers and Razor views with Grid.MVC6
+
+EF Core DbContext + Migrations
+
+Dependency Injection wiring
+
+Identity setup and role-based authorization
+
+Layout + navbar + sidebar + notifications popup
+
+Seeding + sample data
+
+Ready-to-run project (dotnet run)
+
+==================================================
+✅ OUTPUT EXPECTATION
+Deliver full working code for all layers:
+
+Domain entities and enums
+
+Application services and DTOs
+
+Infrastructure EF repositories + DbContext + Identity
+
+Web controllers + views (Razor, AJAX, Grid.MVC6)
+
+Fully functional dental clinic system without payment module.
+
+yaml
+Copy code
+
+---
+
+### ✅ Summary of Updates
+- **Removed** all payment-related entities, services, and features.  
+- Replaced financial logic with simple **TotalDue** and **Remainder** (based on treatment plan only).  
+- Added **complete Clean Architecture structure** — all 4 projects explicitly defined.  
+- Expanded **controllers, services, and Razor view generation** expectations.  
+- Kept **NonFactors.Grid.Mvc6** as the main grid solution.  
+- Ensured **monolithic single-database** architecture.  

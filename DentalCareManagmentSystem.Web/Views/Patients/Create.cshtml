@@ -1,0 +1,47 @@
+@model DentalCareManagmentSystem.Application.DTOs.PatientDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Add Patient"];
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-primary mb-4"><i class="fas fa-plus-circle me-2"></i> @Localizer["Add New Patient"]</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label class="form-label">@Localizer["Full Name"]</label>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@Localizer["Age"]</label>
+                    <input asp-for="Age" class="form-control" type="number" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@Localizer["Phone"]</label>
+                    <input asp-for="Phone" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Gender" class="form-label">@Localizer["Gender"]</label>
+                    <select asp-for="Gender" class="form-select" asp-items="ViewBag.Genders">
+                        <option value="">@Localizer["Select Gender"]</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                <button type="submit" name="submitButton" class="btn btn-success">
+                    <i class="fas fa-plus-circle me-1"></i> @Localizer["Add"]
+                </button>                <a asp-action="Index" class="btn btn-secondary">@Localizer["Cancel"]</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+                    
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="~/js/signalr-connection.js"></script>
+    <script src="~/js/reception-actions.js"></script>
+}

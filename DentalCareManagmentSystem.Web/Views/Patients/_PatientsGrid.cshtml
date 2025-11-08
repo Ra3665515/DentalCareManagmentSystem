@@ -1,0 +1,57 @@
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.PatientDto>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        @(Html
+                .Grid(Model)
+                .Build(columns =>
+                {
+                    columns.Add(model => model.FullName)
+                    .Titled("Full Name")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                    columns.Add(model => model.Age)
+                    .Titled("Age")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                    columns.Add(model => model.Phone)
+                    .Titled("Phone")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                    columns.Add(model => model.Gender)
+                    .Titled("Gender")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                    columns.Add(model => model.TotalDue)
+                    .Titled("Total Due")
+                    .Sortable(true)
+                    .Filterable(true)
+                    .Formatted("{0:C}");
+
+                    columns.Add(model => model.Id)
+                    .Titled("Actions")
+                    .Encoded(false)
+                    .RenderedAs(model =>
+                    Html.Raw($@"
+                <a href='/Patients/Edit/{model.Id}' class='btn btn-sm btn-warning me-1'>
+                <i class='fas fa-edit'></i>
+                </a>
+                <a href='/Patients/Details/{model.Id}' class='btn btn-sm btn-info me-1'>
+                <i class='fas fa-info-circle'></i>
+                </a>
+                <a href='/Patients/Delete/{model.Id}' class='btn btn-sm btn-danger'>
+                <i class='fas fa-trash-alt'></i>
+                </a>
+                ")
+                    );
+                })
+                .Filterable()
+                .Sortable()
+                .Pageable()
+                )
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Delete Appointment" xml:space="preserve">
+    <value>حذف الموعد</value>
+  </data>
+	<data name="Are you sure you want to delete this appointment?" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد حذف هذا الموعد؟</value>
+  </data>
+	<data name="This action cannot be undone" xml:space="preserve">
+    <value>لا يمكن التراجع عن هذا الإجراء</value>
+  </data>
+	<data name="Appointment Details" xml:space="preserve">
+    <value>تفاصيل الموعد</value>
+  </data>
+	<data name="Patient Information" xml:space="preserve">
+    <value>معلومات المريض</value>
+  </data>
+	<data name="Name" xml:space="preserve"><value>الاسم</value></data>
+	<data name="Phone" xml:space="preserve"><value>رقم الهاتف</value></data>
+	<data name="Time" xml:space="preserve"><value>الوقت</value></data>
+	<data name="Back to List" xml:space="preserve"><value>العودة للقائمة</value></data>
+	<data name="Appointment Information" xml:space="preserve"><value>معلومات الموعد</value></data>
+	<data name="Patient" xml:space="preserve"><value>المريض</value></data>
+	<data name="Date" xml:space="preserve"><value>التاريخ</value></data>
+	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="Cancel" xml:space="preserve"><value>إلغاء</value></data>
+	<data name="Appointment Info" xml:space="preserve">
+    <value>معلومات الموعد</value>
+  </data>
+	<data name="Confirm Delete" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+</root>

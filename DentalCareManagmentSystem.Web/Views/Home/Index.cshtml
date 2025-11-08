@@ -1,0 +1,49 @@
+﻿@model DentalCareManagmentSystem.Web.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="text-center my-5">
+    <h1 class="display-5 fw-bold text-primary">@Localizer["Welcome"]</h1>
+    <p class="text-muted fs-5">@Localizer["Slogan"]</p>
+</div>
+
+<div class="row mt-4 g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="fas fa-user-injured fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">@Localizer["Patients"]</h5>
+                <p class="card-text">@Localizer["Manage patient records"]</p>
+                <a asp-controller="Patients" asp-action="Index" class="btn btn-primary">@Localizer["Go to Patients"]</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                <h5 class="card-title">@Localizer["Appointments"]</h5>
+                <p class="card-text">@Localizer["View and schedule appointments"]</p>
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-success">@Localizer["Go to Appointments"]</a>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("SystemAdmin"))
+    {
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">@Localizer["Admin Panel"]</h5>
+                    <p class="card-text">@Localizer["Manage price lists"]</p>
+                    <a asp-area="Admin" asp-controller="PriceList" asp-action="Index" class="btn btn-info text-white">@Localizer["Go to Admin"]</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

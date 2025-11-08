@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Users Management" xml:space="preserve">
+    <value>إدارة المستخدمين</value>
+  </data>
+	<data name="Add New User" xml:space="preserve">
+    <value>إضافة مستخدم جديد</value>
+  </data>
+	<data name="All System Users" xml:space="preserve">
+    <value>جميع مستخدمي النظام</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+	<data name="Role" xml:space="preserve">
+    <value>الدور</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+	<data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+	<data name="No users found in the system" xml:space="preserve">
+    <value>لا توجد مستخدمين في النظام</value>
+  </data>
+	<data name="SystemAdmin" xml:space="preserve">
+    <value>مدير النظام</value>
+  </data>
+	<data name="Doctor" xml:space="preserve">
+    <value>طبيب</value>
+  </data>
+	<data name="Receptionist" xml:space="preserve">
+    <value>موظف استقبال</value>
+  </data>
+	<data name="Search" xml:space="preserve">
+  <value>بحث</value>
+</data>
+	<data name="Show" xml:space="preserve">
+  <value>عرض</value>
+</data>
+	<data name="users per page" xml:space="preserve">
+  <value>مستخدم في الصفحة</value>
+</data>
+	<data name="No matching users found" xml:space="preserve">
+  <value>لم يتم العثور على مستخدمين مطابقين</value>
+</data>
+	<data name="Showing" xml:space="preserve">
+  <value>عرض</value>
+</data>
+	<data name="to" xml:space="preserve">
+  <value>إلى</value>
+</data>
+	<data name="of" xml:space="preserve">
+  <value>من</value>
+</data>
+	<data name="users" xml:space="preserve">
+  <value>مستخدمين</value>
+</data>
+	<data name="No users available" xml:space="preserve">
+  <value>لا توجد مستخدمين متاحين</value>
+</data>
+	<data name="filtered from" xml:space="preserve">
+  <value>مصفى من</value>
+</data>
+	<data name="total users" xml:space="preserve">
+  <value>إجمالي المستخدمين</value>
+</data>
+</root>

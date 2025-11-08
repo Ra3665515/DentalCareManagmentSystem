@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Male" xml:space="preserve">
+    <value>ذكر</value>
+</data>
+	<data name="Search" xml:space="preserve">
+    <value>بحث</value>
+</data>
+	<data name="Search by name or phone number..." xml:space="preserve">
+    <value>ابحث بالاسم او رقم التليفون</value>
+</data>
+	<data name="Female" xml:space="preserve">
+    <value>أنثى</value>
+</data>
+	<data name="Patients" xml:space="preserve">
+    <value>المرضى</value>
+  </data>
+	<data name="Add New Patient" xml:space="preserve">
+    <value>إضافة مريض جديد</value>
+  </data>
+	<data name="All Patients" xml:space="preserve">
+    <value>جميع المرضى</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Age" xml:space="preserve">
+    <value>العمر</value>
+  </data>
+	<data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+	<data name="Gender" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+	<data name="Total_Due" xml:space="preserve">
+    <value>إجمالي المستحق</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="Book_Appointment" xml:space="preserve">
+    <value>حجز موعد</value>
+  </data>
+	<data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+	<data name="Details" xml:space="preserve">
+    <value>تفاصيل</value>
+  </data>
+	<data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+	<data name="No_patients_found" xml:space="preserve">
+    <value>لا توجد مرضى في قاعدة البيانات</value>
+  </data>
+	<data name="EGP" xml:space="preserve">
+    <value>جنيه</value>
+  </data>
+</root>

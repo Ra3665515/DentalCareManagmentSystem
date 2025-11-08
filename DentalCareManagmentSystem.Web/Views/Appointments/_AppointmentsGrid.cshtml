@@ -1,0 +1,53 @@
+@model IEnumerable<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+
+@if (Model == null || !Model.Any())
+{
+    <p class="text-muted">No appointments found.</p>
+}
+else
+{
+    @(Html
+            .Grid(Model)
+            .Build(columns =>
+            {
+                columns.Add(a => a.PatientName)
+                    .Titled("Patient Name")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                columns.Add(a => a.Date)
+                    .Titled("Date")
+                    .Sortable(true)
+                    .Filterable(true)
+                    .Formatted("{0:yyyy-MM-dd}");
+
+                columns.Add(a => a.StartTime)
+                    .Titled("Start Time")
+                    .Sortable(true)
+                    .Filterable(true)
+                    .Formatted("{0:HH:mm}");
+
+                columns.Add(a => a.Status)
+                    .Titled("Status")
+                    .Sortable(true)
+                    .Filterable(true);
+
+                columns.Add(a => a.Id)
+                    .Titled("Actions")
+                    .Encoded(false)
+                    .RenderedAs(a => Html.Raw($@"
+                    <a href='/Appointments/Edit/{a.Id}' class='btn btn-sm btn-warning me-1'>
+                        <i class='fas fa-edit'></i> Edit
+                    </a>
+                    <a href='/Appointments/Details/{a.Id}' class='btn btn-sm btn-info me-1'>
+                        <i class='fas fa-info-circle'></i> Details
+                    </a>
+                    <a href='/Appointments/Delete/{a.Id}' class='btn btn-sm btn-danger'>
+                        <i class='fas fa-trash-alt'></i> Delete
+                    </a>"));
+            })
+            .Filterable()
+            .Sortable()
+            .Pageable()
+        )
+}

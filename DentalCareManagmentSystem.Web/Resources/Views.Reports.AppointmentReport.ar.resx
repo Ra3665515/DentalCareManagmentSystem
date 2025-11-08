@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Appointment Report" xml:space="preserve">
+    <value>تقرير المواعيد</value>
+  </data>
+	<data name="Export Appointments" xml:space="preserve">
+    <value>تصدير المواعيد</value>
+  </data>
+	<data name="Total Appointments" xml:space="preserve">
+    <value>إجمالي المواعيد</value>
+  </data>
+	<data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+	<data name="Cancelled" xml:space="preserve">
+    <value>ملغى</value>
+  </data>
+	<data name="This Month" xml:space="preserve">
+    <value>هذا الشهر</value>
+  </data>
+	<data name="Appointments by Status" xml:space="preserve">
+    <value>المواعيد حسب الحالة</value>
+  </data>
+	<data name="Appointments by Month" xml:space="preserve">
+    <value>المواعيد حسب الشهر</value>
+  </data>
+</root>

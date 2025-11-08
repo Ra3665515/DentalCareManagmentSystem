@@ -1,0 +1,8 @@
+@model List<DentalCareManagmentSystem.Domain.Entities.PatientImage>
+
+<div class="images-grid">
+    @foreach (var img in Model)
+    {
+        <img src="@img.ThumbnailPath" alt="Patient Image" style="width:150px;height:auto;margin:5px;" />
+    }
+</div>

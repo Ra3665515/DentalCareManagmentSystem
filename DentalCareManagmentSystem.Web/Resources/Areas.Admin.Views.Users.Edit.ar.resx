@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Edit User" xml:space="preserve">
+    <value>تعديل المستخدم</value>
+  </data>
+	<data name="Save Changes" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+	<data name="Password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+	<data name="Role" xml:space="preserve">
+    <value>الدور</value>
+  </data>
+	<data name="Select role" xml:space="preserve">
+    <value>اختر الدور</value>
+  </data>
+</root>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Add Appointment" xml:space="preserve">
+    <value>إضافة موعد</value>
+  </data>
+	<data name="Add New Appointment" xml:space="preserve">
+    <value>إضافة موعد جديد</value>
+  </data>
+	<data name="Patient" xml:space="preserve">
+    <value>المريض</value>
+  </data>
+	
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Select Patient" xml:space="preserve">
+    <value>اختر المريض</value>
+  </data>
+	<data name="Start Time" xml:space="preserve">
+    <value>وقت البدء</value>
+  </data>
+  
+	<data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+	<data name="End Time" xml:space="preserve">
+    <value>وقت الانتهاء</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+	<data name="Add Appointment" xml:space="preserve">
+    <value>إضافة الموعد</value>
+  </data>
+</root>

@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<data name="Patient Details" xml:space="preserve">
+    <value>تفاصيل المريض</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Age" xml:space="preserve">
+    <value>العمر</value>
+  </data>
+	<data name="Gender" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+	<data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+	<data name="Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+	<data name="Total Due" xml:space="preserve">
+    <value>إجمالي المستحق</value>
+  </data>
+	<data name="Treatment Plans" xml:space="preserve">
+    <value>خطط العلاج</value>
+  </data>
+	<data name="Diagnosis" xml:space="preserve">
+    <value>التشخيص</value>
+  </data>
+	<data name="Images" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+	<data name="Create New Plan" xml:space="preserve">
+    <value>إنشاء خطة جديدة</value>
+  </data>
+	<data name="Created Date" xml:space="preserve">
+    <value>تاريخ الإنشاء</value>
+  </data>
+	<data name="Created By" xml:space="preserve">
+    <value>تم الإنشاء بواسطة</value>
+  </data>
+	<data name="Total Cost" xml:space="preserve">
+    <value>التكلفة الإجمالية</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="Details" xml:space="preserve">
+    <value>تفاصيل</value>
+  </data>
+	<data name="Complete" xml:space="preserve">
+    <value>إكمال</value>
+  </data>
+	<data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+	<data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+	<data name="In Progress" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+	<data name="No treatment plans found" xml:space="preserve">
+    <value>لا توجد خطط علاج لهذا المريض</value>
+  </data>
+	<data name="Add Note" xml:space="preserve">
+    <value>إضافة ملاحظة</value>
+  </data>
+	<data name="Add diagnosis note" xml:space="preserve">
+    <value>أضف ملاحظة تشخيصية جديدة</value>
+  </data>
+	<data name="Upload Image" xml:space="preserve">
+    <value>رفع صورة</value>
+  </data>
+	<data name="EGP" xml:space="preserve">
+    <value>جنيه</value>
+  </data>
+	<data name="Male" xml:space="preserve">
+    <value>ذكر</value>
+</data>
+	<data name="Female" xml:space="preserve">
+    <value>أنثى</value>
+</data>
+</root>

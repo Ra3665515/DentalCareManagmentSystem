@@ -1,0 +1,167 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.TreatmentPlanDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Create Treatment Plan"];
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">
+            <i class="fas fa-clipboard-list me-2"></i>@Localizer["Create Treatment Plan"]
+        </h2>
+        <a href="@Url.Action("Details", "Patients", new { id = ViewBag.PatientId })" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> @Localizer["Back to Patient"]
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">@Localizer["Create New Treatment Plan"]</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Patient Info Card -->
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-user me-2"></i>@Localizer["Patient Information"]
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>@Localizer["Name"]:</strong> @ViewBag.PatientName</p>
+                                    <p class="mb-0"><strong>@Localizer["Patient ID"]:</strong> @ViewBag.PatientId</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-0"><strong>@Localizer["Created By"]:</strong> @User.Identity.Name</p>
+                                    <p class="mb-0"><strong>@Localizer["Date"]:</strong> @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create Plan Form -->
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+
+                        <!-- Treatment Plan Details -->
+                        <div class="mb-4">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-edit me-2"></i>@Localizer["Treatment Plan Details"]
+                            </h6>
+
+                            <!-- Plan Name -->
+                            <div class="mb-3">
+                                <label for="PlanName" class="form-label fw-semibold">@Localizer["Plan Name"] *</label>
+                                <input type="text" id="PlanName" name="PlanName" class="form-control"
+                                       placeholder="@Localizer["Enter a descriptive name for this treatment plan"]"
+                                       aria-describedby="planNameHelp" required />
+                                <div id="planNameHelp" class="form-text">
+                                    @Localizer["Example: Initial Treatment Plan, Follow-up Care, Emergency Treatment"]
+                                </div>
+                            </div>
+
+                            <!-- Treatment Description -->
+                            <div class="mb-3">
+                                <label for="Description" class="form-label fw-semibold">@Localizer["Treatment Description"] *</label>
+                                <textarea id="Description" name="Description" class="form-control" rows="4"
+                                          placeholder="@Localizer["Describe the treatment plan, objectives, and any special instructions"]"
+                                          aria-describedby="descriptionHelp" required></textarea>
+                                <div id="descriptionHelp" class="form-text">
+                                    @Localizer["Include treatment goals, procedures planned, and any patient-specific considerations"]
+                                </div>
+                            </div>
+
+                            <!-- Treatment Duration & Priority -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="EstimatedDuration" class="form-label fw-semibold">@Localizer["Estimated Duration (minutes)"]</label>
+                                        <input type="number" id="EstimatedDuration" name="EstimatedDuration" class="form-control"
+                                               placeholder="مثال: 30, 45, 60"
+                                               min="1" max="480"
+                                               aria-describedby="durationHelp" />
+                                        <div id="durationHelp" class="form-text">
+                                            @Localizer["Estimated treatment duration in minutes"]
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="Priority" class="form-label fw-semibold">@Localizer["Priority Level"]</label>
+                                        <select id="Priority" name="Priority" class="form-select" aria-describedby="priorityHelp">
+                                            <option value="">@Localizer["Select Priority"]</option>
+                                            <option value="Low">@Localizer["Low"]</option>
+                                            <option value="Medium" selected>@Localizer["Medium"]</option>
+                                            <option value="High">@Localizer["High"]</option>
+                                            <option value="Emergency">@Localizer["Emergency"]</option>
+                                        </select>
+                                        <div id="priorityHelp" class="form-text">
+                                            @Localizer["How urgent is this treatment plan"]
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Treatment Notes -->
+                            <div class="mb-3">
+                                <label for="Notes" class="form-label fw-semibold">@Localizer["Additional Notes"]</label>
+                                <textarea id="Notes" name="Notes" class="form-control" rows="3"
+                                          placeholder="@Localizer["Any additional notes, precautions, or special instructions"]"
+                                          aria-describedby="notesHelp"></textarea>
+                                <div id="notesHelp" class="form-text">
+                                    @Localizer["Optional: Include any special considerations or patient preferences"]
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            @Localizer["You are creating a treatment plan for"] <strong>@ViewBag.PatientName</strong>.
+                            @Localizer["After creation, you'll be able to add specific treatment items and procedures"]
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">@Localizer["Create Plan"]</button>
+                            <a href="@Url.Action("Details", "Patients", new { id = ViewBag.PatientId })"
+                               class="btn btn-secondary">@Localizer["Cancel"]</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+
+            $('form').submit(function(e) {
+                const planName = $('#PlanName').val().trim();
+                const description = $('#Description').val().trim();
+
+                if (!planName) {
+                    alert('@Localizer["Please enter a plan name before creating the treatment plan."]');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (!description) {
+                    alert('@Localizer["Please enter a treatment description before creating the treatment plan."]');
+                    e.preventDefault();
+                    return;
+                }
+
+
+                if (!confirm('@Localizer["Are you sure you want to create this treatment plan?"]')) {
+                    e.preventDefault();
+                }
+            });
+
+            $('label[for="PlanName"], label[for="Description"]').append('<span class="text-danger ms-1">*</span>');
+        });
+    </script>
+}

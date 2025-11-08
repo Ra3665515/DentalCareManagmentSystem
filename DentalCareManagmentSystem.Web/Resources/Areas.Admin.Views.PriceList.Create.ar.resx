@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Create Price List Item" xml:space="preserve">
+    <value>إنشاء عنصر في قائمة الأسعار</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+	<data name="Enter treatment name" xml:space="preserve">
+    <value>أدخل اسم العلاج</value>
+  </data>
+	<data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+	<data name="Enter category (e.g., Basic, Surgery)" xml:space="preserve">
+    <value>أدخل الفئة (مثال: أساسي، جراحة)</value>
+  </data>
+	<data name="DefaultPrice" xml:space="preserve">
+    <value>السعر الافتراضي</value>
+  </data>
+	<data name="Enter price" xml:space="preserve">
+    <value>أدخل السعر</value>
+  </data>
+	<data name="IsActive" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Active by default" xml:space="preserve">
+    <value>نشط افتراضياً</value>
+  </data>
+	<data name="Back to List" xml:space="preserve">
+    <value>العودة للقائمة</value>
+  </data>
+	<data name="Create" xml:space="preserve">
+    <value>إنشاء</value>
+  </data>
+</root>

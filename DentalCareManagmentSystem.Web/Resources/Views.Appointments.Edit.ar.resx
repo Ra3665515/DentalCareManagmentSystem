@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Edit Appointment" xml:space="preserve"><value>تعديل الموعد</value></data>
+	<data name="Back to List" xml:space="preserve"><value>العودة للقائمة</value></data>
+	<data name="Appointment Information" xml:space="preserve"><value>معلومات الموعد</value></data>
+	<data name="Patient" xml:space="preserve"><value>المريض</value></data>
+	<data name="Date" xml:space="preserve"><value>التاريخ</value></data>
+	<data name="Start Time" xml:space="preserve"><value>وقت البداية</value></data>
+	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="Cancel" xml:space="preserve"><value>إلغاء</value></data>
+	<data name="Save Changes" xml:space="preserve"><value>حفظ التغييرات</value></data>
+	<data name="Please double-check the appointment date and time before saving" xml:space="preserve">
+    <value>يرجى التأكد من تاريخ ووقت الموعد قبل الحفظ</value>
+  </data>
+</root>

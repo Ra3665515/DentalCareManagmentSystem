@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Appointments" xml:space="preserve">
+    <value>المواعيد</value>
+  </data>
+	<data name="Current_Patient_Notification" xml:space="preserve">
+    <value>إشعار المريض الحالي</value>
+  </data>
+	<data name="Waiting_for_patient_notifications" xml:space="preserve">
+    <value>في انتظار إشعارات المرضى</value>
+  </data>
+	<data name="Start" xml:space="preserve">
+    <value>بدء</value>
+  </data>
+	<data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+	<data name="Waiting for patient notifications" xml:space="preserve">
+    <value>في انتظار إشعارات المرضى</value>
+  </data>
+
+	<data name="Current Patient Notification" xml:space="preserve">
+    <value>إشعار المريض الحالي</value>
+  </data>
+	<data name="Search by patient name..." xml:space="preserve">
+    <value>ابحث باسم المريض...</value>
+  </data>
+	<data name="Add New Appointment" xml:space="preserve">
+    <value>إضافة موعد جديد</value>
+  </data>
+	<data name="All Appointments" xml:space="preserve">
+    <value>جميع المواعيد</value>
+  </data>
+	<data name="Patient" xml:space="preserve">
+    <value>المريض</value>
+  </data>
+	<data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+	<data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+	<data name="Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+	<data name="Details" xml:space="preserve">
+    <value>تفاصيل</value>
+  </data>
+	<data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+	<data name="No appointments found" xml:space="preserve">
+    <value>لا توجد مواعيد</value>
+  </data>
+	<data name="Appointment" xml:space="preserve">
+    <value>الموعد</value>
+  </data>
+	<data name="Arrived" xml:space="preserve">
+    <value>وصل</value>
+  </data>
+	<data name="Scheduled" xml:space="preserve">
+    <value>مجدول</value>
+  </data>
+	<data name="Notified" xml:space="preserve">
+    <value>تم الإشعار</value>
+  </data>
+	<data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+	<data name="Cancelled" xml:space="preserve">
+    <value>ملغى</value>
+  </data>
+</root>

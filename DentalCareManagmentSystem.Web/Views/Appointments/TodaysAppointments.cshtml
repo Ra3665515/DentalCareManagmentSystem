@@ -1,0 +1,254 @@
+﻿@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Today's Appointments"];
+    var isDoctor = User.IsInRole("Doctor");
+    var isReceptionist = User.IsInRole("Receptionist");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/appointments-queue.css" />
+}
+
+<div class="container-fluid py-4 fade-in">
+
+    <!-- Waiting Queue for Receptionist -->
+    @if (isReceptionist)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-warning shadow-sm">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>@Localizer["Waiting Queue"]
+                        </h5>
+                        <div>
+                            <span class="badge bg-dark" id="queueCount">0 in Queue</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Queue List -->
+                        <div id="queueList" class="mb-3">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Empty Queue State -->
+                        <div id="emptyQueueState" class="text-center py-4">
+                            <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">@Localizer["No patients in queue"]</h4>
+                            <p class="text-muted">@Localizer["Add patients to the waiting queue"]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Doctor's Panel -->
+    @if (isDoctor)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-primary shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-md me-2"></i>@Localizer["Doctor's Panel"]
+                        </h5>
+                        <div>
+                            <span class="badge bg-light text-primary" id="doctorQueueCount">0 Waiting</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Waiting State -->
+                        <div id="doctorWaitingState" class="text-center py-4">
+                            <i class="fas fa-user-clock fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">@Localizer["No patients waiting"]</h4>
+                            <p class="text-muted">@Localizer["You will be notified when patients arrive"]</p>
+                        </div>
+
+                        <!-- Queue List for Doctor -->
+                        <div id="doctorQueueList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="fas fa-calendar-day me-2"></i>@Localizer["Today's Appointments"]
+            </h2>
+            <p class="text-muted mb-0">@DateTime.Today.ToString("dddd, MMMM dd, yyyy")</p>
+            @Html.AntiForgeryToken()
+        </div>
+
+        <div class="d-flex gap-2">
+            @if (isReceptionist)
+            {
+                <a href="@Url.Action("Create")" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> @Localizer["New Appointment"]
+                </a>
+            }
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> @Localizer["Back"]
+            </a>
+        </div>
+    </div>
+
+    <!-- Appointments List -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state text-center py-5">
+            <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">@Localizer["No appointments for today"]</h4>
+            <p class="text-muted">@Localizer["All caught up! No appointments scheduled for today"]</p>
+            @if (isReceptionist)
+            {
+                <a href="@Url.Action("Create")" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-1"></i> @Localizer["Create New Appointment"]
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>@Localizer["Appointments List"]
+                </h5>
+                <span class="badge bg-primary">@Model.Count @Localizer["appointments"]</span>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-user me-1"></i> @Localizer["Patient"]</th>
+                                <th><i class="fas fa-phone me-1"></i> @Localizer["Phone"]</th>
+                                <th><i class="fas fa-clock me-1"></i> @Localizer["Time"]</th>
+                                <th><i class="fas fa-tag me-1"></i> @Localizer["Status"]</th>
+                                @if (isReceptionist)
+                                {
+                                    <th><i class="fas fa-tasks me-1"></i> Actions</th>
+                                }
+                                @if (isDoctor)
+                                {
+                                    <th><i class="fas fa-eye me-1"></i> Details</th>
+                                }
+                                <th><i class="fas fa-actions me-1"></i> @Localizer["Actions"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTableBody">
+                            @foreach (var appointment in Model.OrderBy(a => a.StartTime))
+                            {
+                                <tr class="align-middle appointment-row" id="appointment-@appointment.Id" data-status="@appointment.Status">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle me-3">
+                                                @appointment.PatientName?[0]
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">@appointment.PatientName</h6>
+                                                <small class="text-muted">@appointment.Date.ToString("MMM dd, yyyy")</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-nowrap">
+                                            <i class="fas fa-phone text-muted me-1"></i>
+                                            @appointment.PatientPhone
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="far fa-clock me-1"></i>
+                                            @appointment.StartTime.ToString(@"hh\:mm") - @appointment.EndTime.ToString(@"hh\:mm")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var statusClass = appointment.Status switch
+                                            {
+                                                "Scheduled" => "bg-warning",
+                                                "Notified" => "bg-info",
+                                                "Completed" => "bg-success",
+                                                "Cancelled" => "bg-danger",
+                                                "NoShow" => "bg-secondary",
+                                                _ => "bg-secondary"
+                                            };
+                                            var statusText = appointment.Status switch
+                                            {
+                                                "Scheduled" => Localizer["Scheduled"].Value,
+                                                "Notified" => Localizer["Notified"].Value,
+                                                "Completed" => Localizer["Completed"].Value,
+                                                "Cancelled" => Localizer["Cancelled"].Value,
+                                                _ => appointment.Status
+                                            };
+                                        }
+                                        <span class="badge @statusClass status-badge" id="status-@appointment.Id">
+                                            @statusText
+                                        </span>
+                                    </td>
+
+                                    @if (isReceptionist)
+                                    {
+                                        <td>
+                                            @if (appointment.Status == "Scheduled")
+                                            {
+                                                <button class="btn btn-success btn-sm send-to-doctor-btn"
+                                                        data-appointment-id="@appointment.Id"
+                                                        data-patient-id="@appointment.PatientId"
+                                                        data-patient-name="@appointment.PatientName">
+                                                    <i class="fas fa-plus me-1"></i> @Localizer["Add to Queue"]
+                                                </button>
+                                            }
+                                            else if (appointment.Status == "Notified")
+                                            {
+                                                <button class="btn btn-outline-info btn-sm" disabled>
+                                                    <i class="fas fa-clock me-1"></i> @Localizer["In Queue"]
+                                                </button>
+                                            }
+                                            else if (appointment.Status == "Completed")
+                                            {
+                                                <button class="btn btn-outline-success btn-sm" disabled>
+                                                    <i class="fas fa-check me-1"></i> @Localizer["Completed"]
+                                                </button>
+                                            }
+                                        </td>
+                                    }
+
+                                    @if (isDoctor)
+                                    {
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="@Url.Action("Details", new { id = appointment.Id })"
+                                               class="btn btn-outline-primary"
+                                               title="@Localizer["View Details"]">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="~/js/signalr-connection.js"></script>
+    <script src="~/js/reception-actions.js"></script>
+    <script src="~/js/doctor-actions.js"></script>
+}

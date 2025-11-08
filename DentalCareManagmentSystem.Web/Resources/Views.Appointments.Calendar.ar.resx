@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Appointments Calendar" xml:space="preserve">
+    <value>تقويم المواعيد</value>
+  </data>
+	<data name="Calendar" xml:space="preserve">
+    <value>التقويم</value>
+  </data>
+	<data name="Start" xml:space="preserve">
+    <value>البداية</value>
+  </data>
+	<data name="End" xml:space="preserve">
+    <value>النهاية</value>
+  </data>
+	<data name="Pending" xml:space="preserve">
+    <value>قيد الانتظار</value>
+  </data>
+</root>

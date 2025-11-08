@@ -1,0 +1,233 @@
+/* Queue and Appointment Styles for Today's Appointments */
+
+/* Avatar Circle */
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Queue Item Styles */
+.queue-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid #0d6efd;
+}
+
+.queue-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.queue-number {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    min-width: 45px;
+    text-align: center;
+}
+
+/* Doctor Queue Item */
+.queue-item-doctor {
+    transition: all 0.3s ease;
+    border-left: 4px solid #198754;
+}
+
+.queue-item-doctor:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Appointment Row Animations */
+.appointment-row {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.appointment-row[data-status="Notified"] {
+    background-color: #e7f3ff;
+}
+
+.appointment-row[data-status="Completed"] {
+    background-color: #d4edda;
+}
+
+/* Status Badge Animations */
+.status-badge {
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+}
+
+/* Button Loading State */
+.btn.loading {
+    pointer-events: none;
+    position: relative;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Toast Container Styles */
+#toastContainer {
+    max-width: 350px;
+}
+
+#toastContainer .alert {
+    animation: slideIn 0.3s ease;
+    margin-bottom: 10px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Empty State Styles */
+.empty-state {
+    padding: 3rem 1rem;
+}
+
+.empty-state i {
+    opacity: 0.5;
+}
+
+/* Card Header Enhancements */
+.card-header {
+    font-weight: 600;
+}
+
+.card-header .badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Table Responsive Enhancements */
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Waiting State Animation */
+#doctorWaitingState, #emptyQueueState {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Complete Session Button */
+.complete-session-btn {
+    transition: all 0.3s ease;
+}
+
+.complete-session-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+/* Send to Doctor Button */
+.send-to-doctor-btn {
+    transition: all 0.3s ease;
+}
+
+.send-to-doctor-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+/* Active Session Alert */
+.alert-info {
+    border-left: 4px solid #0dcaf0;
+}
+
+/* Page Fade In */
+.fade-in {
+    animation: pageIn 0.5s ease;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .queue-item-doctor .d-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .queue-item-doctor .btn-group {
+        width: 100%;
+    }
+    
+    .queue-item-doctor .btn-group .btn {
+        flex: 1;
+    }
+    
+    #toastContainer {
+        width: calc(100% - 40px);
+        right: 20px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .btn, .badge, .alert {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6 !important;
+        page-break-inside: avoid;
+    }
+}

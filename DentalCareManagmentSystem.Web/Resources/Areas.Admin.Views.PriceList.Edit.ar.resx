@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Edit Price Item" xml:space="preserve">
+    <value>تعديل عنصر السعر</value>
+  </data>
+	<data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+	<data name="Treatment Name" xml:space="preserve">
+    <value>اسم العلاج</value>
+  </data>
+	<data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+	<data name="Default Price" xml:space="preserve">
+    <value>السعر الافتراضي</value>
+  </data>
+	<data name="Active" xml:space="preserve">
+    <value>نشط</value>
+  </data>
+</root>

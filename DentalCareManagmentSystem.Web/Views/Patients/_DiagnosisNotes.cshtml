@@ -1,0 +1,8 @@
+﻿@model List<DentalCareManagmentSystem.Domain.Entities.DiagnosisNote>
+
+<ul>
+    @foreach (var note in Model)
+    {
+        <li>@note.CreatedAt.ToString("yyyy-MM-dd") - @note.Note</li>
+    }
+</ul>

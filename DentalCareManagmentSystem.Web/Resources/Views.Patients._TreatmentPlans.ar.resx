@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- الترجمات -->
+	<data name="Treatment Plans" xml:space="preserve">
+    <value>خطط العلاج</value>
+  </data>
+	<data name="Manage patient treatment plans and track progress" xml:space="preserve">
+    <value>إدارة خطط علاج المرضى ومتابعة التقدم</value>
+  </data>
+	<data name="New Plan" xml:space="preserve">
+    <value>خطة جديدة</value>
+  </data>
+	<data name="Create new treatment plan" xml:space="preserve">
+    <value>إنشاء خطة علاج جديدة</value>
+  </data>
+	<data name="Total Plans" xml:space="preserve">
+    <value>إجمالي الخطط</value>
+  </data>
+	<data name="Completed" xml:space="preserve">
+    <value>مكتمل</value>
+  </data>
+	<data name="In Progress" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+	<data name="Total Value" xml:space="preserve">
+    <value>القيمة الإجمالية</value>
+  </data>
+	<data name="Treatment Plans List" xml:space="preserve">
+    <value>قائمة خطط العلاج</value>
+  </data>
+	<data name="Created Date" xml:space="preserve">
+    <value>تاريخ الإنشاء</value>
+  </data>
+	<data name="Created By" xml:space="preserve">
+    <value>تم الإنشاء بواسطة</value>
+  </data>
+	<data name="Total Cost" xml:space="preserve">
+    <value>التكلفة الإجمالية</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+	<data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+	<data name="View full details" xml:space="preserve">
+    <value>عرض التفاصيل الكاملة</value>
+  </data>
+	<data name="Mark as completed" xml:space="preserve">
+    <value>تحديد كمكتمل</value>
+  </data>
+	<data name="Delete plan" xml:space="preserve">
+    <value>حذف الخطة</value>
+  </data>
+	<data name="Mark this treatment plan as completed?" xml:space="preserve">
+    <value>هل تريد تحديد خطة العلاج هذه كمكتملة؟</value>
+  </data>
+	<data name="Are you sure you want to delete this treatment plan? This action cannot be undone." xml:space="preserve">
+    <value>هل أنت متأكد من أنك تريد حذف خطة العلاج هذه؟ لا يمكن التراجع عن هذا الإجراء.</value>
+  </data>
+	<data name="Treatment Details" xml:space="preserve">
+    <value>تفاصيل العلاج</value>
+  </data>
+	<data name="Detailed breakdown of each treatment plan" xml:space="preserve">
+    <value>تفصيل مفصل لكل خطة علاج</value>
+  </data>
+	<data name="No Treatment Plans Found" xml:space="preserve">
+    <value>لم يتم العثور على خطط علاج</value>
+  </data>
+	<data name="Get started by creating the first treatment plan for this patient." xml:space="preserve">
+    <value>ابدأ بإنشاء أول خطة علاج لهذا المريض.</value>
+  </data>
+	<data name="Create First Plan" xml:space="preserve">
+    <value>إنشاء أول خطة</value>
+  </data>
+	<data name="Qty" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+	<data name="each" xml:space="preserve">
+    <value>لكل</value>
+  </data>
+	<data name="View Details" xml:space="preserve">
+    <value>عرض التفاصيل</value>
+  </data>
+</root>

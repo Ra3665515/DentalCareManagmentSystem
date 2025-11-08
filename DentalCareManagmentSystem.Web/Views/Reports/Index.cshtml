@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Reports"];
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fas fa-chart-line me-2"></i> @Localizer["Reports Dashboard"]
+    </h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-injured fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">@Localizer["Patient Report"]</h5>
+                    <p class="text-muted">@Localizer["View patient statistics and demographics"]</p>
+                    <a asp-action="PatientReport" class="btn btn-outline-primary btn-sm">@Localizer["View Report"]</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold">@Localizer["Appointment Report"]</h5>
+                    <p class="text-muted">@Localizer["Track completed and cancelled appointments"]</p>
+                    <a asp-action="AppointmentReport" class="btn btn-outline-success btn-sm">@Localizer["View Report"]</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-hand-holding-usd fa-3x text-warning mb-3"></i>
+                    <h5 class="fw-bold">@Localizer["Financial Report"]</h5>
+                    <p class="text-muted">@Localizer["Analyze revenue and outstanding payments"]</p>
+                    <a asp-action="FinancialReport" class="btn btn-outline-warning btn-sm">@Localizer["View Report"]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

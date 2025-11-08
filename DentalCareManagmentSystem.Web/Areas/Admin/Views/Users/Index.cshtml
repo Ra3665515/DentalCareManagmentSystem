@@ -1,0 +1,110 @@
+﻿@model List<DentalCareManagmentSystem.Application.DTOs.UserDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Users Management"];
+}
+
+<div class="container mt-4">
+
+    <!-- 🔹 العنوان + زر الإضافة -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-users me-2"></i> @Localizer["Users Management"]
+        </h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="fas fa-user-plus me-1"></i> @Localizer["Add New User"]
+        </a>
+    </div>
+
+    <!-- 🔹 الكارد الرئيسي -->
+    <div class="card shadow-sm border-0 rounded">
+        <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
+            <i class="fas fa-list me-2"></i> @Localizer["All System Users"]
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle text-center">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th>#</th>
+                        <th>@Localizer["Full Name"]</th>
+                        <th>@Localizer["Email"]</th>
+                        <th>@Localizer["Role"]</th>
+                        <th>@Localizer["Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var i = 1;
+                        foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@user.FullName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @{
+                                        var roleClass = user.Role switch
+                                        {
+                                            "SystemAdmin" => "bg-danger",
+                                            "Doctor" => "bg-success",
+                                            "Receptionist" => "bg-info text-dark",
+                                            _ => "bg-secondary"
+                                        };
+                                        var roleText = user.Role switch
+                                        {
+                                            "SystemAdmin" => Localizer["SystemAdmin"].Value,
+                                            "Doctor" => Localizer["Doctor"].Value,
+                                            "Receptionist" => Localizer["Receptionist"].Value,
+                                            _ => user.Role
+                                        };
+                                    }
+                                    <span class="badge @roleClass">@roleText</span>
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="fas fa-edit"></i> @Localizer["Edit"]
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash-alt"></i> @Localizer["Delete"]
+                                    </a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="fas fa-box-open fa-lg mb-2 d-block"></i>
+                                @Localizer["No users found in the system"]
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('table').DataTable({
+                responsive: true,
+                language: {
+                    search: "🔍 @Localizer["Search"]:",
+                    lengthMenu: "@Localizer["Show"] _MENU_ @Localizer["users per page"]",
+                    zeroRecords: "@Localizer["No matching users found"]",
+                    info: "@Localizer["Showing"] _START_ @Localizer["to"] _END_ @Localizer["of"] _TOTAL_ @Localizer["users"]",
+                    infoEmpty: "@Localizer["No users available"]",
+                    infoFiltered: "(@Localizer["filtered from"] _MAX_ @Localizer["total users"])"
+                }
+            });
+        });
+    </script>
+}

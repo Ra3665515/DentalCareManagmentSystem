@@ -1,0 +1,89 @@
+﻿@model DentalCareManagmentSystem.Application.DTOs.AppointmentDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Add Appointment"];
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fas fa-calendar-plus me-2"></i> @Localizer["Add New Appointment"]
+    </h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="PatientId" class="form-label fw-semibold">
+                            <i class="fas fa-user me-1"></i> @Localizer["Patient"]
+                        </label>
+                        <select asp-for="PatientId" class="form-select" asp-items="ViewBag.Patients">
+                            <option value="">-- @Localizer["Select Patient"] --</option>
+                        </select>
+                        <span asp-validation-for="PatientId" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label asp-for="Date" class="form-label fw-semibold">
+                            <i class="fas fa-calendar-alt me-1"></i> @Localizer["Date"]
+                        </label>
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label asp-for="StartTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-1"></i> @Localizer["Start Time"]
+                        </label>
+                        <input asp-for="StartTime" type="time" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="EndTime" class="form-label fw-semibold">
+                            <i class="fas fa-clock me-1"></i> @Localizer["End Time"]
+                        </label>
+                        <input asp-for="EndTime" type="time" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-semibold">
+                            <i class="fas fa-info-circle me-1"></i> @Localizer["Status"]
+                        </label>
+                        <select asp-for="Status" class="form-select" asp-items="ViewBag.StatusOptions">
+                            <option value="">-- @Localizer["Select Status"] --</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Notes" class="form-label fw-semibold">
+                            <i class="fas fa-sticky-note me-1"></i> @Localizer["Notes"]
+                        </label>
+                        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> @Localizer["Cancel"]
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus-circle me-1"></i> @Localizer["Add Appointment"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

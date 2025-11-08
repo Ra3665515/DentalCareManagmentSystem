@@ -1,0 +1,265 @@
+﻿
+@model List<DentalCareManagmentSystem.Application.DTOs.AppointmentDto>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    var isDoctor = User.IsInRole("Doctor");
+    ViewData["Title"] = Localizer["Appointments"];
+}
+
+<div class="container mt-4">
+
+@*     <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-calendar-check me-2"></i> Appointments
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Add New Appointment
+        </a> 
+    </div>
+ *@
+
+    <div class="container-fluid py-4">
+        <!-- نافذة الإشعارات للدكتور فقط -->
+        @if (isDoctor)
+        {
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bell me-2"></i>@Localizer["Current Patient Notification"]
+                            </h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div id="doctorWaitingState" class="text-center py-3">
+                                <i class="fas fa-user-clock fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">@Localizer["Waiting for patient notifications"]</p>
+                            </div>
+
+                            <div id="doctorPatientNotification" class="alert alert-success d-none">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-injured fa-2x me-3 text-success"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-success fw-bold" id="currentPatientName"></h6>
+                                        <p class="mb-1 small" id="currentAppointmentTime"></p>
+                                        <small class="text-muted" id="currentArrivalTime"></small>
+                                    </div>
+                                    <div class="ms-3">
+                                        <button class="btn btn-success btn-sm" onclick="startCurrentAppointment()">
+                                            <i class="fas fa-play me-1"></i> @Localizer["Start"]
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    }
+
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold text-primary">
+                <i class="fas fa-calendar-check me-2"></i> @Localizer["Appointments"]
+            </h2>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus-circle me-1"></i> @Localizer["Add New Appointment"]
+            </a>
+        </div>
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="searchString" class="form-control" placeholder="@Localizer["Search by patient name..."]" value="@ViewData["CurrentFilter"]">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> @Localizer["Search"]</button>
+                </div>
+            </form>
+
+
+        <div class="card shadow-sm border-0 rounded">
+            <div class="card-header bg-primary text-white fw-semibold d-flex align-items-center">
+                <i class="fas fa-list me-2"></i> @Localizer["All Appointments"]
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mvc-grid mb-0">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Patient"]</th>
+                            <th>@Localizer["Phone"]</th>
+                            <th>@Localizer["Date"]</th>
+                            <th>@Localizer["Time"]</th>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Notes"]</th>
+                            <th>@Localizer["Actions"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var appt in Model)
+                            {
+                                <tr>
+                                    <td>@appt.PatientName</td>
+                                    <td>@appt.PatientPhone</td>
+                                        <td>
+                                            @appt.Date.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+                                        </td>
+                                    <td>@appt.StartTime.ToString(@"hh\:mm") - @appt.EndTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        @{
+                                            var statusClass = appt.Status switch
+                                            {
+                                                "Completed" => "bg-success",
+                                                "Cancelled" => "bg-danger",
+                                                "Scheduled" => "bg-warning text-dark",
+                                                "Notified" => "bg-info",
+                                                _ => "bg-secondary"
+                                            };
+                                            var statusText = appt.Status switch
+                                            {
+                                                "Completed" => Localizer["Completed"].Value,
+                                                "Cancelled" => Localizer["Cancelled"].Value,
+                                                "Scheduled" => Localizer["Scheduled"].Value,
+                                                "Notified" => Localizer["Notified"].Value,
+                                                _ => appt.Status
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@statusText</span>
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(appt.Notes) ? "-" : appt.Notes)</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@appt.Id">
+                                                <i class="fas fa-edit"></i> @Localizer["Edit"]
+                                            </a>
+                                            <a class="btn btn-info text-white" asp-action="Details" asp-route-id="@appt.Id">
+                                                <i class="fas fa-info-circle"></i> @Localizer["Details"]
+                                            </a>
+                                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@appt.Id">
+                                                <i class="fas fa-trash-alt"></i> @Localizer["Delete"]
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-calendar-times fa-lg mb-2 d-block"></i>
+                                    @Localizer["No appointments found"]
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.25/signalr.min.js"></script>
+    <script>
+        let doctorConnection = null;
+
+        $(document).ready(function () {
+            // إذا كان المستخدم دكتور، ننضم لغرفته
+            @if (isDoctor)
+            {
+                    <text>
+                    doctorConnection = new signalR.HubConnectionBuilder()
+                        .withUrl("/notificationHub")
+                        .withAutomaticReconnect()
+                        .build();
+
+                    doctorConnection.start().then(() => {
+                        console.log("Doctor connected to SignalR");
+                        doctorConnection.invoke("JoinDoctorRoom", 'current-doctor');
+                    }).catch(err => console.error('❌ Doctor Connection Error: ', err));
+
+                    // استقبال إشعارات المرضى
+                    doctorConnection.on("ReceivePatient", (patientName, appointmentId, appointmentTime, arrivalTime) => {
+                        showPatientNotification(patientName, appointmentId, appointmentTime, arrivalTime);
+                    });
+
+                    doctorConnection.on("UpdateQueue", (queue) => {
+                        console.log("👨‍⚕ Doctor queue updated:", queue);
+                        updateDoctorQueueDisplay(queue);
+                    });
+                    </text>
+            }
+
+            // دالة عرض إشعار المريض
+            function showPatientNotification(patientName, appointmentId, appointmentTime, arrivalTime) {
+                $('#currentPatientName').text(patientName);
+                $('#currentAppointmentTime').text('@Localizer["Appointment"]: ' + appointmentTime);
+                $('#currentArrivalTime').text('@Localizer["Arrived"]: ' + arrivalTime);
+
+                $('#doctorWaitingState').addClass('d-none');
+                $('#doctorPatientNotification').removeClass('d-none');
+
+                // حفظ ID الموعد
+                $('#doctorPatientNotification').data('appointment-id', appointmentId);
+
+                // تشغيل صوت إشعار (اختياري)
+                playNotificationSound();
+            }
+
+            // دالة بدء الموعد
+            function startCurrentAppointment() {
+                const appointmentId = $('#doctorPatientNotification').data('appointment-id');
+                if (appointmentId) {
+                    window.location.href = '@Url.Action("Details", "Appointments")/' + appointmentId;
+                }
+            }
+
+            // دالة تحديث عرض الطابور للدكتور
+            function updateDoctorQueueDisplay(queue) {
+                if (!queue || queue.length === 0) {
+                    $('#doctorWaitingState').removeClass('d-none');
+                    $('#doctorPatientNotification').addClass('d-none');
+                    return;
+                }
+
+                const currentPatient = queue.find(function(p) { return p.status === 'In Progress'; });
+                if (currentPatient) {
+                    showPatientNotification(
+                        currentPatient.patientName,
+                        currentPatient.appointmentId,
+                        currentPatient.appointmentTime,
+                        currentPatient.arrivalTime
+                    );
+                }
+            }
+
+            // دالة تشغيل الصوت
+            function playNotificationSound() {
+                try {
+                    // يمكنك إضافة ملف صوتي لاحقاً
+                    console.log('Notification sound should play here');
+                } catch (e) {
+                    console.log('Audio play failed:', e);
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+    </style>
+}

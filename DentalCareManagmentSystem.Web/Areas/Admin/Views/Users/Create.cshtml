@@ -1,0 +1,55 @@
+@model DentalCareManagmentSystem.Application.DTOs.UserDto
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Create User"];
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold text-primary mb-4"><i class="fas fa-user-plus me-2"></i> @Localizer["Create New User"]</h2>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="card shadow-sm border-0 p-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label fw-semibold"><i class="fas fa-user"></i> @Localizer["Full Name"]</label>
+                    <input asp-for="FullName" class="form-control" required />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label fw-semibold"><i class="fas fa-envelope"></i> @Localizer["Email"]</label>
+                    <input asp-for="Email" class="form-control" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="password" class="form-label fw-semibold"><i class="fas fa-lock"></i> @Localizer["Password"]</label>
+                    <input type="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Role" class="form-label fw-semibold"><i class="fas fa-user-tag"></i> @Localizer["Role"]</label>
+                    <select asp-for="Role" asp-items="ViewBag.Roles" class="form-select" required>
+                        <option value="">-- @Localizer["Select role"] --</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <a asp-action="Index" class="btn btn-outline-secondary me-2"><i class="fas fa-arrow-left"></i> @Localizer["Cancel"]</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> @Localizer["Save"]</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

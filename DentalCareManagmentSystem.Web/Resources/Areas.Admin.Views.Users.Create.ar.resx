@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Create User" xml:space="preserve">
+    <value>إنشاء مستخدم</value>
+  </data>
+	<data name="Create New User" xml:space="preserve">
+    <value>إنشاء مستخدم جديد</value>
+  </data>
+	<data name="Full Name" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+	<data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+	<data name="Password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+	<data name="Role" xml:space="preserve">
+    <value>الدور</value>
+  </data>
+	<data name="Select role" xml:space="preserve">
+    <value>اختر الدور</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+	<data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+</root>
